@@ -1,1 +1,1 @@
-# terraform-private-lab
+# private-lab
