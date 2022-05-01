@@ -1,0 +1,7 @@
+---
+# see: https://github.com/kentaro-m/auto-assign-action
+addReviewers: true
+addAssignees: author
+reviewers:
+  - tqer39
+numberOfReviewers: 0
