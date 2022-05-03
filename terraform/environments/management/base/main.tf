@@ -10,3 +10,11 @@ module "deploy-role" {
 module "oidc-github-actions" {
   source = "../../../usecases/base/id_provider"
 }
+
+module "terraform-backend" {
+  source = "../../../usecases/base/s3"
+
+  aws_account_id = local.aws_account_id
+  aws_region     = local.aws_region
+  organization   = local.organization
+}
