@@ -35,7 +35,7 @@ concurrency: terraform-aws-management
 env:
   AWS_ACCOUNT_ID: 577523824419
   ENV_NAME: management
-  OIDC_IAM_ROLE: private-lab-deploy
+  OIDC_IAM_ROLE: management-private-lab-deploy
 
 jobs:
   terraform:
