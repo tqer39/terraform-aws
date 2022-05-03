@@ -23,8 +23,6 @@ on:
       - "terraform/usecases/**"
       - ".terraform-version"
   workflow_dispatch:
-    branches:
-      - main
 
 permissions:
   contents: read
