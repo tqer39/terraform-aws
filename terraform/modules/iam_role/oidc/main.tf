@@ -1,5 +1,5 @@
 resource "aws_iam_role" "github-actions" {
-  name = "iamrole-${var.env_name}-${var.repository}-deploy"
+  name = "${var.env_name}-${var.repository}-deploy"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
