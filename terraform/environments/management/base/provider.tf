@@ -3,7 +3,7 @@ provider "aws" {
 
   default_tags {
     tags = merge(local.common_tags, {
-      "kkhs:source_path" = "terraform/environments/${local.env_name}/base"
+      "pl:source_path" = "terraform/environments/${local.env_name}/base"
     })
   }
 }
