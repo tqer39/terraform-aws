@@ -4,6 +4,7 @@ pull_request_rules:
     conditions:
       - base=main
       - status-success=pre-commit
+      - status-success=terraform (base, base)
     actions:
       merge:
         method: merge
