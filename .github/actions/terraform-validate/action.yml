@@ -1,0 +1,33 @@
+---
+name: Terraform Validate
+
+description: Terraform Validate
+
+inputs:
+  github-token:
+    description: サードパーティの Action を実行するための権限を付与
+    required: true
+  working-directory:
+    description: Terraform CLI 実行時のパス
+    required: true
+outputs:
+  terraform-validate-outcome:
+    description: terraform validate の処理結果
+    value: ${{ steps.terraform-validate.outcome }}
+
+runs:
+  using: composite
+  steps:
+    - name: Terraform Validate
+      id: terraform-validate
+      run: terraform validate -no-color
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+
+    - name: TFLint
+      uses: reviewdog/action-tflint@master
+      with:
+        github_token: ${{ inputs.github-token }}
+        working_directory: ${{ inputs.working-directory }}
+        reporter: github-pr-review
+        fail_on_error: true
