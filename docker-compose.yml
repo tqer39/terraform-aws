@@ -1,0 +1,10 @@
+---
+version: "3"
+services:
+  terraform:
+    image: hashicorp/terraform:1.1.9
+    container_name: terraform
+    hostname: terraform
+    volumes:
+      - ./terraform:/terraform
+    working_dir: /terraform/environments/${ENV}/${TF_PATH}
