@@ -3,7 +3,7 @@ pull_request_rules:
   - name: Automatic merge
     conditions:
       - base=main
-      - "status-success=pre-commit"
+      - status-success=pre-commit
     actions:
       merge:
         method: merge
