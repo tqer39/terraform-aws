@@ -3,8 +3,7 @@
   "automerge": true,
   "automergeType": "branch",
   "extends": [
-    "config:base",
-    ":timezone(Asia/Tokyo)"
+    "config:base"
   ],
   "labels": [
     "renovate"
