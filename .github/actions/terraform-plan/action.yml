@@ -1,0 +1,45 @@
+---
+name: Terraform Plan
+
+description: Terraform Plan
+
+inputs:
+  env_name:
+    description: 環境名（dev, stg, prod）
+    required: true
+  github-token:
+    description: サードパーティの Action を実行するための権限を付与するための認証用トークン
+    required: true
+  working-directory:
+    description: Terraform CLI 実行時のパス
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Terraform
+      uses: ./.github/actions/setup-terraform
+      with:
+        working-directory: ${{ inputs.working-directory }}
+
+    - name: Terraform Validate
+      uses: ./.github/actions/terraform-validate
+      with:
+        github-token: ${{ inputs.github-token }}
+        working-directory: ${{ inputs.working-directory }}
+
+    - name: Setup tfcmt
+      uses: itkq/actions-tfcmt/setup@main
+
+    - name: Terraform Plan
+      id: terraform-plan
+      run: tfcmt -var target:${{ inputs.env_name }} plan -patch -- terraform plan -no-color
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+
+    - name: Terraform Plan (failure) -> Status
+      if: steps.terraform-plan.outcome == 'failure'
+      run: exit 1
+      shell: bash

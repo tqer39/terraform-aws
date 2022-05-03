@@ -1,0 +1,32 @@
+---
+name: Setup terraform
+
+description: Setup Terraform
+
+inputs:
+  working-directory:
+    description: Terraform CLI 実行時のパス
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Get current Terraform version
+      id: get-tf-version
+      run: echo ::set-output name=TERRAFORM_VERSION::$(cat .terraform-version)
+      shell: bash
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ steps.get-tf-version.outputs.TERRAFORM_VERSION }}
+
+    - name: Terraform Format
+      run: terraform fmt -check -recursive -diff
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+
+    - name: Terraform Init
+      run: terraform init -upgrade
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
