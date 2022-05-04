@@ -1,0 +1,3 @@
+"management":
+  - ".github/workflows/terraform-aws-management.yml"
+  - "terraform/environments/management/**"
