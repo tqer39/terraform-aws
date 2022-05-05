@@ -1,0 +1,8 @@
+{
+  "cSpell.words": [
+    "Brewfile",
+    "mergify",
+    "usecases"
+  ],
+  "makefile.extensionOutputFolder": "./.vscode"
+}
