@@ -1,0 +1,89 @@
+---
+name: Terraform - AWS - Sandbox
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/terraform-aws-sandbox.yml"
+      - ".github/actions/**/action.yml"
+      - "terraform/environments/sandbox/**"
+      - "terraform/modules/**"
+      - "terraform/usecases/**"
+      - ".terraform-version"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/terraform-aws-sandbox.yml"
+      - ".github/actions/**/action.yml"
+      - "terraform/environments/sandbox/**"
+      - "terraform/modules/**"
+      - "terraform/usecases/**"
+      - ".terraform-version"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+  id-token: write
+  pull-requests: write
+
+concurrency: terraform-aws-sandbox
+
+env:
+  AWS_ACCOUNT_ID: 107662415716
+  ENV_NAME: sandbox
+  OIDC_IAM_ROLE: sandbox-private-lab-deploy
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: base
+            directory: base
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: AWS Credential
+        uses: ./.github/actions/aws-credential
+        with:
+          oidc-iam-role: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
+
+      - name: Terraform Plan
+        uses: ./.github/actions/terraform-plan
+        with:
+          env_name: ${{ env.ENV_NAME }}
+          working-directory: ./terraform/environments/${{ env.ENV_NAME }}/${{ matrix.directory }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Start Deployment
+        if: github.ref == 'refs/heads/main'
+        uses: bobheadxi/deployments@v1
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: ${{ env.ENV_NAME }}
+
+      - name: Terraform Apply
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        uses: ./.github/actions/terraform-apply
+        with:
+          working-directory: ./terraform/environments/${{ env.ENV_NAME }}/${{ matrix.directory }}
+
+      - name: Finish Deployment
+        if: always() && github.ref == 'refs/heads/main'
+        uses: bobheadxi/deployments@v1
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          env: ${{ steps.deployment.outputs.env }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
