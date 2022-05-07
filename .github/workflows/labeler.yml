@@ -6,6 +6,9 @@ on:
 
 jobs:
   auto-labeling:
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
