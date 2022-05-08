@@ -47,6 +47,8 @@ jobs:
         include:
           - name: base
             directory: base
+          - name: test-statement
+            directory: test-statement
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
