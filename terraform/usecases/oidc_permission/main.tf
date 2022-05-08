@@ -53,7 +53,7 @@ resource "aws_iam_policy" "github-actions" {
         {
           Sid = "DenySpecifics"
           Action = [
-            "iam:*User*",
+            # "iam:*User*",
             "iam:*Login*",
             "iam:*Group*",
             "aws-portal:*",
