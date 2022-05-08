@@ -3,7 +3,7 @@ provider "aws" {
 
   default_tags {
     tags = merge(local.common_tags, {
-      "pl:source_path" = "terraform/environments/${local.env_name}/base"
+      "${local.prefix}:source_path" = "terraform/environments/${local.env_name}/base"
     })
   }
 }
