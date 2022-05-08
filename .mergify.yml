@@ -5,6 +5,7 @@ pull_request_rules:
       - base=main
       - status-success=pre-commit
       - status-success=terraform (base, base)
+      - status-success=terraform (test-statement, test-statement)
     actions:
       merge:
         method: merge
