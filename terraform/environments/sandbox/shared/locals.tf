@@ -1,7 +1,7 @@
 locals {
-  aws_account_id = "577523824419"
+  aws_account_id = "107662415716"
   aws_region     = "ap-northeast-1"
-  env_name       = "management"
+  env_name       = "sandbox"
   organization   = "tqer39"
   platform       = "aws"
   repository     = "private-lab"
