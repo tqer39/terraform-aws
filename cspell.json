@@ -1,0 +1,30 @@
+{
+  "ignorePaths": [
+    ".gitignore"
+  ],
+  "words": [
+    "autofix",
+    "chdir",
+    "hashicorp",
+    "jsonencode",
+    "OIDC",
+    "shellcheck",
+    "starrt",
+    "tfstate",
+    "tqer",
+    "usecases",
+    "hoge",
+    "fuga",
+    "tfcmt",
+    "reviewdog",
+    "automerge",
+    "bobheadxi",
+    "moga",
+    "jwks",
+    "itkq",
+    "jsondecode",
+    "kentaro",
+    "tflint",
+    "Anson"
+  ]
+}

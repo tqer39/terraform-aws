@@ -30,3 +30,8 @@ repos:
     rev: v1.26.3
     hooks:
       - id: yamllint
+
+  - repo: https://github.com/streetsidesoftware/cspell-cli
+    rev: v5
+    hooks:
+      - id: cspell
