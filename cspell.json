@@ -1,0 +1,34 @@
+{
+  "files": [
+    "**",
+    ".*/**"
+  ],
+  "ignorePaths": [
+    ".git",
+    ".gitignore"
+  ],
+  "words": [
+    "tqer",
+    "usecases",
+    "oidc",
+    "moga",
+    "tfstate",
+    "hashicorp",
+    "fuga",
+    "shellcheck",
+    "kentaro",
+    "autofix",
+    "jsonencode",
+    "OIDC",
+    "chdir",
+    "bobheadxi",
+    "tfcmt",
+    "itkq",
+    "reviewdog",
+    "jwks",
+    "automerge",
+    "jsondecode",
+    "tflint",
+    "hoge"
+  ]
+}
