@@ -1,0 +1,162 @@
+---
+name: 名前
+
+description: 詳細
+
+title: "タイトル: "
+
+labels: ["bug", "triage"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # h1
+
+        ## h2
+
+        ### h3
+
+        #### h4
+
+        ##### h5
+
+        ###### h6
+
+        ####### h7
+
+        - [ ] check
+        - [x] check
+          - [ ] check
+            - [x] check
+
+        1. number
+        2. number
+
+        > 引用
+
+        **bold** __italic__ ~strike~ <a href="https://google.com">hyperlink to google</a>
+
+  - type: input
+    id: input-required-true
+    attributes:
+      label: ラベル input-1
+      description: 詳細-1
+      placeholder: example のデータ-1
+    validations:
+      required: true
+
+  - type: input
+    id: input-required-false
+    attributes:
+      label: ラベル input-2
+      description: 詳細-2
+      placeholder: example のデータ-2
+    validations:
+      required: false
+
+  - type: textarea
+    id: textarea-required-true
+    attributes:
+      label: ラベル textarea-1
+      description: 詳細-3
+      placeholder: example のデータ-3
+      value: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    validations:
+      required: true
+
+  - type: textarea
+    id: textarea-required-false
+    attributes:
+      label: ラベル textarea-2
+      description: 詳細-4-1
+      placeholder: example のデータ-4-1
+      value: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    validations:
+      required: false
+
+  - type: textarea
+    id: textarea-markdown
+    attributes:
+      label: ラベル textarea-3
+      placeholder: example のデータ-4-2
+      description: |
+        詳細-4-2
+
+        examples:
+          - **OS**: Ubuntu 20.04
+          - **Node**: 13.14.0
+          - **npm**: 7.6.3
+      value: |
+        ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+        - OS:
+        - Node:
+        - npm:
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: textarea-tip
+    attributes:
+      label: ラベル textarea-4
+      description: |
+        詳細-4-3
+
+        Tip: You can attach images or log files by clicking this area to highlight it and then dragging files in.
+      placeholder: example のデータ-4-3
+      value: dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+    validations:
+      required: true
+
+  - type: textarea
+    id: textarea-render-shell
+    attributes:
+      label: ラベル textarea-3
+      description: 詳細-5
+      render: shell
+
+  - type: dropdown
+    id: dropdown-required-true-multiple-true
+    attributes:
+      label: ラベル dropdown-1
+      multiple: true
+      description: 詳細-5
+      options:
+        - 2.1.0 (latest)
+        - 2.0.9
+        - 2.0.8
+        - 2.0.7
+        - 2.0.6
+        - 2.0.5
+    validations:
+      required: true
+
+  - type: dropdown
+    id: dropdown-required-false-multiple-false
+    attributes:
+      label: ラベル dropdown-2
+      multiple: false
+      description: 詳細-6
+      options:
+        - 2.1.0 (latest)
+        - 2.0.9
+        - 2.0.8
+        - 2.0.7
+        - 2.0.6
+        - 2.0.5
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checkboxes-1
+    attributes:
+      label: ラベル checkboxes-1
+      description: 詳細-7
+      options:
+        - label: 選択肢-1
+        - label: 選択肢-2
+        - label: 選択肢-3
+        - label: 選択肢-4
+        - label: 選択肢-5
