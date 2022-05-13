@@ -29,6 +29,7 @@
     "automerge",
     "jsondecode",
     "tflint",
-    "hoge"
+    "hoge",
+    "markdownlint"
   ]
 }
