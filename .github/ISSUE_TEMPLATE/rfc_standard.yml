@@ -3,7 +3,7 @@ name: RFC 標準的な変更
 
 description: RFC（Request for Change）の標準的な変更
 
-title: "タイトル: "
+title: "RFC: 変更内容の件名"
 
 labels: ["bug", "triage"]
 
@@ -16,16 +16,18 @@ body:
   - type: textarea
     id: raised
     attributes:
-      label: 変更の要請者（またはチーム）
+      label: RAISED - 変更の要請者（またはチーム）
       description: |
         ## RAISED（要請）
 
         - 要請したのが本人の場合は `申請者本人` と記載してください。
         - 変更の依頼元が本人以外の場合は記載してください。
-      placeholder: |
-        ex. 申請者本人
-        ex. 架橋太郎さん（本人以外の場合）
-        ex. xxx チーム（チームの名前等）
+
+        ### example
+
+        - 申請者本人
+        - 架橋太郎さん（本人以外の場合）
+        - xxx チーム（チームの名前等）
       render: markdown
     validations:
       required: true
@@ -42,7 +44,7 @@ body:
         ### example
 
         - xxx の機能追加を行うため。
-        - xxx のバージョンアップを行うため。
+        - xxx の x.x.x のリリースを行うため。
       render: markdown
     validations:
       required: true
@@ -61,6 +63,7 @@ body:
         - xxx の課題が解決する。
         - xxx の障害が解消される。
         - xxx のパフォーマンスが向上する。
+        - xxx の予定していた機能開発を行いユーザーに価値を提供する。
       render: markdown
     validations:
       required: true
@@ -90,9 +93,9 @@ body:
 
         ### example
 
-        - xxx に追加のテーブルが必要。
-        - xxx の環境変数の追加が必要。
-        - 追加で通知の設定が必要。
+        - xxx のデータベースにテーブルを追加
+        - xxx に環境変数を追加
+        - xx へ通知を追加
       render: markdown
     validations:
       required: true
