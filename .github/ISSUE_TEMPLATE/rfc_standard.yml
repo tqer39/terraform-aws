@@ -8,7 +8,7 @@ title: "タイトル: "
 labels: ["bug", "triage"]
 
 body:
-  - type: input
+  - type: textarea
     id: raised
     attributes:
       label: RAISED
@@ -20,7 +20,7 @@ body:
     validations:
       required: true
 
-  - type: input
+  - type: textarea
     id: reason
     attributes:
       label: REASON
@@ -32,7 +32,7 @@ body:
     validations:
       required: true
 
-  - type: input
+  - type: textarea
     id: return
     attributes:
       label: RETURN
@@ -50,7 +50,7 @@ body:
     validations:
       required: true
 
-  - type: input
+  - type: textarea
     id: risk
     attributes:
       label: RISK
@@ -68,7 +68,7 @@ body:
     validations:
       required: true
 
-  - type: input
+  - type: textarea
     id: resource
     attributes:
       label: RESOURCE
@@ -86,7 +86,7 @@ body:
     validations:
       required: true
 
-  - type: input
+  - type: textarea
     id: responsible
     attributes:
       label: RESPONSIBLE
@@ -102,7 +102,7 @@ body:
     validations:
       required: true
 
-  - type: input
+  - type: textarea
     id: relationship
     attributes:
       label: RELATIONSHIP
