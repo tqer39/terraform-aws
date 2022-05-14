@@ -1,13 +1,18 @@
 ---
 name: RFC 標準的な変更
 
-description: RFC（Request for Change）の標準的な変更
+description: RFC（Request for Change） - 標準的な変更
 
 title: "タイトル: "
 
 labels: ["bug", "triage"]
 
 body:
+  - type: markdown
+    attributes:
+      value: |
+        RFC（Request for Change） - 標準的な変更
+
   - type: input
     id: raised
     attributes:
