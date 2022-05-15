@@ -2,10 +2,7 @@
 name: RFC 通常の変更
 
 description: |
-  RFC（Request for Change） - 通常の変更モデルとは、
-  - 通常の変更モデルのようにプロセス化されておらず、
-  - 緊急の変更モデルのように緊急性がないもの
-  を指します。
+  RFC（Request for Change） - 通常の変更モデルとは、『標準的の変更』のようにプロセス化されておらず『緊急の変更』のように緊急性がないものを指します。
 
 title: "RFC: 変更内容の件名"
 
@@ -37,7 +34,7 @@ body:
         - label: 機能追加
         - label: 不具合・障害対応
 
-  - type: textarea
+  - type: input
     id: raised
     attributes:
       label: RAISED - 変更の要請者（またはチーム）
@@ -52,7 +49,6 @@ body:
         - 申請者本人
         - 架橋太郎さん（本人以外の場合）
         - xxx チーム（チームの名前等）
-      render: markdown
     validations:
       required: true
 
@@ -63,7 +59,7 @@ body:
       description: |
         ## REASON（理由）
 
-        - 変更する理由を記載してください。
+        - 案件の対応、課題の解決、障害の対応、リファクタリング等、その理由を記載してください。
 
         ### example
 
@@ -80,7 +76,7 @@ body:
       description: |
         ## RETURN（得られること）
 
-        案件の対応、課題の解決、障害の対応、リファクタリング等、その理由を記載してください。
+        - 利点を記載してください。
 
         ### example
 
@@ -150,5 +146,25 @@ body:
 
         - xxx のリリースの前に実施する必要がある。
       render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: misc
+    attributes:
+      label: その他
+      render: markdown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: rfc-standard
+    attributes:
+      label: 『標準的な変更』になるようプロセスを作成しますか？
+      multiple: false
+      description: この『標準的な変更』になるようプロセスを作成しますか？
+      options:
+        - はい
+        - いいえ
     validations:
       required: true
