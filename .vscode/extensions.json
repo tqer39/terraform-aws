@@ -3,6 +3,7 @@
     "editorconfig.editorconfig",
     "DavidAnson.vscode-markdownlint",
     "hashiCorp.terraform",
+    "hediet.vscode-drawio",
     "redhat.vscode-yaml",
     "streetsidesoftware.code-spell-checker"
   ]

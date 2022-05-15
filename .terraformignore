@@ -1,0 +1,14 @@
+.editorconfig
+.git/
+.github/
+.gitignore
+.mergify.yml
+.pre-commit-config.yaml
+.vscode/
+.yamllint.yml
+Brewfile
+docker-compose.yml
+LICENSE
+Makefile
+**.md
+renovate.json

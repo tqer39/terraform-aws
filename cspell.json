@@ -5,7 +5,8 @@
   ],
   "ignorePaths": [
     ".git",
-    ".gitignore"
+    ".gitignore",
+    "*.svg"
   ],
   "words": [
     "tqer",
@@ -30,5 +31,12 @@
     "jsondecode",
     "tflint",
     "hoge",
-    "markdownlint"
+    "markdownlint",
+    "Anson",
+    "hashi",
+    "hediet",
+    "drawio",
+    "mergify",
+    "Brewfile"
+  ]
 }
