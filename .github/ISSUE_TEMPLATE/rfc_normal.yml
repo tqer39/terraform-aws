@@ -1,7 +1,11 @@
 ---
-name: RFC 標準的な変更
+name: RFC 通常の変更
 
-description: RFC（Request for Change）の標準的な変更
+description: |
+  RFC（Request for Change） - 通常の変更モデルとは、
+  - 通常の変更モデルのようにプロセス化されておらず、
+  - 緊急の変更モデルのように緊急性がないもの
+  を指します。
 
 title: "RFC: 変更内容の件名"
 
@@ -12,6 +16,26 @@ body:
     attributes:
       value: |
         - `assignee` はこのチケットの作成者が自動的に割り当てられます。
+
+  - type: input
+    id: release-date
+    attributes:
+      label: リリース日時
+      description: リリースする予定日時を記載してください。
+      placeholder: ex. YYYY-MM-DD HH:mi
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: release-type
+    attributes:
+      label: リリースの種別
+      description: |
+        - 機能追加
+        - 不具合・障害対応
+      options:
+        - label: 機能追加
+        - label: 不具合・障害対応
 
   - type: textarea
     id: raised
