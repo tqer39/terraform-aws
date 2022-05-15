@@ -1,0 +1,36 @@
+---
+name: Feature request
+
+description: File a Feature request
+
+title: "[Feature]: "
+
+labels:
+  - enhancement
+
+assignees:
+  - tqer39
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        機能追加要望
+
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: さらに情報が必要な場合、どのように連絡すればよいでしょうか？
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+
+  - type: textarea
+    id: order
+    attributes:
+      label: どんな機能が必要？
+      description: 期待される動きはなんでしょうか？
+      placeholder: ○○ができるようになる。
+    validations:
+      required: false

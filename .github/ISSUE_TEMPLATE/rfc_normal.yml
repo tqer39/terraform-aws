@@ -1,0 +1,154 @@
+---
+name: RFC 通常の変更
+
+description: |
+  RFC（Request for Change） - 通常の変更モデルとは、
+  - 通常の変更モデルのようにプロセス化されておらず、
+  - 緊急の変更モデルのように緊急性がないもの
+  を指します。
+
+title: "RFC: 変更内容の件名"
+
+labels: ["bug", "triage"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        - `assignee` はこのチケットの作成者が自動的に割り当てられます。
+
+  - type: input
+    id: release-date
+    attributes:
+      label: リリース日時
+      description: リリースする予定日時を記載してください。
+      placeholder: ex. YYYY-MM-DD HH:mi
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: release-type
+    attributes:
+      label: リリースの種別
+      description: |
+        - 機能追加
+        - 不具合・障害対応
+      options:
+        - label: 機能追加
+        - label: 不具合・障害対応
+
+  - type: textarea
+    id: raised
+    attributes:
+      label: RAISED - 変更の要請者（またはチーム）
+      description: |
+        ## RAISED（要請）
+
+        - 要請したのが本人の場合は `申請者本人` と記載してください。
+        - 変更の依頼元が本人以外の場合は記載してください。
+
+        ### example
+
+        - 申請者本人
+        - 架橋太郎さん（本人以外の場合）
+        - xxx チーム（チームの名前等）
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: reason
+    attributes:
+      label: 変更する理由
+      description: |
+        ## REASON（理由）
+
+        - 変更する理由を記載してください。
+
+        ### example
+
+        - xxx の機能追加を行うため。
+        - xxx の x.x.x のリリースを行うため。
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: return
+    attributes:
+      label: 変更をすることによって得られること
+      description: |
+        ## RETURN（得られること）
+
+        案件の対応、課題の解決、障害の対応、リファクタリング等、その理由を記載してください。
+
+        ### example
+
+        - xxx の課題が解決する。
+        - xxx の障害が解消される。
+        - xxx のパフォーマンスが向上する。
+        - xxx の予定していた機能開発を行いユーザーに価値を提供する。
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: risk
+    attributes:
+      label: 変更することによるリスク
+      description: |
+        ## RISK（危険性・不確実性）
+
+        ### example
+
+        - xxx について影響範囲の有無の確認ができない。
+        - 今後のユーザーの増加による負荷を考慮し、監視の設定は追加が必要かもしれない。
+        - 同一の問題が他のリポジトリにもある。
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: resource
+    attributes:
+      label: 変更を実施するときに必要になるリソース
+      description: |
+        ## RESOURCE（リソース）
+
+        ### example
+
+        - xxx のデータベースにテーブルを追加
+        - xxx に環境変数を追加
+        - xx へ通知を追加
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: responsible
+    attributes:
+      label: この変更における責任者
+      description: |
+        ## RESPONSIBLE（責任者）
+
+        ### example
+
+        - 作業担当者本人
+        - 依頼元
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: relationship
+    attributes:
+      label: 他の変更との関係
+      description: |
+        ## RELATIONSHIP（関係）
+
+        ### example
+
+        - xxx のリリースの前に実施する必要がある。
+      render: markdown
+    validations:
+      required: true

@@ -1,8 +1,15 @@
 {
-  "cSpell.words": [
-    "Brewfile",
-    "mergify",
-    "usecases"
+  "cSpell.enabledLanguageIds": [
+    "git-commit",
+    "html",
+    "javascript",
+    "json",
+    "markdown",
+    "plaintext",
+    "python",
+    "text",
+    "yaml",
+    "yml"
   ],
   "makefile.extensionOutputFolder": "./.vscode"
 }
