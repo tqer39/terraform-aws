@@ -2,7 +2,7 @@
 
 Private で使用している Terraform で構成可能なリソースをまとめる。
 
-![pre-commit](https://github.com/github/docs/actions/workflows/pre-commit.yml/badge.svg)
+![pre-commit](https://github.com/tqer39/private-lab/actions/workflows/pre-commit.yml/badge.svg)
 
 ## Setup
 
