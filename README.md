@@ -2,6 +2,8 @@
 
 Private で使用している Terraform で構成可能なリソースをまとめる。
 
+![pre-commit](https://github.com/github/docs/actions/workflows/pre-commit.yml/badge.svg)
+
 ## Setup
 
 ### Homebrew
