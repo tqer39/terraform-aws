@@ -1,4 +1,14 @@
 {
+  "[terraform-vars]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file"
+  },
+  "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file"
+  },
   "cSpell.enabledLanguageIds": [
     "git-commit",
     "html",
@@ -10,6 +20,5 @@
     "text",
     "yaml",
     "yml"
-  ],
-  "makefile.extensionOutputFolder": "./.vscode"
+  ]
 }
