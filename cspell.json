@@ -37,6 +37,7 @@
     "hediet",
     "drawio",
     "mergify",
-    "Brewfile"
+    "Brewfile",
+    "controltower"
   ]
 }
