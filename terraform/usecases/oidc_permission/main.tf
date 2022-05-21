@@ -45,6 +45,7 @@ resource "aws_iam_policy" "github-actions" {
             "sqs:*",
             "ssm:*",
             "states:*",
+            "organizations:*",
             "route53:*",
           ]
           Effect   = "Allow"
