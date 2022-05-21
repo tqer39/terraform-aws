@@ -2,7 +2,13 @@
 
 Private で使用している Terraform で構成可能なリソースをまとめる。
 
-![pre-commit](https://github.com/tqer39/private-lab/actions/workflows/pre-commit.yml/badge.svg) ![Terraform - sandbox](https://github.com/github/docs/actions/workflows/terraform-sandbox.yml/badge.svg) ![Terraform - dev](https://github.com/github/docs/actions/workflows/terraform-dev.yml/badge.svg)
+## GitHub Actions Status badges
+
+| Environment Name | Result |
+| :--- | :--- |
+| pre-commit | ![pre-commit](https://github.com/tqer39/private-lab/actions/workflows/pre-commit.yml/badge.svg) |
+| Sandbox | ![Terraform - sandbox](https://github.com/github/docs/actions/workflows/terraform-aws-sandbox.yml/badge.svg) |
+| Development | ![Terraform - dev](https://github.com/github/docs/actions/workflows/terraform-aws-dev.yml/badge.svg) |
 
 ## Setup
 
