@@ -47,6 +47,8 @@ jobs:
         include:
           - name: base
             directory: base
+          - name: multi_account
+            directory: multi_account
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
