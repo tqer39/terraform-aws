@@ -6,22 +6,22 @@ on:
     branches:
       - main
     paths:
-      - ".github/workflows/terraform-aws-management.yml"
       - ".github/actions/**/action.yml"
+      - ".github/workflows/terraform-aws-management.yml"
+      - ".terraform-version"
       - "terraform/environments/management/**"
       - "terraform/modules/**"
       - "terraform/usecases/**"
-      - ".terraform-version"
   push:
     branches:
       - main
     paths:
-      - ".github/workflows/terraform-aws-management.yml"
       - ".github/actions/**/action.yml"
+      - ".github/workflows/terraform-aws-management.yml"
+      - ".terraform-version"
       - "terraform/environments/management/**"
       - "terraform/modules/**"
       - "terraform/usecases/**"
-      - ".terraform-version"
   workflow_dispatch:
 
 permissions:
