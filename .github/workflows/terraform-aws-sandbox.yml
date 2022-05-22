@@ -45,8 +45,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: base
-            directory: base
+          - name: base_apne1
+            directory: base_apne1
           - name: test-statement
             directory: test-statement
     steps:

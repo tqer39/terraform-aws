@@ -1,11 +1,14 @@
 locals {
   aws_account_id = "577523824419"
-  aws_region     = "ap-northeast-1"
   env_name       = "management"
   organization   = "tqer39"
   platform       = "aws"
-  repository     = "private-lab"
   prefix         = "pl"
+  region = {
+    apne1 = "ap-northeast-1"
+    use1  = "us-east-1"
+  }
+  repository = "private-lab"
 }
 
 locals {
@@ -17,5 +20,8 @@ locals {
     "${local.prefix}:repository"  = "${local.organization}/${local.repository}"
   }
 
-  tfstate_bucket_name = "terraform-tfstate-${local.organization}-${local.aws_account_id}-${local.aws_region}"
+  tfstate_bucket_name = {
+    apne1 = "terraform-tfstate-${local.organization}-${local.aws_account_id}-${local.region.apne1}"
+    use1  = "terraform-tfstate-${local.organization}-${local.aws_account_id}-${local.region.use1}"
+  }
 }
