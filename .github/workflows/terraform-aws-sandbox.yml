@@ -45,9 +45,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: base
-            directory: base
-          - name: test-statement
+          - name: 基本設定。東京リージョン（ap-northeast-1）用
+            directory: base_apne1
+          - name: 検証用構文
             directory: test-statement
     steps:
       - name: Checkout source code

@@ -45,9 +45,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: base
-            directory: base
-          - name: multi_account
+          - name: 基本設定。東京リージョン（ap-northeast-1）用
+            directory: base_apne1
+          - name: Organiztions によるマルチアカウント運用
             directory: multi_account
     steps:
       - name: Checkout source code

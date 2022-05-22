@@ -15,6 +15,6 @@ module "terraform-backend" {
   source = "../../../usecases/base/s3"
 
   aws_account_id = local.aws_account_id
-  aws_region     = local.aws_region
+  aws_region     = local.region.apne1
   organization   = local.organization
 }

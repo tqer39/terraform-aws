@@ -1,5 +1,5 @@
 provider "aws" {
-  region = local.aws_region
+  region = local.region.apne1
 
   default_tags {
     tags = merge(local.common_tags, {

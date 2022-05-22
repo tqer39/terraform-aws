@@ -9,9 +9,9 @@ terraform {
   }
 
   backend "s3" {
-    bucket  = "terraform-tfstate-tqer39-577523824419-ap-northeast-1"
+    bucket  = "terraform-tfstate-tqer39-107662415716-ap-northeast-1"
     encrypt = true
-    key     = "private-lab/terraform/environments/management/management-base.tfstate"
+    key     = "private-lab/terraform/environments/sandbox/sandbox-base_apne1.tfstate"
     region  = "ap-northeast-1"
   }
 }
