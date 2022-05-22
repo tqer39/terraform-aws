@@ -7,8 +7,8 @@ Private で使用している Terraform で構成可能なリソースをまと�
 | Environment Name | Result |
 | :--- | :--- |
 | pre-commit | ![pre-commit](https://github.com/tqer39/private-lab/actions/workflows/pre-commit.yml/badge.svg) |
-| Sandbox | ![Terraform - sandbox](https://github.com/github/docs/actions/workflows/terraform-aws-sandbox.yml/badge.svg) |
-| Development | ![Terraform - dev](https://github.com/github/docs/actions/workflows/terraform-aws-dev.yml/badge.svg) |
+| Sandbox | ![Terraform - sandbox](https://github.com/tqer39/private-lab/actions/workflows/terraform-aws-sandbox.yml/badge.svg) |
+| Development | ![Terraform - dev](https://github.com/tqer39/private-lab/actions/workflows/terraform-aws-dev.yml/badge.svg) |
 
 ## Setup
 
