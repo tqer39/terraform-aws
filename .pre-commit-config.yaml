@@ -32,7 +32,7 @@ repos:
       - id: yamllint
 
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v5.9.1
+    rev: v5.10.0
     hooks:
       - id: cspell
 
