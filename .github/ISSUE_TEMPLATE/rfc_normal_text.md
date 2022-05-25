@@ -1,5 +1,5 @@
 ---
-name: RFC 通常の変更
+name: RFC 通常の変更 (plain text)
 about: RFC（Request for Change） - 通常の変更モデルとは、『標準的の変更』のようにプロセス化されておらず『緊急の変更』のように緊急性がないものを指します。
 labels: RFC
 
@@ -14,8 +14,6 @@ RFC（Request for Change） - 通常の変更モデルとは、『標準的の�
 <!--
 see: .github/auto_assign.yml
 -->
-
-> @go-nambu @hokuto @hy-inoue @kkhs-t-uchida @naru-ota @rumomac @tqer39
 
 ## ✅ 変更の種別
 
