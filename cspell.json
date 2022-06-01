@@ -41,6 +41,7 @@
     "tflint",
     "tfstate",
     "tqer",
-    "usecases"
+    "usecases",
+    "envsubst"
   ]
 }
