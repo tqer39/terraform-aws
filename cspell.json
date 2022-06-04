@@ -42,6 +42,7 @@
     "tfstate",
     "tqer",
     "usecases",
-    "envsubst"
+    "envsubst",
+    "unversioned"
   ]
 }
