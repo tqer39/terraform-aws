@@ -10,16 +10,11 @@ inputs:
   working-directory:
     description: Terraform CLI 実行時のパス
     required: true
-outputs:
-  terraform-validate-outcome:
-    description: terraform validate の処理結果
-    value: ${{ steps.terraform-validate.outcome }}
 
 runs:
   using: composite
   steps:
     - name: Terraform Validate
-      id: terraform-validate
       run: terraform validate -no-color
       working-directory: ${{ inputs.working-directory }}
       shell: bash

@@ -12,7 +12,6 @@ runs:
   using: composite
   steps:
     - name: Terraform Apply
-      id: terraform-apply
       run: terraform apply -auto-approve
       working-directory: ${{ inputs.working-directory }}
       shell: bash
