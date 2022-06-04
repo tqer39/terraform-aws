@@ -40,6 +40,8 @@
     "tfcmt",
     "tflint",
     "tfstate",
+    "datasources",
+    "kubernetes",
     "tqer",
     "usecases",
     "envsubst"
