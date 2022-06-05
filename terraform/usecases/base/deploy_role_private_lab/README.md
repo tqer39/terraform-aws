@@ -1,18 +1,18 @@
 # これは何？
 
 - GitHub Actions から AWS へアクセスするときに使用する OIDC 認証の ID Provider にアクセスする IAM ロールを作成します。
-- [musubi-backend-infra](https://github.com/kkhs/musubi-infra) 用です。
+- [private-lab](https://github.com/tqer39/private-lab) 用です。
 
 ## 使い方
 
 ```hcl
 module "deploy-role" {
-  source = "../../../usecases/base/deploy_role_musubi_backend_infra"
+  source = "../../../usecases/base/deploy_role_private_lab"
 
   aws_account_id = AWS アカウント ID
   env_name       = 環境名
-  organization   = kkhs
-  repository     = musubi-backend-infra
+  organization   = tqer39
+  repository     = private-lab
 }
 ```
 
@@ -38,16 +38,16 @@ module "deploy-role" {
 
 ```bash
 # example
-aws_account_id=496068644992
-env_name=dev
-repository=musubi-backend-infra
+aws_account_id=577523824419
+env_name=management
+repository=private-lab
 tf_cd=./terraform/environments/dev/base_apne1
 terraform -chdir="${tf_cd}" import module.deploy-role.module.iam-role.aws_iam_role.this \
-  "iamrole-${env_name}-${repository}-deploy"
+  "${env_name}-${repository}-deploy"
 terraform -chdir="${tf_cd}" import module.deploy-role.module.iam-policy.aws_iam_policy.this \
-  "arn:aws:iam::${aws_account_id}:policy/iampolicy-${env_name}-${repository}-deploy"
+  "arn:aws:iam::${aws_account_id}:policy/${env_name}-${repository}-deploy"
 terraform -chdir="${tf_cd}" import module.deploy-role.aws_iam_role_policy_attachment.this \
-  "iamrole-${env_name}-${repository}-deploy/arn:aws:iam::${aws_account_id}:policy/iampolicy-${env_name}-${repository}-deploy"
+  "iamrole-${env_name}-${repository}-deploy/arn:aws:iam::${aws_account_id}:policy/${env_name}-${repository}-deploy"
 ```
 
 #### ポリシー作成時の注意点
