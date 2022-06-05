@@ -47,7 +47,7 @@ terraform -chdir="${tf_cd}" import module.deploy-role.module.iam-role.aws_iam_ro
 terraform -chdir="${tf_cd}" import module.deploy-role.module.iam-policy.aws_iam_policy.this \
   "arn:aws:iam::${aws_account_id}:policy/${env_name}-${repository}-deploy"
 terraform -chdir="${tf_cd}" import module.deploy-role.aws_iam_role_policy_attachment.this \
-  "iamrole-${env_name}-${repository}-deploy/arn:aws:iam::${aws_account_id}:policy/${env_name}-${repository}-deploy"
+  "${env_name}-${repository}-deploy/arn:aws:iam::${aws_account_id}:policy/${env_name}-${repository}-deploy"
 ```
 
 #### ポリシー作成時の注意点
