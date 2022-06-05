@@ -51,6 +51,7 @@
     "tfstate",
     "tqer",
     "unversioned",
-    "usecases"
+    "usecases",
+    "keyrings"
   ]
 }
