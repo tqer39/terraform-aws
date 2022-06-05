@@ -10,3 +10,8 @@ brew "cask"
 brew "git"
 brew "pre-commit"
 brew "yamllint"
+
+# Cask
+cask "aws-vault"
+cask "rancher"
+cask "session-manager-plugin"
