@@ -40,23 +40,45 @@ git clone https://github.com/znz/anyenv-update.git "$(anyenv root)/plugins/anyen
 ```bash
 anyenv init - fish | source
 anyenv install --init
+set -Ux fish_user_paths $HOME/.anyenv/bin $fish_user_paths
 echo 'set -x PATH ~/.anyenv/bin $PATH' >> ~/.config/fish/config.fish
+echo 'eval (anyenv init - | source)' >> ~/.config/fish/config.fish
 exec fish -l
 mkdir -p (anyenv root)/plugins
 git clone https://github.com/znz/anyenv-update.git (anyenv root)/plugins/anyenv-update
+which anyenv
 ```
 
 ### tfenv
 
 ```bash
 anyenv install tfenv
+which tfenv
 ```
 
 ### Terraform
 
 ```bash
 tfenv install
+which terraform
+terraform install
+terraform -version
 ```
+
+### Rancher Desktop
+
+#### Linux
+
+see [Rancher Desktop - Linux](https://docs.rancherdesktop.io/getting-started/installation/#linux)
+
+```bash
+curl -s https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/Release.key | gpg --dearmor | sudo dd status=none of=/usr/share/keyrings/isv-rancher-stable-archive-keyring.gpg
+echo 'deb [signed-by=/usr/share/keyrings/isv-rancher-stable-archive-keyring.gpg] https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/ ./' | sudo dd status=none of=/etc/apt/sources.list.d/isv-rancher-stable.list
+sudo apt update
+sudo apt install rancher-desktop
+```
+
+os reboot.
 
 ### Session Manager Plugin
 
@@ -75,6 +97,72 @@ rm -rf session-manager-plugin.deb
 ```bash
 # setup
 pre-commit install --install-hooks
+```
+
+### ローカルから Terraform CLI を実行する方法
+
+#### AWS Profile の設定
+
+これは Makefile の aws-vault で使用されます。
+下記の内容を `~/.aws/config` に設定します。
+
+```bash
+[profile private-lab-management]
+sso_start_url = https://tqer39-management.awsapps.com/start/
+sso_region = ap-northeast-1
+sso_account_id = 577523824419
+sso_role_name = <AWS SSO Role Name>
+region = ap-northeast-1
+output = json
+```
+
+#### terraform init（初期化）
+
+- `terraform -chdir=${パス} init` に相当する処理です。
+- オプションで `SSH_KEY` が指定可能です。（デフォルトは `${HOME}/.ssh/id_rsa`）
+  - 明示的に指定する場合は `SSH_KEY=~/.ssh/id_ed25519` などを指定してください。
+  - 環境名は `dev`, `stg`, `prod` のいずれかを指定可能です。
+
+```bash
+make build ENV={環境名} TF_PATH={パスを指定}
+```
+
+Example:
+
+```bash
+make build ENV=management TF_PATH=base_apne1 CMD="-reconfigure"
+# 下記に相当します
+# aws-vault exec private-lab-management -- docker-compose run --rm \
+#  -e AWS_ACCESS_KEY_ID \
+#  -e AWS_SECRET_ACCESS_KEY \
+#  -e AWS_SESSION_TOKENterraform \
+#  -chdir=./terraform/environments/management/base_apne1 init -reconfigure
+```
+
+#### terraform validate
+
+Example:
+
+```bash
+make terraform ENV=management TF_PATH=base_apne1 CMD="validate"
+```
+
+#### terraform plan
+
+Example:
+
+```bash
+make terraform ENV=management TF_PATH=base_apne1 CMD="plan"
+```
+
+#### terraform apply
+
+**※ローカルからのデプロイは原則禁止です。**
+
+Example:
+
+```bash
+make terraform ENV=management TF_PATH=base_apne1 CMD="apply -auto-approve"
 ```
 
 ## 新しい環境の作成方法

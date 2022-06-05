@@ -20,6 +20,7 @@
     "chdir",
     "controltower",
     "datasources",
+    "dearmor",
     "dpkg",
     "drawio",
     "envsubst",
@@ -50,6 +51,7 @@
     "tfstate",
     "tqer",
     "unversioned",
-    "usecases"
+    "usecases",
+    "keyrings"
   ]
 }

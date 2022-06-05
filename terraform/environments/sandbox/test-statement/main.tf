@@ -6,9 +6,8 @@ locals {
   ]
 }
 
-module "iam_users" {
-  source = "../../../modules/iam_user/test_user"
+module "create-users" {
+  source = "../../../usecases/create_users"
 
-  for_each  = { for i in local.users : i.name => i }
-  user_name = each.value.name
+  users = local.users
 }
