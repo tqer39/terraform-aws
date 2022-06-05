@@ -53,6 +53,7 @@ which anyenv
 
 ```bash
 anyenv install tfenv
+which tfenv
 ```
 
 ### Terraform
