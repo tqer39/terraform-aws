@@ -20,6 +20,7 @@
     "chdir",
     "controltower",
     "datasources",
+    "dearmor",
     "dpkg",
     "drawio",
     "envsubst",

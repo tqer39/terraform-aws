@@ -65,6 +65,21 @@ terraform install
 terraform -version
 ```
 
+### Rancher Desktop
+
+#### Linux
+
+see [Rnacher Desktop - Linux](https://docs.rancherdesktop.io/getting-started/installation/#linux)
+
+```bash
+curl -s https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/Release.key | gpg --dearmor | sudo dd status=none of=/usr/share/keyrings/isv-rancher-stable-archive-keyring.gpg
+echo 'deb [signed-by=/usr/share/keyrings/isv-rancher-stable-archive-keyring.gpg] https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/ ./' | sudo dd status=none of=/etc/apt/sources.list.d/isv-rancher-stable.list
+sudo apt update
+sudo apt install rancher-desktop
+```
+
+os reboot.
+
 ### Session Manager Plugin
 
 see: [(オプション) AWS CLI 用の Session Manager プラグインをインストールする](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
