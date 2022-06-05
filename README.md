@@ -22,6 +22,54 @@ Private で使用している Terraform で構成可能なリソースをまと�
 brew bundle
 ```
 
+### anyenv
+
+#### zsh
+
+```bash
+anyenv init
+anyenv install --init
+echo 'eval "$(anyenv init -)"' >> ~/.zshrc
+exec $SHELL -l
+mkdir -p "$(anyenv root)/plugins"
+git clone https://github.com/znz/anyenv-update.git "$(anyenv root)/plugins/anyenv-update"
+```
+
+#### fish
+
+```bash
+anyenv init - fish | source
+anyenv install --init
+echo 'set -x PATH ~/.anyenv/bin $PATH' >> ~/.config/fish/config.fish
+exec fish -l
+mkdir -p (anyenv root)/plugins
+git clone https://github.com/znz/anyenv-update.git (anyenv root)/plugins/anyenv-update
+```
+
+### tfenv
+
+```bash
+anyenv install tfenv
+```
+
+### Terraform
+
+```bash
+tfenv install
+```
+
+### Session Manager Plugin
+
+see: [(オプション) AWS CLI 用の Session Manager プラグインをインストールする](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
+
+#### Linux (Debian | amd64)
+
+```bash
+curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+sudo dpkg -i session-manager-plugin.deb
+rm -rf session-manager-plugin.deb
+```
+
 ### pre-commit
 
 ```bash
@@ -56,17 +104,19 @@ terraform -chdir=terraform/environments/<環境名>/base init
 手動で作成した s3 バケットを import。
 
 ```zsh
-terraform -chdir=./terraform/environments/<環境名>/base import module.terraform-backend.module.s3-bucket.aws_s3_bucket.this <バケット名>
-terraform -chdir=./terraform/environments/<環境名>/base import module.terraform-backend.module.s3-bucket.aws_s3_bucket_acl.this <バケット名>
-terraform -chdir=./terraform/environments/<環境名>/base import module.terraform-backend.module.s3-bucket.aws_s3_bucket_public_access_block.this <バケット名>
-terraform -chdir=./terraform/environments/<環境名>/base import module.terraform-backend.module.s3-bucket.aws_s3_bucket_versioning.this <バケット名>
+$TF_PATH="terraform/environments/<環境名>/base"
+terraform -chdir="$TF_PATH" import module.terraform-backend.module.s3-bucket.aws_s3_bucket.this <バケット名>
+terraform -chdir="$TF_PATH" import module.terraform-backend.module.s3-bucket.aws_s3_bucket_acl.this <バケット名>
+terraform -chdir="$TF_PATH" import module.terraform-backend.module.s3-bucket.aws_s3_bucket_public_access_block.this <バケット名>
+terraform -chdir="$TF_PATH" import module.terraform-backend.module.s3-bucket.aws_s3_bucket_versioning.this <バケット名>
 ```
 
 OIDC 関連のリソースの新規作成と s3 バケットのパラメータ更新を行います。
 
 ```zsh
-terraform -chdir=terraform/environments/<環境名>/base fmt
-terraform -chdir=terraform/environments/<環境名>/base validate
-terraform -chdir=terraform/environments/<環境名>/base plan
-terraform -chdir=terraform/environments/<環境名>/base apply -auto-approve
+$TF_PATH="terraform/environments/<環境名>/base"
+terraform -chdir="$TF_PATH" fmt
+terraform -chdir="$TF_PATH" validate
+terraform -chdir="$TF_PATH" plan
+terraform -chdir="$TF_PATH" apply -auto-approve
 ```
