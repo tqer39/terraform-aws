@@ -52,6 +52,12 @@ git clone https://github.com/znz/anyenv-update.git (anyenv root)/plugins/anyenv-
 anyenv install tfenv
 ```
 
+### Terraform
+
+```bash
+tfenv install
+```
+
 ### pre-commit
 
 ```bash
