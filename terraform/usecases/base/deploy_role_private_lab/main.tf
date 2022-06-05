@@ -78,7 +78,6 @@ module "iam-policy" {
         {
           Sid = "DenySpecifics"
           Action = [
-            "iam:*User*",
             "iam:*Login*",
             "iam:*Group*",
             "aws-portal:*",
