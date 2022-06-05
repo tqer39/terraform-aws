@@ -60,6 +60,9 @@ which tfenv
 
 ```bash
 tfenv install
+which terraform
+terraform install
+terraform -version
 ```
 
 ### Session Manager Plugin
