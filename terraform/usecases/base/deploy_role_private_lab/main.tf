@@ -2,7 +2,7 @@ module "iam-role" {
   source = "../../../modules/iam/role"
 
   aws_iam_role = {
-    name = "iamrole-${var.env_name}-${var.repository}-deploy"
+    name = "${var.env_name}-${var.repository}-deploy"
     assume_role_policy = jsonencode({
       Version = "2012-10-17"
       Statement = [
@@ -35,7 +35,7 @@ module "iam-policy" {
   source = "../../../modules/iam/policy"
 
   aws_iam_policy = {
-    name = "iampolicy-${var.env_name}-${var.repository}-deploy"
+    name = "${var.env_name}-${var.repository}-deploy"
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [
