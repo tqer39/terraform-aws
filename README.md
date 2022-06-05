@@ -22,6 +22,26 @@ Private で使用している Terraform で構成可能なリソースをまと�
 brew bundle
 ```
 
+### anyenv
+
+#### zsh
+
+```bash
+anyenv init
+anyenv install --init
+echo 'eval "$(anyenv init -)"' >> ~/.zshrc
+exec $SHELL -l
+```
+
+#### fish
+
+```bash
+anyenv init
+anyenv install --init
+status --is-interactive; and source (anyenv init -|psub)
+anyenv install -l
+```
+
 ### pre-commit
 
 ```bash

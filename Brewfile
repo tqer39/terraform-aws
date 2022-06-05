@@ -5,6 +5,7 @@ tap "homebrew/cask"
 tap "homebrew/core"
 
 # Development Tools
+brew "anyenv"
 brew "cask"
 brew "git"
 brew "pre-commit"
