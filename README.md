@@ -42,6 +42,12 @@ status --is-interactive; and source (anyenv init -|psub)
 anyenv install -l
 ```
 
+### tfenv
+
+```bash
+anyenv install tfenv
+```
+
 ### pre-commit
 
 ```bash
