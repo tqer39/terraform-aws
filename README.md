@@ -84,6 +84,72 @@ rm -rf session-manager-plugin.deb
 pre-commit install --install-hooks
 ```
 
+### ローカルから Terraform CLI を実行する方法
+
+#### AWS Profile の設定
+
+これは Makefile の aws-vault で使用されます。
+下記の内容を `~/.aws/config` に設定します。
+
+```bash
+[profile private-lab-management]
+sso_start_url = https://tqer39-management.awsapps.com/start/
+sso_region = ap-northeast-1
+sso_account_id = 577523824419
+sso_role_name = <AWS SSO Role Name>
+region = ap-northeast-1
+output = json
+```
+
+#### terraform init（初期化）
+
+- `terraform -chdir=${パス} init` に相当する処理です。
+- オプションで `SSH_KEY` が指定可能です。（デフォルトは `${HOME}/.ssh/id_rsa`）
+  - 明示的に指定する場合は `SSH_KEY=~/.ssh/id_ed25519` などを指定してください。
+  - 環境名は `dev`, `stg`, `prod` のいずれかを指定可能です。
+
+```bash
+make build ENV={環境名} TF_PATH={パスを指定}
+```
+
+Example:
+
+```bash
+make build ENV=management TF_PATH=base_apne1 CMD="-reconfigure"
+# 下記に相当します
+# aws-vault exec private-lab-management -- docker-compose run --rm \
+#  -e AWS_ACCESS_KEY_ID \
+#  -e AWS_SECRET_ACCESS_KEY \
+#  -e AWS_SESSION_TOKENterraform \
+#  -chdir=./terraform/environments/management/base_apne1 init -reconfigure
+```
+
+#### terraform validate
+
+Example:
+
+```bash
+make terraform ENV=management TF_PATH=base_apne1 CMD="validate"
+```
+
+#### terraform plan
+
+Example:
+
+```bash
+make terraform ENV=management TF_PATH=base_apne1 CMD="plan"
+```
+
+#### terraform apply
+
+**※ローカルからのデプロイは原則禁止です。**
+
+Example:
+
+```bash
+make terraform ENV=management TF_PATH=base_apne1 CMD="apply -auto-approve"
+```
+
 ## 新しい環境の作成方法
 
 手動で s3 バケットを作成。
