@@ -1,5 +1,11 @@
+module "tfstate-s3-bucket" {
+  source = "../../../usecases/base/terraform_tfstate_backend"
+
+  bucket_name = local.tfstate_bucket_name.apne1
+}
+
 module "deploy-role" {
-  source = "../../../usecases/oidc_permission"
+  source = "../../../usecases/base/deploy_role_private_lab"
 
   aws_account_id = local.aws_account_id
   env_name       = local.env_name
@@ -7,14 +13,6 @@ module "deploy-role" {
   repository     = local.repository
 }
 
-module "oidc-github-actions" {
+module "oidc-github-actions-id-provider" {
   source = "../../../usecases/base/id_provider"
-}
-
-module "terraform-backend" {
-  source = "../../../usecases/base/s3"
-
-  aws_account_id = local.aws_account_id
-  aws_region     = local.region.apne1
-  organization   = local.organization
 }
