@@ -31,15 +31,19 @@ anyenv init
 anyenv install --init
 echo 'eval "$(anyenv init -)"' >> ~/.zshrc
 exec $SHELL -l
+mkdir -p "$(anyenv root)/plugins"
+git clone https://github.com/znz/anyenv-update.git "$(anyenv root)/plugins/anyenv-update"
 ```
 
 #### fish
 
 ```bash
-anyenv init
+anyenv init - fish | source
 anyenv install --init
-status --is-interactive; and source (anyenv init -|psub)
-anyenv install -l
+echo 'set -x PATH ~/.anyenv/bin $PATH' >> ~/.config/fish/config.fish
+exec fish -l
+mkdir -p (anyenv root)/plugins
+git clone https://github.com/znz/anyenv-update.git (anyenv root)/plugins/anyenv-update
 ```
 
 ### tfenv

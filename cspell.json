@@ -48,6 +48,7 @@
     "tfstate",
     "tqer",
     "unversioned",
-    "usecases"
+    "usecases",
+    "mkdir"
   ]
 }
