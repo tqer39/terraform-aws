@@ -69,7 +69,7 @@ terraform -version
 
 #### Linux
 
-see [Rnacher Desktop - Linux](https://docs.rancherdesktop.io/getting-started/installation/#linux)
+see [Rancher Desktop - Linux](https://docs.rancherdesktop.io/getting-started/installation/#linux)
 
 ```bash
 curl -s https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/Release.key | gpg --dearmor | sudo dd status=none of=/usr/share/keyrings/isv-rancher-stable-archive-keyring.gpg
