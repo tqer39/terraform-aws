@@ -20,6 +20,7 @@
     "chdir",
     "controltower",
     "datasources",
+    "dpkg",
     "drawio",
     "envsubst",
     "fuga",
@@ -35,6 +36,7 @@
     "kubernetes",
     "markdownlint",
     "mergify",
+    "mkdir",
     "moga",
     "oidc",
     "OIDC",
@@ -48,7 +50,6 @@
     "tfstate",
     "tqer",
     "unversioned",
-    "usecases",
-    "mkdir"
+    "usecases"
   ]
 }
