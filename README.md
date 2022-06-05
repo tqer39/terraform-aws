@@ -92,17 +92,19 @@ terraform -chdir=terraform/environments/<環境名>/base init
 手動で作成した s3 バケットを import。
 
 ```zsh
-terraform -chdir=./terraform/environments/<環境名>/base import module.terraform-backend.module.s3-bucket.aws_s3_bucket.this <バケット名>
-terraform -chdir=./terraform/environments/<環境名>/base import module.terraform-backend.module.s3-bucket.aws_s3_bucket_acl.this <バケット名>
-terraform -chdir=./terraform/environments/<環境名>/base import module.terraform-backend.module.s3-bucket.aws_s3_bucket_public_access_block.this <バケット名>
-terraform -chdir=./terraform/environments/<環境名>/base import module.terraform-backend.module.s3-bucket.aws_s3_bucket_versioning.this <バケット名>
+$TF_PATH="terraform/environments/<環境名>/base"
+terraform -chdir="$TF_PATH" import module.terraform-backend.module.s3-bucket.aws_s3_bucket.this <バケット名>
+terraform -chdir="$TF_PATH" import module.terraform-backend.module.s3-bucket.aws_s3_bucket_acl.this <バケット名>
+terraform -chdir="$TF_PATH" import module.terraform-backend.module.s3-bucket.aws_s3_bucket_public_access_block.this <バケット名>
+terraform -chdir="$TF_PATH" import module.terraform-backend.module.s3-bucket.aws_s3_bucket_versioning.this <バケット名>
 ```
 
 OIDC 関連のリソースの新規作成と s3 バケットのパラメータ更新を行います。
 
 ```zsh
-terraform -chdir=terraform/environments/<環境名>/base fmt
-terraform -chdir=terraform/environments/<環境名>/base validate
-terraform -chdir=terraform/environments/<環境名>/base plan
-terraform -chdir=terraform/environments/<環境名>/base apply -auto-approve
+$TF_PATH="terraform/environments/<環境名>/base"
+terraform -chdir="$TF_PATH" fmt
+terraform -chdir="$TF_PATH" validate
+terraform -chdir="$TF_PATH" plan
+terraform -chdir="$TF_PATH" apply -auto-approve
 ```
