@@ -70,7 +70,8 @@ module "iam-policy" {
             "firehose:*",
             "elasticbeanstalk:*",
             "cloudformation:*",
-            "acm:*"
+            "acm:*",
+            "organizations:*"
           ]
           Effect   = "Allow"
           Resource = "*"
