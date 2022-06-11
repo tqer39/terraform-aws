@@ -53,6 +53,7 @@
     "unversioned",
     "usecases",
     "keyrings",
-    "codestarconnections"
+    "codestarconnections",
+    "codestarnotifications"
   ]
 }
