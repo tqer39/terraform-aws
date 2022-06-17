@@ -15,7 +15,7 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: Setup Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
 
       - name: pre-commit
         uses: pre-commit/action@v3.0.0
