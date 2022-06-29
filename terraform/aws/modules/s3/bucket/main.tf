@@ -2,6 +2,7 @@ resource "aws_s3_bucket" "this" {
   bucket              = lookup(var.aws_s3_bucket, "bucket", "")
   force_destroy       = lookup(var.aws_s3_bucket, "force_destroy", false)
   object_lock_enabled = lookup(var.aws_s3_bucket, "object_lock_enabled", false)
+  tags                = lookup(var.aws_s3_bucket, "tags", {})
 }
 
 resource "aws_s3_bucket_acl" "this" {
@@ -51,6 +52,58 @@ resource "aws_s3_bucket_cors_configuration" "this" {
       expose_headers  = lookup(cors_rule.value, "expose_headers", null)
       id              = lookup(cors_rule.value, "id", null)
       max_age_seconds = lookup(cors_rule.value, "max_age_seconds", null)
+    }
+  }
+}
+
+resource "aws_s3_bucket_inventory" "this" {
+  count                    = var.aws_s3_bucket_inventory == null ? 0 : 1
+  bucket                   = aws_s3_bucket.this.id
+  name                     = lookup(var.aws_s3_bucket_inventory, "name", null)
+  enabled                  = lookup(var.aws_s3_bucket_inventory, "enabled", null)
+  included_object_versions = lookup(var.aws_s3_bucket_inventory, "included_object_versions", null)
+  optional_fields          = lookup(var.aws_s3_bucket_inventory, "optional_fields", null)
+  dynamic "schedule" {
+    for_each = lookup(var.aws_s3_bucket_inventory, "schedule", [])
+    content {
+      frequency = lookup(schedule.value, "frequency", null)
+    }
+  }
+  dynamic "filter" {
+    for_each = lookup(var.aws_s3_bucket_inventory, "filter", [])
+    content {
+      prefix = lookup(filter.value, "prefix", null)
+    }
+  }
+  dynamic "destination" {
+    for_each = lookup(var.aws_s3_bucket_inventory, "destination", [])
+    content {
+      dynamic "bucket" {
+        for_each = lookup(destination.value, "bucket", [])
+        content {
+          account_id = lookup(bucket.value, "account_id", null)
+          bucket_arn = lookup(bucket.value, "bucket_arn", null)
+          format     = lookup(bucket.value, "format", null)
+          prefix     = lookup(bucket.value, "prefix", null)
+          dynamic "encryption" {
+            for_each = lookup(bucket.value, "encryption", [])
+            content {
+
+              dynamic "sse_s3" {
+                for_each = lookup(encryption.value, "sse_s3", [])
+                content {
+                }
+              }
+              dynamic "sse_kms" {
+                for_each = lookup(encryption.value, "sse_kms", [])
+                content {
+                  key_id = lookup(sse_kms.value, "key_id", null)
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -154,6 +207,7 @@ resource "aws_s3_bucket_logging" "this" {
 }
 
 resource "aws_s3_bucket_public_access_block" "this" {
+  count                   = var.aws_s3_bucket_public_access_block == null ? 0 : 1
   bucket                  = aws_s3_bucket.this.id
   block_public_acls       = lookup(var.aws_s3_bucket_public_access_block, "block_public_acls", true)
   block_public_policy     = lookup(var.aws_s3_bucket_public_access_block, "block_public_policy", true)
@@ -311,6 +365,62 @@ resource "aws_s3_bucket_versioning" "this" {
     content {
       status     = lookup(versioning_configuration.value, "status", null)
       mfa_delete = lookup(versioning_configuration.value, "mfa_delete", null)
+    }
+  }
+}
+
+resource "aws_s3_bucket_website_configuration" "this" {
+  count                 = var.aws_s3_bucket_website_configuration == null ? 0 : 1
+  bucket                = aws_s3_bucket.this.id
+  expected_bucket_owner = lookup(var.aws_s3_bucket_website_configuration, "expected_bucket_owner", null)
+  dynamic "index_document" {
+    for_each = lookup(var.aws_s3_bucket_website_configuration, "index_document", [])
+    content {
+      suffix = lookup(index_document.value, "suffix", null)
+    }
+  }
+  dynamic "error_document" {
+    for_each = lookup(var.aws_s3_bucket_website_configuration, "error_document", [])
+    content {
+      key = lookup(error_document.value, "key", null)
+    }
+  }
+  dynamic "routing_rule" {
+    for_each = lookup(var.aws_s3_bucket_website_configuration, "routing_rule", [])
+    content {
+      dynamic "condition" {
+
+        for_each = lookup(routing_rule.value, "condition", )
+        content {
+          key_prefix_equals = lookup(condition.value, "key_prefix_equals", null)
+        }
+      }
+      dynamic "redirect" {
+
+        for_each = lookup(routing_rule.value, "redirect", [])
+        content {
+          replace_key_prefix_with = lookup(redirect.value, "replace_key_prefix_with", null)
+        }
+      }
+    }
+  }
+  dynamic "redirect_all_requests_to" {
+    for_each = lookup(var.aws_s3_bucket_website_configuration, "redirect_all_requests_to", [])
+    content {
+      host_name = lookup(redirect_all_requests_to.value, "host_name", null)
+      protocol  = lookup(redirect_all_requests_to.value, "protocol", null)
+    }
+  }
+}
+
+resource "aws_s3_bucket_ownership_controls" "this" {
+  count  = var.aws_s3_bucket_ownership_controls == null ? 0 : 1
+  bucket = aws_s3_bucket.this.id
+
+  dynamic "rule" {
+    for_each = lookup(var.aws_s3_bucket_ownership_controls, "rule", [])
+    content {
+      object_ownership = lookup(rule.value, "object_ownership", null)
     }
   }
 }
