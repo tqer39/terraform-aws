@@ -2,4 +2,4 @@
 terraform:
   plan:
     when_no_changes:
-      label: "aaa"
+      label: null
