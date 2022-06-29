@@ -2,7 +2,7 @@
 terraform:
   plan:
     when_no_changes:
-      label:
+      label: "no-changes"
+      # label:
       label_color:
-      # label: "no-changes"
       # null, "", label のみ, when_no_changes のみはダメ。

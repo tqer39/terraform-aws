@@ -3,6 +3,7 @@ locals {
     { name = "hoge" },
     { name = "fuga" },
     { name = "moga" },
+    { name = "hhh" },
   ]
 }
 
