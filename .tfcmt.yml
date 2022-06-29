@@ -2,4 +2,5 @@
 terraform:
   plan:
     when_no_changes:
-      label: null
+      label:
+      # null, "" はダメ。
