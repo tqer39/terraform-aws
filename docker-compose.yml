@@ -2,7 +2,7 @@
 version: "3"
 services:
   terraform:
-    image: hashicorp/terraform:1.2.4
+    image: hashicorp/terraform:1.2.5
     container_name: terraform
     hostname: terraform
     volumes:
