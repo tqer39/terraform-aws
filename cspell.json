@@ -49,6 +49,7 @@
     "reviewdog",
     "shellcheck",
     "taichi",
+    "terraformignore",
     "textlint",
     "tfcmt",
     "tfenv",
