@@ -1,6 +1,8 @@
 ---
 # see https://pre-commit.com
 
+exclude: ^package.*.json$
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.3.0
