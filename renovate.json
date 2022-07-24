@@ -20,7 +20,7 @@
   ],
   "prConcurrentLimit": 5,
   "schedule": [
-    "after 7:00 on Monday",
-    "before 8:00 on Monday"
+    "after 4:00 on Saturday",
+    "before 5:00 on Saturday"
   ]
 }
