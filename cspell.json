@@ -18,6 +18,8 @@
     "bobheadxi",
     "Brewfile",
     "chdir",
+    "codestarconnections",
+    "codestarnotifications",
     "controltower",
     "datasources",
     "dearmor",
@@ -34,6 +36,7 @@
     "jsonencode",
     "jwks",
     "kentaro",
+    "keyrings",
     "kubernetes",
     "markdownlint",
     "mergify",
@@ -45,15 +48,13 @@
     "psub",
     "reviewdog",
     "shellcheck",
+    "textlint",
     "tfcmt",
     "tfenv",
     "tflint",
     "tfstate",
     "tqer",
     "unversioned",
-    "usecases",
-    "keyrings",
-    "codestarconnections",
-    "codestarnotifications"
+    "usecases"
   ]
 }
