@@ -1,0 +1,7 @@
+{
+  "filters": {},
+  "rules": {
+    "no-dropping-the-ra": true,
+    "textlint-rule-no-dropping-the-ra": true
+  }
+}
