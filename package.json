@@ -7,7 +7,19 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install",
+    "lint-staged": "lint-staged",
+    "lint:text": "textlint --cache $(git diff main --name-only) -f pretty-error",
+    "lint:text:fix": "textlint --cache $(git diff main --name-only) --fix",
+    "lint:text:full": "textlint --cache README.md \"articles/**/*.md\" -f pretty-error",
+    "lint:text:full:fix": "textlint --cache README.md \"articles/**/*.md\" --fix"
+  },
+  "lint-staged": {
+    "*.md": [
+      "textlint --cache --fix",
+      "textlint --cache"
+    ]
   },
   "repository": {
     "type": "git",
@@ -25,5 +37,9 @@
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-ja-no-space-between-full-width": "^2.2.0",
     "textlint-rule-no-dropping-the-ra": "^3.0.0"
+  },
+  "devDependencies": {
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3"
   }
 }
