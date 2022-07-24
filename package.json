@@ -22,6 +22,7 @@
   "homepage": "https://github.com/tqer39/private-lab#readme",
   "dependencies": {
     "textlint": "^12.2.1",
+    "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-no-dropping-the-ra": "^3.0.0"
   }
 }
