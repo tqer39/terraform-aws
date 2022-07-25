@@ -51,6 +51,7 @@
     "taichi",
     "terraformignore",
     "textlint",
+    "textlintcache",
     "tfcmt",
     "tfenv",
     "tflint",
