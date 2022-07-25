@@ -1,0 +1,29 @@
+{
+  "name": "private-lab",
+  "version": "1.0.0",
+  "description": "Private で使用している Terraform で構成可能なリソースをまとめる。",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tqer39/private-lab.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tqer39/private-lab/issues"
+  },
+  "homepage": "https://github.com/tqer39/private-lab#readme",
+  "dependencies": {
+    "textlint": "^12.2.1",
+    "textlint-filter-rule-comments": "^1.2.2",
+    "textlint-rule-ja-no-space-between-full-width": "^2.2.0",
+    "textlint-rule-no-dropping-the-ra": "^3.0.0"
+  }
+}
