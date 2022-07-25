@@ -4,6 +4,7 @@
 .gitignore
 .mergify.yml
 .pre-commit-config.yaml
+.textlintcache
 .vscode/
 .yamllint.yml
 Brewfile

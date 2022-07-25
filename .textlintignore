@@ -4,6 +4,7 @@
 .gitignore
 .pre-commit-config.yaml
 .terraformignore
+.textlintcache
 .vscode/
 .yamllint.yml
 cspell.json
