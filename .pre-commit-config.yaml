@@ -56,7 +56,7 @@ repos:
         name: textlint
         language: node
         types: [file]
-        files: \.(md)$
+        files: \.(txt|md|mdown|markdown)$
         entry: textlint
         require_serial: false
         additional_dependencies:
