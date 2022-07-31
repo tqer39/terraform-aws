@@ -11,6 +11,7 @@ locals {
     { name = "Management", id = "management", root = true, parent_type = null },
     { name = "Sandbox", id = "sandbox", root = false, parent_type = "Sandbox" },
     { name = "Portfolio - dev", id = "portfolio-dev", root = false, parent_type = "Security" },
+    { name = "Portfolio", id = "portfolio", root = false, parent_type = "Security" },
   ]
 }
 
