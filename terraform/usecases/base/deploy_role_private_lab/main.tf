@@ -42,7 +42,37 @@ module "iam-policy" {
         {
           Sid = "AllowSpecifics"
           Action = [
-            "sso:ListInstances"
+            "lambda:*",
+            "apigateway:*",
+            "ec2:*",
+            "rds:*",
+            "s3:*",
+            "sns:*",
+            "states:*",
+            "ssm:*",
+            "sqs:*",
+            "iam:*",
+            "elasticloadbalancing:*",
+            "autoscaling:*",
+            "cloudwatch:*",
+            "cloudfront:*",
+            "route53:*",
+            "ecr:*",
+            "logs:*",
+            "ecs:*",
+            "application-autoscaling:*",
+            "events:*",
+            "elasticache:*",
+            "es:*",
+            "kms:*",
+            "dynamodb:*",
+            "kinesis:*",
+            "firehose:*",
+            "elasticbeanstalk:*",
+            "cloudformation:*",
+            "acm:*",
+            "organizations:*",
+            "sso:*"
           ]
           Effect   = "Allow"
           Resource = "*"
