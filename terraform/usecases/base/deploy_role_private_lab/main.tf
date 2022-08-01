@@ -72,7 +72,7 @@ module "iam-policy" {
             "cloudformation:*",
             "acm:*",
             "organizations:*",
-            "sso:*"
+            "sso:ListInstances"
           ]
           Effect   = "Allow"
           Resource = "*"
