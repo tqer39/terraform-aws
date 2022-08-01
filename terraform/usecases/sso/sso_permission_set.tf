@@ -4,6 +4,7 @@ resource "aws_ssoadmin_permission_set" "main" {
     "ReadOnlyAccess"
   ])
 
-  name         = each.value
-  instance_arn = tolist(data.aws_ssoadmin_instances.this.arns)[0]
+  name             = each.value
+  instance_arn     = tolist(data.aws_ssoadmin_instances.this.arns)[0]
+  session_duration = "PT12H"
 }
