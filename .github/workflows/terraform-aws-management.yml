@@ -49,6 +49,8 @@ jobs:
             directory: base_apne1
           - name: Organiztions によるマルチアカウント運用
             directory: multi_account
+          - name: SSO
+            directory: single_sign_on
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
