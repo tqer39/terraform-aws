@@ -177,21 +177,21 @@ aws-vault exec "${AWS CLI (SSO) の profile}" -- terraform -chdir="${実行先�
 
 ```bash
 # Example:
-aws-vault exec musubi-dev -- terraform -chdir=./terraform/environments/dev/base_apne1 init
+aws-vault exec private-lab-management -- terraform -chdir=./terraform/environments/dev/base_apne1 init
 ```
 
 #### terraform validate
 
 ```bash
 # Example:
-aws-vault exec musubi-dev -- terraform -chdir=./terraform/environments/dev/base_apne1 validate
+aws-vault exec private-lab-management -- terraform -chdir=./terraform/environments/dev/base_apne1 validate
 ```
 
 #### terraform plan
 
 ```bash
 # Example:
-aws-vault exec musubi-dev -- terraform -chdir=./terraform/environments/dev/base_apne1 plan
+aws-vault exec private-lab-management -- terraform -chdir=./terraform/environments/dev/base_apne1 plan
 ```
 
 #### terraform apply
@@ -200,7 +200,7 @@ aws-vault exec musubi-dev -- terraform -chdir=./terraform/environments/dev/base_
 
 ```bash
 # Example:
-aws-vault exec musubi-dev -- terraform -chdir=./terraform/environments/dev/base_apne1 apply -auto-approve
+aws-vault exec private-lab-management -- terraform -chdir=./terraform/environments/dev/base_apne1 apply -auto-approve
 ```
 
 ## 新しい環境の作成方法
