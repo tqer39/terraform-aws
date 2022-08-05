@@ -134,14 +134,6 @@ rm -rf session-manager-plugin.deb
 pre-commit install --install-hooks
 ```
 
-### npm
-
-```bash
-npm ci
-```
-
-- textlint
-
 ### ローカルから Terraform CLI を実行する方法
 
 #### AWS Profile の設定
