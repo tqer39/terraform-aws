@@ -20,7 +20,6 @@
   ],
   "prConcurrentLimit": 5,
   "schedule": [
-    "after 4:00 on Saturday",
-    "before 5:00 on Saturday"
+    "after 10:00 before 18:00 every weekday except after 12:00 before 13:00"
   ]
 }

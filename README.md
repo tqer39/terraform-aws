@@ -10,6 +10,44 @@ Private で使用している Terraform で構成可能なリソースをまと�
 | AWS 検証環境 | Sandbox | ![Terraform - sandbox](https://github.com/tqer39/private-lab/actions/workflows/terraform-aws-sandbox.yml/badge.svg) |
 | AWS 全体管理 | Management | ![Terraform - management](https://github.com/tqer39/private-lab/actions/workflows/terraform-aws-management.yml/badge.svg) |
 
+## ブランチ設計
+
+```mermaid
+gitGraph
+    commit
+    branch feature/add-environment-dev-backend-proxy
+    commit
+    commit
+    commit
+    checkout main
+    merge feature/add-environment-dev-backend-proxy
+    commit
+    commit
+```
+
+1. GitHub Flow で運用します。
+2. `main` がデフォルトブランチです。
+3. `main` ブランチにマージされると GitHub Actions で `terraform apply` でインフラが更新されます。
+   - **マージのタイミングがデプロイに相当します。**
+
+## module 化しないリソース
+
+| リソース | 理由 |
+| :--- | :--- |
+| [aws_iam_role_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | パラメータが少なすぎて module 化するメリットがない |
+| [aws_route53_record](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | リソースの種類が多く汎用的な module にするコストに見合うメリットがない |
+
+## セキュリティポリシー
+
+### AWS の認証方法
+
+- GitHub Actions から AWS のリソースをデプロイするときの認証方式は OIDC です。
+- Credential は管理面の手間がかかるため採用していません。
+
+## EditorConfig 設定
+
+包括的なコーディング規約として EditorConfig を使用しているため、[公式ページの Download a Plugin](https://editorconfig.org/#download) のエディタ・IDE を使用している場合は、プラグインを追加してください。
+
 ## Setup
 
 ### Homebrew
@@ -99,14 +137,6 @@ rm -rf session-manager-plugin.deb
 pre-commit install --install-hooks
 ```
 
-### npm
-
-```bash
-npm ci
-```
-
-- textlint
-
 ### ローカルから Terraform CLI を実行する方法
 
 #### AWS Profile の設定
@@ -124,53 +154,52 @@ region = ap-northeast-1
 output = json
 ```
 
-#### terraform init（初期化）
-
-- `terraform -chdir=${パス} init` に相当する処理です。
-- オプションで `SSH_KEY` が指定可能です。（デフォルトは `${HOME}/.ssh/id_rsa`）
-  - 明示的に指定する場合は `SSH_KEY=~/.ssh/id_ed25519` などを指定してください。
-  - 環境名は `dev`, `stg`, `prod` のいずれかを指定可能です。
+### Terraform のセットアップ
 
 ```bash
-make build ENV={環境名} TF_PATH={パスを指定}
+tfenv install
+terraform -v
 ```
 
-Example:
+コマンドのフォーマット
+
+- `AWS CLI (SSO) の profile`: 前項で設定した AWS CLI の profile
+- `実行先のパス`: Terraform CLI を実行するパス
+- `Terraform コマンド`: `terraform` に続くコマンド
 
 ```bash
-make build ENV=management TF_PATH=base_apne1 CMD="-reconfigure"
-# 下記に相当します
-# aws-vault exec private-lab-management -- docker-compose run --rm \
-#  -e AWS_ACCESS_KEY_ID \
-#  -e AWS_SECRET_ACCESS_KEY \
-#  -e AWS_SESSION_TOKENterraform \
-#  -chdir=./terraform/environments/management/base_apne1 init -reconfigure
+# Format:
+aws-vault exec "${AWS CLI (SSO) の profile}" -- terraform -chdir="${実行先のパス}" "${Terraform コマンド}"
+```
+
+#### terraform init（初期化）
+
+```bash
+# Example:
+aws-vault exec private-lab-management -- terraform -chdir=./terraform/environments/dev/base_apne1 init
 ```
 
 #### terraform validate
 
-Example:
-
 ```bash
-make terraform ENV=management TF_PATH=base_apne1 CMD="validate"
+# Example:
+aws-vault exec private-lab-management -- terraform -chdir=./terraform/environments/dev/base_apne1 validate
 ```
 
 #### terraform plan
 
-Example:
-
 ```bash
-make terraform ENV=management TF_PATH=base_apne1 CMD="plan"
+# Example:
+aws-vault exec private-lab-management -- terraform -chdir=./terraform/environments/dev/base_apne1 plan
 ```
 
 #### terraform apply
 
 **※ローカルからのデプロイは原則禁止です。**
 
-Example:
-
 ```bash
-make terraform ENV=management TF_PATH=base_apne1 CMD="apply -auto-approve"
+# Example:
+aws-vault exec private-lab-management -- terraform -chdir=./terraform/environments/dev/base_apne1 apply -auto-approve
 ```
 
 ## 新しい環境の作成方法
@@ -179,7 +208,7 @@ make terraform ENV=management TF_PATH=base_apne1 CMD="apply -auto-approve"
 リソースを作成。
 
 ```txt
-.github/workflows/terraform-<環境名>.yml
+.github/workflows/terraform-aws-<環境名>.yml
 .github/labeler.yml
 terraform/environments/<環境名>/base/main.tf
 terraform/environments/<環境名>/base/provider.tf
