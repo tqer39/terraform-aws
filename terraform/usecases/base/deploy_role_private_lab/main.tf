@@ -71,7 +71,9 @@ module "iam-policy" {
             "elasticbeanstalk:*",
             "cloudformation:*",
             "acm:*",
-            "organizations:*"
+            "organizations:*",
+            "sso:*",
+            "identitystore:*"
           ]
           Effect   = "Allow"
           Resource = "*"
