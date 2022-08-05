@@ -30,7 +30,6 @@ gitGraph
 3. `main` ブランチにマージされると GitHub Actions で `terraform apply` でインフラが更新されます。
    - **マージのタイミングがデプロイに相当します。**
 
-
 ## module 化しないリソース
 
 | リソース | 理由 |
