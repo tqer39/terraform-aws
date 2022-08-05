@@ -30,6 +30,13 @@ gitGraph
 3. `main` ブランチにマージされると GitHub Actions で `terraform apply` でインフラが更新されます。
    - **マージのタイミングがデプロイに相当します。**
 
+## セキュリティポリシー
+
+### AWS の認証方法
+
+- GitHub Actions から AWS のリソースをデプロイするときの認証方式は OIDC です。
+- Credential は管理面の手間がかかるため採用していません。
+
 ## Setup
 
 ### Homebrew
