@@ -10,6 +10,26 @@ Private で使用している Terraform で構成可能なリソースをまと�
 | AWS 検証環境 | Sandbox | ![Terraform - sandbox](https://github.com/tqer39/private-lab/actions/workflows/terraform-aws-sandbox.yml/badge.svg) |
 | AWS 全体管理 | Management | ![Terraform - management](https://github.com/tqer39/private-lab/actions/workflows/terraform-aws-management.yml/badge.svg) |
 
+## ブランチ設計
+
+```mermaid
+gitGraph
+    commit
+    branch feature/add-environment-dev-backend-proxy
+    commit
+    commit
+    commit
+    checkout main
+    merge feature/add-environment-dev-backend-proxy
+    commit
+    commit
+```
+
+1. GitHub Flow で運用します。
+2. `main` がデフォルトブランチです。
+3. `main` ブランチにマージされると GitHub Actions で `terraform apply` でインフラが更新されます。
+   - **マージのタイミングがデプロイに相当します。**
+
 ## Setup
 
 ### Homebrew
