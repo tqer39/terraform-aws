@@ -155,53 +155,52 @@ region = ap-northeast-1
 output = json
 ```
 
-#### terraform init（初期化）
-
-- `terraform -chdir=${パス} init` に相当する処理です。
-- オプションで `SSH_KEY` が指定可能です。（デフォルトは `${HOME}/.ssh/id_rsa`）
-  - 明示的に指定する場合は `SSH_KEY=~/.ssh/id_ed25519` などを指定してください。
-  - 環境名は `dev`, `stg`, `prod` のいずれかを指定可能です。
+### Terraform のセットアップ
 
 ```bash
-make build ENV={環境名} TF_PATH={パスを指定}
+tfenv install
+terraform -v
 ```
 
-Example:
+コマンドのフォーマット
+
+- `AWS CLI (SSO) の profile`: 前項で設定した AWS CLI の profile
+- `実行先のパス`: Terraform CLI を実行するパス
+- `Terraform コマンド`: `terraform` に続くコマンド
 
 ```bash
-make build ENV=management TF_PATH=base_apne1 CMD="-reconfigure"
-# 下記に相当します
-# aws-vault exec private-lab-management -- docker-compose run --rm \
-#  -e AWS_ACCESS_KEY_ID \
-#  -e AWS_SECRET_ACCESS_KEY \
-#  -e AWS_SESSION_TOKENterraform \
-#  -chdir=./terraform/environments/management/base_apne1 init -reconfigure
+# Format:
+aws-vault exec "${AWS CLI (SSO) の profile}" -- terraform -chdir="${実行先のパス}" "${Terraform コマンド}"
+```
+
+#### terraform init（初期化）
+
+```bash
+# Example:
+aws-vault exec musubi-dev -- terraform -chdir=./terraform/environments/dev/base_apne1 init
 ```
 
 #### terraform validate
 
-Example:
-
 ```bash
-make terraform ENV=management TF_PATH=base_apne1 CMD="validate"
+# Example:
+aws-vault exec musubi-dev -- terraform -chdir=./terraform/environments/dev/base_apne1 validate
 ```
 
 #### terraform plan
 
-Example:
-
 ```bash
-make terraform ENV=management TF_PATH=base_apne1 CMD="plan"
+# Example:
+aws-vault exec musubi-dev -- terraform -chdir=./terraform/environments/dev/base_apne1 plan
 ```
 
 #### terraform apply
 
 **※ローカルからのデプロイは原則禁止です。**
 
-Example:
-
 ```bash
-make terraform ENV=management TF_PATH=base_apne1 CMD="apply -auto-approve"
+# Example:
+aws-vault exec musubi-dev -- terraform -chdir=./terraform/environments/dev/base_apne1 apply -auto-approve
 ```
 
 ## 新しい環境の作成方法
@@ -210,7 +209,7 @@ make terraform ENV=management TF_PATH=base_apne1 CMD="apply -auto-approve"
 リソースを作成。
 
 ```txt
-.github/workflows/terraform-<環境名>.yml
+.github/workflows/terraform-aws-<環境名>.yml
 .github/labeler.yml
 terraform/environments/<環境名>/base/main.tf
 terraform/environments/<環境名>/base/provider.tf
