@@ -15,12 +15,12 @@ Private で使用している Terraform で構成可能なリソースをまと�
 ```mermaid
 gitGraph
     commit
-    branch feature/add-environment-dev-backend-proxy
+    branch feature/update-readme
     commit
     commit
     commit
     checkout main
-    merge feature/add-environment-dev-backend-proxy
+    merge feature/update-readme
     commit
     commit
 ```
