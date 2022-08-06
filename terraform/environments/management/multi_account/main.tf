@@ -6,11 +6,37 @@ locals {
   ]
 
   accounts = [
-    { name = "Audit", id = "audit", root = false, parent_type = "Security" },
-    { name = "Log Archive", id = "log", root = false, parent_type = "WorkLoad" },
-    { name = "Management", id = "management", root = true, parent_type = null },
-    { name = "Sandbox", id = "sandbox", root = false, parent_type = "Sandbox" },
-    { name = "Portfolio", id = "portfolio", root = false, parent_type = "Security" },
+    {
+      name        = "Audit",
+      id          = "audit",
+      parent_type = "Security"
+    },
+    {
+      name        = "Log Archive",
+      id          = "log",
+      parent_type = "WorkLoad"
+    },
+    {
+      name = "Management",
+      id   = "management",
+      root = true,
+    },
+    {
+      name        = "Sandbox",
+      id          = "sandbox",
+      parent_type = "Sandbox"
+    },
+    {
+      name              = "Portfolio - dev",
+      id                = "portfolio-dev",
+      parent_type       = "Security",
+      close_on_deletion = true
+    },
+    {
+      name        = "Portfolio",
+      id          = "portfolio",
+      parent_type = "Security"
+    }
   ]
 }
 

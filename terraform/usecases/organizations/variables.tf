@@ -1,10 +1,6 @@
 variable "accounts" {
-  type = list(object({
-    name        = string
-    id          = string
-    root        = bool
-    parent_type = string
-  }))
+  type    = any
+  default = null
 }
 
 variable "organizational_units" {
