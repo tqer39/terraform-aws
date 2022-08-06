@@ -47,4 +47,3 @@ moved {
   from = module.organizations.module.organizational-units["WorkLoad"].aws_organizations_organizational_unit.this
   to   = module.organizations.aws_organizations_organizational_unit.this["WorkLoad"]
 }
-
