@@ -51,6 +51,8 @@ jobs:
             directory: multi_account
           - name: SSO
             directory: single_sign_on
+          - name: ドメイン
+            directory: domains
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
