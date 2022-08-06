@@ -28,15 +28,17 @@ resource "aws_organizations_organizational_unit" "this" {
 resource "aws_organizations_account" "this" {
   for_each = {
     for account in var.accounts : account.id => {
-      name        = account.name
-      email       = "${var.organization}+aws-${account.id}@gmail.com"
-      parent_type = account.parent_type
+      name              = account.name
+      email             = "${var.organization}+aws-${account.id}@gmail.com"
+      parent_type       = lookup(account, "parent_type", null)
+      close_on_deletion = lookup(account, "close_on_deletion", false)
     }
   }
 
-  name      = each.value.name
-  email     = each.value.email
-  parent_id = each.value.parent_type == null ? null : aws_organizations_organizational_unit.this[each.value.parent_type].id
+  name              = each.value.name
+  email             = each.value.email
+  parent_id         = each.value.parent_type == null ? null : aws_organizations_organizational_unit.this[each.value.parent_type].id
+  close_on_deletion = each.value.close_on_deletion
 
   depends_on = [
     aws_organizations_organizational_unit.this
