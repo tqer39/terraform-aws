@@ -47,6 +47,8 @@ jobs:
         include:
           - name: 基本設定。東京リージョン（ap-northeast-1）用
             directory: base_apne1
+          - name: ドメイン
+            directory: domains
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
