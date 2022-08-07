@@ -33,7 +33,7 @@ permissions:
 concurrency: terraform-aws-portfolio
 
 env:
-  AWS_ACCOUNT_ID: 072693953877
+  AWS_ACCOUNT_ID: "072693953877"
   ENV_NAME: portfolio
   OIDC_IAM_ROLE: portfolio-private-lab-deploy
 
