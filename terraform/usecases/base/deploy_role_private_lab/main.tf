@@ -16,6 +16,15 @@ resource "aws_iam_role" "this" {
             "token.actions.githubusercontent.com:sub" : "repo:${var.organization}/${var.repository}:*"
           }
         }
+      },
+      {
+        Action = [
+          "sts:AssumeRole"
+        ]
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::577523824419:role/management-private-lab-deploy"
+        }
       }
     ]
   })
