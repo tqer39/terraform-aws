@@ -1,8 +1,5 @@
-module "iam-user" {
-  source = "../../modules/iam/user"
-
+resource "aws_iam_user" "this" {
   for_each = { for user in var.users : user.name => user }
-  aws_iam_user = {
-    name = each.value.name
-  }
+
+  name = each.value.name
 }
