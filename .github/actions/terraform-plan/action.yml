@@ -10,6 +10,10 @@ inputs:
   working-directory:
     description: Terraform CLI 実行時のパス
     required: true
+  gh-pat:
+    description: Personal Access Token for GitHub
+    default: ""
+    required: true
 
 runs:
   using: composite
@@ -35,6 +39,7 @@ runs:
         tfcmt --var target:$TARGET plan -patch -- terraform plan -no-color
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
+        TF_VAR_GH_PERSONAL_ACCESS_TOKEN: ${{ inputs.gh-pat }}
       working-directory: ${{ inputs.working-directory }}
       shell: bash
 
