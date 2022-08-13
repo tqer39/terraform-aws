@@ -4,9 +4,6 @@ name: Terraform Plan
 description: Terraform Plan
 
 inputs:
-  env_name:
-    description: 環境名（dev, stg, prod）
-    required: true
   github-token:
     description: サードパーティの Action を実行するための権限を付与するための認証用トークン
     required: true
