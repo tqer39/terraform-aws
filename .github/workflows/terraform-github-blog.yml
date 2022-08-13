@@ -26,6 +26,14 @@ permissions:
   id-token: write
   pull-requests: write
 
+  actions: write
+  # checks: write
+  # issues: write
+  # packages: write
+  # repository-projects: write
+  # security-events: write
+  # statuses: write
+
 concurrency: terraform-github-blog
 
 env:
