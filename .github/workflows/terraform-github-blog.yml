@@ -28,6 +28,11 @@ permissions:
 
 concurrency: terraform-github-blog
 
+env:
+  AWS_ACCOUNT_ID: 577523824419
+  ENV_NAME: management
+  OIDC_IAM_ROLE: management-private-lab-deploy
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -41,6 +46,11 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
+
+      - name: AWS Credential
+        uses: ./.github/actions/aws-credential
+        with:
+          oidc-iam-role: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
 
       - name: Terraform Plan
         uses: ./.github/actions/terraform-plan
