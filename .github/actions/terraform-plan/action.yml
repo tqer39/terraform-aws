@@ -10,10 +10,6 @@ inputs:
   working-directory:
     description: Terraform CLI 実行時のパス
     required: true
-  gh-pat:
-    description: Personal Access Token for GitHub
-    default: ""
-    required: true
 
 runs:
   using: composite
