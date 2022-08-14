@@ -1,7 +1,15 @@
-"management":
+"aws/management":
   - ".github/workflows/terraform-aws-management.yml"
-  - "terraform/environments/management/**"
+  - "terraform/aws/environments/management/**"
 
-"sandbox":
+"aws/sandbox":
   - ".github/workflows/terraform-aws-sandbox.yml"
-  - "terraform/environments/sandbox/**"
+  - "terraform/aws/environments/sandbox/**"
+
+"aws/portfolio":
+  - ".github/workflows/terraform-aws-portfolio.yml"
+  - "terraform/aws/environments/portfolio/**"
+
+"github/blog":
+  - ".github/workflows/terraform-aws-blog.yml"
+  - "terraform/github/environments/blog/**"
