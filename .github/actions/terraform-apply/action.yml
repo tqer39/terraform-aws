@@ -18,6 +18,6 @@ runs:
     - name: Terraform Apply
       run: terraform apply -auto-approve
       env:
-        TF_VAR_GH_PERSONAL_ACCESS_TOKEN: ${{ inputs.github-token }}
+        TF_VAR_GITHUB_TOKEN: ${{ inputs.github-token }}
       working-directory: ${{ inputs.working-directory }}
       shell: bash
