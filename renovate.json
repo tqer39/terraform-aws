@@ -1,11 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "enabledManagers": [
-    "pre-commit"
+  "baseBranches": [
+    "main"
   ],
   "extends": [
-    "config:base",
-    ":timezone(Asia/Tokyo)"
+    "config:base"
   ],
   "labels": [
     "renovate"
@@ -13,13 +12,21 @@
   "packageRules": [
     {
       "automerge": true,
+      "enabled": true,
       "matchManagers": [
         "pre-commit"
       ]
+    },
+    {
+      "automerge": true,
+      "enabled": true,
+      "major": {
+        "automerge": false
+      },
+      "matchManagers": [
+        "terraform"
+      ]
     }
   ],
-  "prConcurrentLimit": 5,
-  "schedule": [
-    "after 10:00 before 18:00 every weekday except after 12:00 before 13:00"
-  ]
+  "timezone": "Asia/Tokyo"
 }
