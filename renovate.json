@@ -41,6 +41,6 @@
       }
     }
   ],
-  "prHourlyLimitNone": 0,
+  "prHourlyLimit": 0,
   "timezone": "Asia/Tokyo"
 }
