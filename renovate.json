@@ -42,9 +42,5 @@
     }
   ],
   "prHourlyLimitNone": 0,
-  "schedule": [
-    "after 9:00 on monday",
-    "before 12:00 on monday"
-  ],
   "timezone": "Asia/Tokyo"
 }
