@@ -3,6 +3,7 @@
   "baseBranches": [
     "main"
   ],
+  "dependencyDashboard": true,
   "extends": [
     "config:base"
   ],
@@ -12,21 +13,38 @@
   "packageRules": [
     {
       "automerge": true,
-      "enabled": true,
       "matchManagers": [
         "pre-commit"
       ]
     },
     {
       "automerge": true,
-      "enabled": true,
       "major": {
         "automerge": false
       },
       "matchManagers": [
-        "terraform"
+        "github-actions",
+        "terraform",
+        "nodenv"
       ]
+    },
+    {
+      "automerge": true,
+      "major": {
+        "automerge": false
+      },
+      "matchManagers": [
+        "pyenv"
+      ],
+      "minor": {
+        "automerge": false
+      }
     }
+  ],
+  "prHourlyLimitNone": 0,
+  "schedule": [
+    "after 9:00 on monday",
+    "before 12:00 on monday"
   ],
   "timezone": "Asia/Tokyo"
 }
