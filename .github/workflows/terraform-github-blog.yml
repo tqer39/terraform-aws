@@ -21,10 +21,19 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  # contents: read
   deployments: write
   id-token: write
   pull-requests: write
+
+  contents: write
+  actions: write
+  checks: write
+  issues: write
+  packages: write
+  repository-projects: write
+  security-events: write
+  statuses: write
 
 concurrency: terraform-github-blog
 
