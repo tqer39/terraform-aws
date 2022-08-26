@@ -9,7 +9,3 @@
 "aws/portfolio":
   - ".github/workflows/terraform-aws-portfolio.yml"
   - "terraform/aws/environments/portfolio/**"
-
-"github/blog":
-  - ".github/workflows/terraform-aws-blog.yml"
-  - "terraform/github/environments/blog/**"
