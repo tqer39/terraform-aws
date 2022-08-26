@@ -1,7 +1,7 @@
-"aws/management":
+"management":
   - ".github/workflows/terraform-aws-management.yml"
-  - "terraform/aws/environments/management/**"
+  - "terraform/environments/management/**"
 
-"aws/sandbox":
+"sandbox":
   - ".github/workflows/terraform-aws-sandbox.yml"
-  - "terraform/aws/environments/sandbox/**"
+  - "terraform/environments/sandbox/**"
