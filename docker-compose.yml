@@ -7,4 +7,4 @@ services:
     hostname: terraform
     volumes:
       - ./terraform:/terraform
-    working_dir: /terraform/aws/environments/${ENV}/${TF_PATH}
+    working_dir: /terraform/environments/${ENV}/${TF_PATH}
