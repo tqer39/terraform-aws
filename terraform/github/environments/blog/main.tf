@@ -1,4 +1,4 @@
-module "blog" {
+moudle "blog" {
   source = "../../modules/repository"
 
   name        = "blog"
