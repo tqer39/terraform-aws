@@ -5,7 +5,3 @@
 "aws/sandbox":
   - ".github/workflows/terraform-aws-sandbox.yml"
   - "terraform/aws/environments/sandbox/**"
-
-"aws/portfolio":
-  - ".github/workflows/terraform-aws-portfolio.yml"
-  - "terraform/aws/environments/portfolio/**"
