@@ -9,9 +9,9 @@ on:
       - ".github/actions/**/action.yml"
       - ".github/workflows/terraform-aws-management.yml"
       - ".terraform-version"
-      - "terraform/aws/environments/management/**"
-      - "terraform/aws/modules/**"
-      - "terraform/aws/usecases/**"
+      - "terraform/environments/management/**"
+      - "terraform/modules/**"
+      - "terraform/usecases/**"
   push:
     branches:
       - main
@@ -19,9 +19,9 @@ on:
       - ".github/actions/**/action.yml"
       - ".github/workflows/terraform-aws-management.yml"
       - ".terraform-version"
-      - "terraform/aws/environments/management/**"
-      - "terraform/aws/modules/**"
-      - "terraform/aws/usecases/**"
+      - "terraform/environments/management/**"
+      - "terraform/modules/**"
+      - "terraform/usecases/**"
   workflow_dispatch:
 
 permissions:
@@ -65,7 +65,7 @@ jobs:
       - name: Terraform Plan
         uses: ./.github/actions/terraform-plan
         with:
-          working-directory: ./terraform/aws/environments/${{ env.ENV_NAME }}/${{ matrix.directory }}
+          working-directory: ./terraform/environments/${{ env.ENV_NAME }}/${{ matrix.directory }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: Start Deployment
@@ -81,7 +81,7 @@ jobs:
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         uses: ./.github/actions/terraform-apply
         with:
-          working-directory: ./terraform/aws/environments/${{ env.ENV_NAME }}/${{ matrix.directory }}
+          working-directory: ./terraform/environments/${{ env.ENV_NAME }}/${{ matrix.directory }}
 
       # - name: Finish Deployment
       #   if: always() && github.ref == 'refs/heads/main'
