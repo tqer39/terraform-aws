@@ -3,7 +3,7 @@ data "http" "github-actions-openid-configuration" {
 }
 
 data "tls_certificate" "github-actions" {
-  url = jsondecode(data.http.github-actions-openid-configuration.body).jwks_uri
+  url = jsondecode(data.http.github-actions-openid-configuration.response_body).jwks_uri
 }
 
 resource "aws_iam_openid_connect_provider" "this" {
