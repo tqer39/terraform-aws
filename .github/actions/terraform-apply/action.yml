@@ -4,10 +4,6 @@ name: Terraform Apply
 description: Terraform Apply
 
 inputs:
-  github-token:
-    description: サードパーティの Action を実行するための権限を付与するための認証用トークン
-    default: ""
-    required: true
   working-directory:
     description: Terraform CLI 実行時のパス
     required: true
@@ -17,7 +13,5 @@ runs:
   steps:
     - name: Terraform Apply
       run: terraform apply -auto-approve
-      env:
-        TF_VAR_GITHUB_TOKEN: ${{ inputs.github-token }}
       working-directory: ${{ inputs.working-directory }}
       shell: bash

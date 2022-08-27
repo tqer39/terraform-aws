@@ -1,5 +1,5 @@
 terraform {
-  required_version = "=1.2.7"
+  required_version = "=1.2.5"
 
   required_providers {
     aws = {
@@ -11,7 +11,7 @@ terraform {
   backend "s3" {
     bucket  = "terraform-tfstate-tqer39-072693953877-ap-northeast-1"
     encrypt = true
-    key     = "private-lab/terraform/aws/environments/portfolio/portfolio-domains.tfstate"
+    key     = "private-lab/terraform/environments/portfolio/portfolio-base_apne1.tfstate"
     region  = "ap-northeast-1"
   }
 }
