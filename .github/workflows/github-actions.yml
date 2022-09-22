@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       INPUT_CHOICE:
-        type: string
+        type: choice
         description: INPUT_CHOICE の挙動をテスト
         required: true
         default: 'hoge hoge'
