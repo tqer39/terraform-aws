@@ -1,46 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "baseBranches": [
-    "main"
-  ],
-  "dependencyDashboard": true,
   "extends": [
-    "config:base"
-  ],
-  "labels": [
-    "renovate"
-  ],
-  "packageRules": [
-    {
-      "automerge": true,
-      "matchManagers": [
-        "pre-commit"
-      ]
-    },
-    {
-      "automerge": true,
-      "major": {
-        "automerge": false
-      },
-      "matchManagers": [
-        "github-actions",
-        "terraform",
-        "nodenv"
-      ]
-    },
-    {
-      "automerge": true,
-      "major": {
-        "automerge": false
-      },
-      "matchManagers": [
-        "pyenv"
-      ],
-      "minor": {
-        "automerge": false
-      }
-    }
-  ],
-  "prHourlyLimit": 0,
-  "timezone": "Asia/Tokyo"
+    "github>LifeTechEase/renovate-config"
+  ]
 }
