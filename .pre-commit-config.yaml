@@ -66,3 +66,10 @@ repos:
           - "textlint-filter-rule-comments@1.2.2"
           - "textlint-rule-no-dropping-the-ra@3.0.0"
           - "textlint-rule-terminology@3.0.1"
+
+  # renovate-config-validator
+  - repo: https://github.com/renovatebot/pre-commit-hooks
+    rev: 34.158.2
+    hooks:
+      - id: renovate-config-validator
+        files: renovate.json
