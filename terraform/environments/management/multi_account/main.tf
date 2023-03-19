@@ -44,6 +44,6 @@ module "organizations" {
   source = "../../../usecases/organizations"
 
   accounts             = local.accounts
-  organization         = local.organization
+  owner                = local.owner
   organizational_units = local.organizational_units
 }
