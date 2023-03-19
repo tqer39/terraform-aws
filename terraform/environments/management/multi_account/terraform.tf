@@ -9,7 +9,7 @@ terraform {
   backend "s3" {
     bucket  = "terraform-tfstate-tqer39-577523824419-ap-northeast-1"
     encrypt = true
-    key     = "private-lab/terraform/environments/management/management-multi_account.tfstate"
+    key     = "terraform-aws/terraform/environments/management/management-multi_account.tfstate"
     region  = "ap-northeast-1"
   }
 }
