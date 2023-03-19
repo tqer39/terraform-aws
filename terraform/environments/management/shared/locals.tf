@@ -22,7 +22,7 @@ locals {
   }
 
   tfstate_bucket_name = {
-    apne1 = "terraform-tfstate-${local.organization}-${local.aws_account_id}-${local.region.apne1}"
-    use1  = "terraform-tfstate-${local.organization}-${local.aws_account_id}-${local.region.use1}"
+    apne1 = "terraform-tfstate-${local.owner}-${local.aws_account_id}-${local.region.apne1}"
+    use1  = "terraform-tfstate-${local.owner}-${local.aws_account_id}-${local.region.use1}"
   }
 }
