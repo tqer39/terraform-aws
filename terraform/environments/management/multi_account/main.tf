@@ -29,7 +29,7 @@ locals {
     {
       name        = "Portfolio",
       id          = "portfolio",
-      parent_type = "Security"
+      parent_type = "WorkLoad"
     }
   ]
 }
