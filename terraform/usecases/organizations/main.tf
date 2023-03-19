@@ -1,12 +1,18 @@
+/*
+ * # Usage
+ *
+  * - AWS Organizations を作成します。
+  */
+
 resource "aws_organizations_organization" "this" {
   aws_service_access_principals = [
+    "access-analyzer.amazonaws.com",
     "aws-artifact-account-sync.amazonaws.com",
     "cloudtrail.amazonaws.com",
-    "guardduty.amazonaws.com",
-    "sso.amazonaws.com",
-    "access-analyzer.amazonaws.com",
     "config.amazonaws.com",
     "controltower.amazonaws.com",
+    "guardduty.amazonaws.com",
+    "sso.amazonaws.com",
   ]
   enabled_policy_types = [
     "SERVICE_CONTROL_POLICY",
@@ -21,7 +27,7 @@ resource "aws_organizations_organizational_unit" "this" {
   parent_id = aws_organizations_organization.this.roots[0].id
 
   depends_on = [
-    aws_organizations_organization.this
+    aws_organizations_organization.this,
   ]
 }
 
@@ -29,7 +35,7 @@ resource "aws_organizations_account" "this" {
   for_each = {
     for account in var.accounts : account.id => {
       name              = account.name
-      email             = "${var.organization}+aws-${account.id}@gmail.com"
+      email             = "${var.owner}+aws-${account.id}@gmail.com"
       parent_type       = lookup(account, "parent_type", null)
       close_on_deletion = lookup(account, "close_on_deletion", false)
     }

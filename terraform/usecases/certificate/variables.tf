@@ -1,3 +1,4 @@
 variable "domain_name" {
-  type = string
+  type        = string
+  description = "(Require) Domain name."
 }
