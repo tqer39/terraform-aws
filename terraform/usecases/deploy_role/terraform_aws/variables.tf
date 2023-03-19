@@ -3,9 +3,9 @@ variable "aws_account_id" {
   description = "(Required) AWS account ID"
 }
 
-variable "env_name" {
+variable "aws_env_name" {
   type        = string
-  description = "(Required) Environment name"
+  description = "(Required) AWS Environment name"
 }
 
 variable "organization" {

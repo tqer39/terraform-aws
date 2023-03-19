@@ -8,7 +8,7 @@ module "deploy_role" {
   source = "../../../usecases/deploy_role/terraform_aws"
 
   aws_account_id = local.aws_account_id
-  env_name       = local.env_name
+  aws_env_name   = local.aws_env_name
   organization   = local.organization
   repository     = local.repository
   sso_role_arns  = ["arn:aws:iam::${local.aws_account_id}:role/SSO-AdministratorAccess-APNE1"]
