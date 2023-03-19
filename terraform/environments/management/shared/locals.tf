@@ -1,14 +1,14 @@
 locals {
   aws_account_id = "577523824419"
   env_name       = "management"
-  organization   = "tqer39"
+  organization   = "LifeTechEase"
   platform       = "aws"
   prefix         = "pl"
   region = {
     apne1 = "ap-northeast-1"
     use1  = "us-east-1"
   }
-  repository = "private-lab"
+  repository = "terraform-aws"
 }
 
 locals {
@@ -16,7 +16,7 @@ locals {
     "${local.prefix}:environment" = local.env_name
     "${local.prefix}:iac"         = "terraform"
     "${local.prefix}:owner"       = "${local.organization}+${local.platform}-${local.env_name}@gmail.com"
-    "${local.prefix}:product"     = "private-lab"
+    "${local.prefix}:product"     = "terraform-aws"
     "${local.prefix}:repository"  = "${local.organization}/${local.repository}"
   }
 
