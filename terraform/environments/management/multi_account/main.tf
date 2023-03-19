@@ -26,12 +26,6 @@ locals {
       id          = "sandbox",
       parent_type = "Sandbox"
     },
-    # {
-    #   name              = "Portfolio - dev",
-    #   id                = "portfolio-dev",
-    #   parent_type       = "Security",
-    #   close_on_deletion = true
-    # },
     {
       name        = "Portfolio",
       id          = "portfolio",
