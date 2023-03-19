@@ -17,8 +17,3 @@ variable "repository" {
   type        = string
   description = "(Required) GitHub repository name"
 }
-
-variable "sso_role_arns" {
-  type        = list(string)
-  description = "(Required) List of SSO role ARNs"
-}

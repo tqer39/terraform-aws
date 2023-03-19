@@ -11,7 +11,6 @@ module "deploy_role" {
   aws_env_name   = local.aws_env_name
   organization   = local.organization
   repository     = local.repository
-  sso_role_arns  = ["arn:aws:iam::${local.aws_account_id}:role/SSO-AdministratorAccess-APNE1"]
   depends_on = [
     aws_iam_policy.deploy_allow_specifics,
     aws_iam_policy.deploy_deny_specifics,

@@ -32,15 +32,6 @@ data "aws_iam_policy_document" "assume_role" {
       ]
     }
   }
-  statement {
-    actions = [
-      "sts:AssumeRole",
-    ]
-    principals {
-      type        = "AWS"
-      identifiers = var.sso_role_arns
-    }
-  }
 }
 
 resource "aws_iam_role" "this" {
