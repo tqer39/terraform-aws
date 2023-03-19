@@ -7,11 +7,11 @@ terraform {
     }
     http = {
       source  = "hashicorp/http"
-      version = "2.2.0"
+      version = "3.0.1"
     }
     tls = {
       source  = "hashicorp/tls"
-      version = "3.4.0"
+      version = "4.0.1"
     }
   }
   backend "s3" {
