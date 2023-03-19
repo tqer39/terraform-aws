@@ -15,6 +15,6 @@ resource "aws_route53_record" "portfolio" {
     "ns-1761.awsdns-28.co.uk.",
     "ns-958.awsdns-55.net.",
     "ns-500.awsdns-62.com.",
-    "ns-1366.awsdns-42.org."
+    "ns-1366.awsdns-42.org.",
   ]
 }
