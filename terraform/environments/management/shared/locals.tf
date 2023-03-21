@@ -21,6 +21,7 @@ locals {
     "${local.prefix}:repository"  = "${local.organization}/${local.repository}"
   }
 
+  # tflint-ignore: terraform_unused_declarations
   tfstate_bucket_name = {
     apne1 = "terraform-tfstate-${local.owner}-${local.aws_account_id}-${local.region.apne1}"
     use1  = "terraform-tfstate-${local.owner}-${local.aws_account_id}-${local.region.use1}"
