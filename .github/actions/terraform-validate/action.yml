@@ -42,5 +42,5 @@ runs:
       shell: bash
 
     - name: Run TFLint
-      run: tflint -chdir=${{ inputs.working-directory }} --module
+      run: tflint --chdir=${{ inputs.working-directory }} --module
       shell: bash
