@@ -1,4 +1,5 @@
 locals {
+  # tflint-ignore: terraform_unused_declarations
   aws_account_ids = {
     "audit"      = "941697148827"
     "log"        = "612023513349"
