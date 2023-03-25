@@ -18,20 +18,6 @@ output "basic" {
 }
 # 結果: basic = "ベーシック"
 
-output "params" {
-  value = var.params
-}
-
-output "params_param1_name" {
-  value = var.params.param1.name
-}
-# 結果: params_param1_name = "param1"
-
-output "params_param2_value" {
-  value = var.params.param2.value
-}
-# 結果: params_param2_value = "fuga"
-
 output "list_values" {
   value = local.list_values
 }
