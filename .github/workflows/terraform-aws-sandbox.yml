@@ -35,7 +35,7 @@ concurrency: terraform-aws-sandbox
 env:
   AWS_ACCOUNT_ID: 107662415716
   ENV_NAME: sandbox
-  OIDC_IAM_ROLE: sandbox-private-lab-deploy
+  OIDC_IAM_ROLE: sandbox-terraform-aws-deploy
 
 jobs:
   terraform:
