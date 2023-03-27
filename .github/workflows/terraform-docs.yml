@@ -1,0 +1,52 @@
+---
+name: Generate terraform docs
+
+on:
+  push:
+    branches:
+      - main
+      - test/terraform-docs/**
+    paths:
+      - "**.tf"
+      - ".github/workflows/terraform-docs.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**.tf"
+      - ".github/workflows/terraform-docs.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: terraform-docs-${{ github.ref }}
+
+jobs:
+  terraform-docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: modules
+            directory: modules
+          - name: usecases
+            directory: usecases
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3.0.0
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Render terraform docs and push changes back to PR
+        uses: terraform-docs/gh-actions@v1.0.0
+        with:
+          working-directory: "./terraform/${{ matrix.directory }}"
+          output-file: USAGE.md
+          output-method: inject
+          git-push: true
+          args: --hide-empty

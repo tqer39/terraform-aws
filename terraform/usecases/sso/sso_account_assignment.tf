@@ -5,10 +5,8 @@ resource "aws_ssoadmin_account_assignment" "admin" {
 
   instance_arn       = tolist(data.aws_ssoadmin_instances.this.arns)[0]
   permission_set_arn = aws_ssoadmin_permission_set.main["AdministratorAccess"].arn
-
-  principal_id   = data.aws_identitystore_group.admin.group_id
-  principal_type = "GROUP"
-
-  target_id   = each.value
-  target_type = "AWS_ACCOUNT"
+  principal_id       = data.aws_identitystore_group.admin.group_id
+  principal_type     = "GROUP"
+  target_id          = each.value
+  target_type        = "AWS_ACCOUNT"
 }

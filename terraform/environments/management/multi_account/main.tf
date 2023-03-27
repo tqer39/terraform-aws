@@ -26,16 +26,10 @@ locals {
       id          = "sandbox",
       parent_type = "Sandbox"
     },
-    # {
-    #   name              = "Portfolio - dev",
-    #   id                = "portfolio-dev",
-    #   parent_type       = "Security",
-    #   close_on_deletion = true
-    # },
     {
       name        = "Portfolio",
       id          = "portfolio",
-      parent_type = "Security"
+      parent_type = "WorkLoad"
     }
   ]
 }
@@ -44,6 +38,6 @@ module "organizations" {
   source = "../../../usecases/organizations"
 
   accounts             = local.accounts
-  organization         = local.organization
+  owner                = local.owner
   organizational_units = local.organizational_units
 }
