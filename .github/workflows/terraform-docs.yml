@@ -10,10 +10,11 @@ on:
       - ".github/workflows/terraform-docs.yml"
   push:
     branches:
-      - test/terraform-docs/**
+      - "test/terraform-docs/**"
     paths:
       - "**.tf"
       - ".github/workflows/terraform-docs.yml"
+  workflow_dispatch:
 
 permissions:
   contents: write
