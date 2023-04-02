@@ -1,14 +1,14 @@
-# private-lab
+# terraform-aws
 
-Private で使用している Terraform で構成可能なリソースをまとめる。
+AWS のリソースを Terraform で構成する。
 
 ## GitHub Actions Status badges
 
 | Name | Environment | Result |
 | :--- | :--- | :--- |
-| Linterなどによる検証 | pre-commit | ![pre-commit](https://github.com/tqer39/private-lab/actions/workflows/pre-commit.yml/badge.svg) |
-| AWS 検証環境 | Sandbox | ![Terraform - sandbox](https://github.com/tqer39/private-lab/actions/workflows/terraform-aws-sandbox.yml/badge.svg) |
-| AWS 全体管理 | Management | ![Terraform - management](https://github.com/tqer39/private-lab/actions/workflows/terraform-aws-management.yml/badge.svg) |
+| Linterなどによる検証 | pre-commit | ![pre-commit](https://github.com/tqer39/terraform-aws/actions/workflows/pre-commit.yml/badge.svg) |
+| AWS 検証環境 | Sandbox | ![Terraform - sandbox](https://github.com/tqer39/terraform-aws/actions/workflows/terraform-aws-sandbox.yml/badge.svg) |
+| AWS 全体管理 | Management | ![Terraform - management](https://github.com/tqer39/terraform-aws/actions/workflows/terraform-aws-management.yml/badge.svg) |
 
 ## ブランチ設計
 
@@ -145,7 +145,7 @@ pre-commit install --install-hooks
 下記の内容を `~/.aws/config` に設定します。
 
 ```bash
-[profile private-lab-management]
+[profile terraform-aws-management]
 sso_start_url = https://tqer39-management.awsapps.com/start/
 sso_region = ap-northeast-1
 sso_account_id = 577523824419
@@ -176,21 +176,21 @@ aws-vault exec "${AWS CLI (SSO) の profile}" -- terraform -chdir="${実行先�
 
 ```bash
 # Example:
-aws-vault exec private-lab-management -- terraform -chdir=./terraform/environments/dev/base_apne1 init
+aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/environments/dev/base_apne1 init
 ```
 
 #### terraform validate
 
 ```bash
 # Example:
-aws-vault exec private-lab-management -- terraform -chdir=./terraform/environments/dev/base_apne1 validate
+aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/environments/dev/base_apne1 validate
 ```
 
 #### terraform plan
 
 ```bash
 # Example:
-aws-vault exec private-lab-management -- terraform -chdir=./terraform/environments/dev/base_apne1 plan
+aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/environments/dev/base_apne1 plan
 ```
 
 #### terraform apply
@@ -199,7 +199,7 @@ aws-vault exec private-lab-management -- terraform -chdir=./terraform/environmen
 
 ```bash
 # Example:
-aws-vault exec private-lab-management -- terraform -chdir=./terraform/environments/dev/base_apne1 apply -auto-approve
+aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/environments/dev/base_apne1 apply -auto-approve
 ```
 
 ## 新しい環境の作成方法
