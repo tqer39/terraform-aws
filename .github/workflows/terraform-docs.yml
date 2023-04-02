@@ -2,16 +2,15 @@
 name: Generate terraform docs
 
 on:
-  push:
-    branches:
-      - main
-      - test/terraform-docs/**
-    paths:
-      - "**.tf"
-      - ".github/workflows/terraform-docs.yml"
   pull_request:
     branches:
       - main
+    paths:
+      - "**.tf"
+      - ".github/workflows/terraform-docs.yml"
+  push:
+    branches:
+      - test/terraform-docs/**
     paths:
       - "**.tf"
       - ".github/workflows/terraform-docs.yml"
@@ -24,9 +23,9 @@ concurrency:
 
 jobs:
   terraform-docs:
+    name: terraform docs
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     strategy:
       fail-fast: false
       matrix:
@@ -45,7 +44,7 @@ jobs:
       - name: Render terraform docs and push changes back to PR
         uses: terraform-docs/gh-actions@v1.0.0
         with:
-          working-directory: "./terraform/${{ matrix.directory }}"
+          find-dir: "./terraform/${{ matrix.directory }}"
           output-file: USAGE.md
           output-method: inject
           git-push: true
