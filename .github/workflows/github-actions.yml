@@ -8,10 +8,10 @@ on:
         type: choice
         description: INPUT_CHOICE の挙動をテスト
         required: true
-        default: 'hoge hoge'
+        default: "hoge hoge"
         options:
-          - 'hoge hoge'
-          - 'fuga fuga'
+          - "hoge hoge"
+          - "fuga fuga"
 
 concurrency: github-actions-${{ github.ref }}
 
