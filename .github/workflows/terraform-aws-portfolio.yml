@@ -6,7 +6,7 @@ on:
     paths:
       - ".github/actions/**/action.yml"
       - ".github/workflows/terraform-aws-portfolio.yml"
-      - ".terraform-version"
+      - ".tool-versions"
       - "terraform/environments/portfolio/**"
       - "terraform/modules/**"
       - "terraform/usecases/**"
@@ -16,7 +16,7 @@ on:
     paths:
       - ".github/actions/**/action.yml"
       - ".github/workflows/terraform-aws-portfolio.yml"
-      - ".terraform-version"
+      - ".tool-versions"
       - "terraform/environments/portfolio/**"
       - "terraform/modules/**"
       - "terraform/usecases/**"
