@@ -13,7 +13,7 @@ runs:
   steps:
     - name: Get current Terraform version
       id: get-tf-version
-      run: echo ::set-output name=TERRAFORM_VERSION::$(cat .terraform-version)
+      run: echo ::set-output name=TERRAFORM_VERSION::$(grep terraform .tool-versions | cut -d' ' -f2)
       shell: bash
 
     - name: Setup Terraform
