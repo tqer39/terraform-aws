@@ -38,21 +38,31 @@ env:
   OIDC_IAM_ROLE: management-terraform-aws-deploy
 
 jobs:
-  terraform:
+  set-matrix:
+    name: Set Matrix
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Set Matrix
+        id: set-matrix
+        uses: ./.github/actions/set-matrix
+        with:
+          AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
+
+  terraform:
+    name: Terraform
+    needs: [set-matrix]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - name: 基本設定。東京リージョン（ap-northeast-1）用
-            directory: base_apne1
-          - name: Organiztions によるマルチアカウント運用
-            directory: multi_account
-          - name: SSO
-            directory: single_sign_on
-          - name: ドメイン
-            directory: domains
+        directory: ${{ fromJson(needs.set-matrix.outputs.matrix )}}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
