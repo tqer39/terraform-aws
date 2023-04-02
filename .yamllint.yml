@@ -1,9 +1,9 @@
 ---
 # see https://yamllint.readthedocs.io/en/stable/configuration.html
 yaml-files:
-  - '*.yaml'
-  - '*.yml'
-  - '.yamllint'
+  - "*.yaml"
+  - "*.yml"
+  - ".yamllint"
 
 rules:
   braces: enable

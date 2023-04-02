@@ -34,25 +34,35 @@ concurrency: terraform-aws-management
 
 env:
   AWS_ACCOUNT_ID: 577523824419
-  ENV_NAME: management
-  OIDC_IAM_ROLE: management-private-lab-deploy
+  AWS_ENV_NAME: management
+  OIDC_IAM_ROLE: management-terraform-aws-deploy
 
 jobs:
-  terraform:
+  set-matrix:
+    name: Set Matrix
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Set Matrix
+        id: set-matrix
+        uses: ./.github/actions/set-matrix
+        with:
+          AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
+
+  terraform:
+    name: Terraform
+    needs: [set-matrix]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - name: 基本設定。東京リージョン（ap-northeast-1）用
-            directory: base_apne1
-          - name: Organiztions によるマルチアカウント運用
-            directory: multi_account
-          - name: SSO
-            directory: single_sign_on
-          - name: ドメイン
-            directory: domains
+        directory: ${{ fromJson(needs.set-matrix.outputs.matrix )}}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -65,31 +75,31 @@ jobs:
       - name: Terraform Plan
         uses: ./.github/actions/terraform-plan
         with:
-          env_name: ${{ env.ENV_NAME }}
-          working-directory: ./terraform/environments/${{ env.ENV_NAME }}/${{ matrix.directory }}
+          env_name: ${{ env.AWS_ENV_NAME }}
+          working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Start Deployment
-      #   if: github.ref == 'refs/heads/main'
-      #   uses: bobheadxi/deployments@v1
-      #   id: deployment
-      #   with:
-      #     step: start
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     env: ${{ env.ENV_NAME }}
+      - name: Start Deployment
+        if: github.ref == 'refs/heads/main'
+        uses: bobheadxi/deployments@v1
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: ${{ env.AWS_ENV_NAME }}
 
       - name: Terraform Apply
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         uses: ./.github/actions/terraform-apply
         with:
-          working-directory: ./terraform/environments/${{ env.ENV_NAME }}/${{ matrix.directory }}
+          working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
 
-      # - name: Finish Deployment
-      #   if: always() && github.ref == 'refs/heads/main'
-      #   uses: bobheadxi/deployments@v1
-      #   with:
-      #     step: finish
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     status: ${{ job.status }}
-      #     env: ${{ steps.deployment.outputs.env }}
-      #     deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+      - name: Finish Deployment
+        if: always() && github.ref == 'refs/heads/main'
+        uses: bobheadxi/deployments@v1
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          env: ${{ steps.deployment.outputs.env }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}

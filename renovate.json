@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "github>LifeTechEase/renovate-config"
+    "github>tqer39/renovate-config"
   ]
 }

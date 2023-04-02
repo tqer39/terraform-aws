@@ -1,7 +1,7 @@
 locals {
   aws_account_id = "577523824419"
   aws_env_name   = "management"
-  organization   = "LifeTechEase"
+  organization   = "tqer39"
   platform       = "aws"
   prefix         = "pl"
   owner          = "tqer39"

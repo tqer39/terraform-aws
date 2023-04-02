@@ -2,7 +2,7 @@
  * # Usage
  *
  * - GitHub Actions から AWS へアクセスするときに使用する OIDC 認証の ID Provider にアクセスする IAM ロールを作成します。
- * - [terraform-aws](https://github.com/LifeTechEase/terraform-aws) 用です。
+ * - [terraform-aws](https://github.com/tqer39/terraform-aws) 用です。
  */
 
 data "aws_iam_policy" "deploy_allow_specifics" {
