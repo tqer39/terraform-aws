@@ -8,6 +8,7 @@ AWS のリソースを Terraform で構成する。
 | :--- | :--- | :--- |
 | Linterなどによる検証 | pre-commit | ![pre-commit](https://github.com/tqer39/terraform-aws/actions/workflows/pre-commit.yml/badge.svg) |
 | AWS 検証環境 | Sandbox | ![Terraform - sandbox](https://github.com/tqer39/terraform-aws/actions/workflows/terraform-aws-sandbox.yml/badge.svg) |
+| AWS ポートフォリオ | Management | ![Terraform - management](https://github.com/tqer39/terraform-aws/actions/workflows/terraform-aws-portfolio.yml/badge.svg) |
 | AWS 全体管理 | Management | ![Terraform - management](https://github.com/tqer39/terraform-aws/actions/workflows/terraform-aws-management.yml/badge.svg) |
 
 ## ブランチ設計
