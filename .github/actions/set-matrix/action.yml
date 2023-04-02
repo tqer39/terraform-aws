@@ -1,0 +1,24 @@
+---
+name: set matrix
+
+description: Set matrix
+
+inputs:
+  AWS_ENV_NAME:
+    description: AWS の環境名
+    required: true
+
+outputs:
+  matrix:
+    description: Terraform の実行対象ディレクトリのリスト
+    value: ${{ steps.set-matrix.outputs.matrix }}
+
+runs:
+  using: composite
+  steps:
+    - name: make values
+      id: set-matrix
+      run: |
+        TEMP="$(echo "[$(sed "s/^/\"/g" ".github/workflows/deploy_pipeline/${{ inputs.AWS_ENV_NAME }}" | sed "s/$/\",/g" | sed "$ s/,$//g")]" | jq -c)"
+        echo "matrix=${TEMP}" >> $GITHUB_OUTPUT
+      shell: bash
