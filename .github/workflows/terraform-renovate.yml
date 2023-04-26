@@ -1,0 +1,85 @@
+---
+name: Terraform Renovate
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "**/.terraform.lock.hcl"
+
+jobs:
+  terraform-provider-version:
+    name: Terraform provider version update
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: startsWith(github.head_ref, 'renovate/')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.5.2
+
+      - name: Get current Terraform version
+        run: echo "TERRAFORM_VERSION=$(grep terraform .tool-versions | cut -d' ' -f2)" >> "$GITHUB_ENV"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+      - name: git switch
+        continue-on-error: true
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git fetch origin main
+          git fetch origin "$BRANCH_NAME"
+          git switch "$BRANCH_NAME"
+
+      - name: Checked changed files
+        continue-on-error: true
+        run: |
+          CHANGED_FILES="$(git diff --name-only origin/main)"
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No changed files."
+            exit 1
+          fi
+
+      - name: Checked update dirs
+        continue-on-error: true
+        run: |
+          UPGRADE_DIRS=$(echo "$CHANGED_FILES" | grep -oE '(.*/)?\.terraform\.lock\.hcl' | xargs -I {} dirname {} | sort | uniq)
+          echo "Upgrade directories:"
+          echo "${UPGRADE_DIRS}"
+          if [ -z "$UPGRADE_DIRS" ]; then
+            echo "No upgrade directories."
+            exit 1
+          fi
+
+      - name: Terraform providers lock
+        continue-on-error: true
+        run: |
+          for TERRAFORM_DIR in $UPGRADE_DIRS; do
+            # .terraform.lock.hcl に対応する terraform init コマンドを実行する
+            echo "Checking ${TERRAFORM_DIR}..."
+            if [ -f "${TERRAFORM_DIR}/terraform.tf" ]; then
+              echo "working directory: ${TERRAFORM_DIR}"
+              terraform -chdir="$TERRAFORM_DIR" init -backend=false -upgrade
+              terraform -chdir="$TERRAFORM_DIR" providers lock -platform=darwin_amd64 -platform=linux_amd64 -platform=darwin_arm64 -platform=windows_amd64
+            fi
+          done
+
+          git add -A .
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}
+
+      - name: Commit lock file
+        if: success()
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: ".terraform.lock.hcl"
+          message: "[GitHub Actions] Add platform darwin_amd64 in .terraform.lock.hcl"
+          default_author: github_actions
+          new_branch: ${{ github.head_ref }}
+          fetch: true
