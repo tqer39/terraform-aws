@@ -1,0 +1,17 @@
+---
+name: Setup Go
+
+description: Setup Go
+
+runs:
+  using: composite
+  steps:
+    - name: Get current Go version
+      id: get-go-version
+      run: echo ::set-output name=GO_VERSION::$(grep go .tool-versions | cut -d' ' -f2)
+      shell: bash
+
+    - name: Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ steps.get-tf-version.outputs.GO_VERSION }}
