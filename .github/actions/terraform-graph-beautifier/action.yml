@@ -28,9 +28,9 @@ runs:
 
     - name: Terraform Graph
       run: |
-        terraform graph
+        terraform graph > dependency-graph.dot
 
-        terraform graph | terraform-graph-beautifier \
+        terraform-graph-beautifier --input dependency-graph.dot \
           --output-type=cyto-html \
           > dependency-graph.html
       working-directory: ${{ inputs.working-directory }}
