@@ -17,17 +17,17 @@ runs:
     - name: Install Terraform Graph Beautifier
       run: |
         go install github.com/pcasteran/terraform-graph-beautifier@latest
-        go version
-        which go
-        which terraform-graph-beautifier
-        which terraform
-        terraform -v
-        terraform-graph-beautifier -v
+        # go version
+        # which go
+        # which terraform-graph-beautifier
+        # which terraform
+        # terraform -v
+        # terraform-graph-beautifier -v
       shell: bash
 
     - name: Terraform Graph
       run: |
-        terraform graph | terraform-graph-beautifier \
+        terraform graph | sed -e 's/digraph/digraph portfolio/' | terraform-graph-beautifier \
           --output-type=cyto-html \
           > dependency-graph.html
       working-directory: ${{ inputs.working-directory }}
