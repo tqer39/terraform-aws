@@ -27,7 +27,7 @@ runs:
 
     - name: Terraform Graph
       run: |
-        terraform graph | sed -e 's/digraph/digraph portfolio/' | terraform-graph-beautifier \
+        terraform graph | sed -e 's/digraph {/digraph "config1" {/g' | terraform-graph-beautifier \
           --output-type=cyto-html \
           > dependency-graph.html
       working-directory: ${{ inputs.working-directory }}
