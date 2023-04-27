@@ -20,6 +20,9 @@ runs:
         go version
         which go
         which terraform-graph-beautifier
+        which terraform
+        terraform -v
+        terraform-graph-beautifier -v
       shell: bash
 
     - name: Terraform Graph
