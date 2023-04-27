@@ -15,7 +15,7 @@ runs:
       uses: ./.github/actions/setup-go
 
     - name: Install Terraform Graph Beautifier
-      run: go install github.com/pcasteran/terraform-graph-beautifier
+      run: go install github.com/pcasteran/terraform-graph-beautifier@latest
       shell: bash
 
     - name: Terraform Graph
