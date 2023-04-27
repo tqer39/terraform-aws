@@ -1,0 +1,27 @@
+---
+name: Terraform Graph Beautifier
+
+description: Terraform Graph Beautifier
+
+inputs:
+  working-directory:
+    description: Terraform CLI 実行時のパス
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Go
+      uses: ./.github/actions/setup-go
+
+    - name: Install Terraform Graph Beautifier
+      run: go install github.com/pcasteran/terraform-graph-beautifier
+      shell: bash
+
+    - name: Terraform Graph
+      run: |
+        terraform graph | terraform-graph-beautifier \
+          --output-type=cyto-html \
+          > dependency-graph.html
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash

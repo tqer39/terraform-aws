@@ -77,6 +77,11 @@ jobs:
           working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Terraform Graph
+        uses: ./.github/actions/terraform-graph-beautifier
+        with:
+          working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
+
       - name: Start Deployment
         if: github.ref == 'refs/heads/main'
         uses: bobheadxi/deployments@v1
