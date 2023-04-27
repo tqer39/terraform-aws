@@ -24,6 +24,8 @@ runs:
         which terraform
         terraform -v
         terraform-graph-beautifier -v
+
+        terraform graph
       shell: bash
 
     - name: Terraform Graph
