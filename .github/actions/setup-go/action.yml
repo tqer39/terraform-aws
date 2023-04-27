@@ -8,7 +8,7 @@ runs:
   steps:
     - name: Get current Go version
       id: get-go-version
-      run: echo ::set-output name=GO_VERSION::$(grep go .tool-versions | cut -d' ' -f2)
+      run: echo ::set-output name=GO_VERSION::$(grep golang .tool-versions | cut -d' ' -f2)
       shell: bash
 
     - name: Setup Go
