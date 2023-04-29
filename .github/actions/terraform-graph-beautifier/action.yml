@@ -32,7 +32,7 @@ runs:
 
         terraform-graph-beautifier --input dependency-graph.dot \
           --output-type=cyto-html \
-          --verbose \
+          -debug \
           > dependency-graph.html
       working-directory: ${{ inputs.working-directory }}
       shell: bash
