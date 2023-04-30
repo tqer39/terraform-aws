@@ -26,22 +26,15 @@ runs:
         terraform-graph-beautifier -v
       shell: bash
 
-    # - name: Terraform Graph
-    #   run: |
-    #     terraform graph > dependency-graph.dot
-
-    #     terraform-graph-beautifier --input dependency-graph.dot \
-    #       --output-type=cyto-html \
-    #       -debug \
-    #       > dependency-graph.html
-    #   working-directory: ${{ inputs.working-directory }}
-    #   shell: bash
-
     - name: Terraform Graph
       run: |
         terraform graph > dependency-graph.dot
         cat dependency-graph.dot
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
 
+    - name: Terraform Graph Beautifier
+      run: |
         terraform-graph-beautifier --input dependency-graph.dot \
           terraform-graph-beautifier \
           --exclude="module.root.provider" \
