@@ -40,6 +40,8 @@ runs:
     - name: Terraform Graph
       run: |
         terraform graph > dependency-graph.dot
+        cat dependency-graph.dot
+
         terraform-graph-beautifier --input dependency-graph.dot \
           terraform-graph-beautifier \
           --exclude="module.root.provider" \
