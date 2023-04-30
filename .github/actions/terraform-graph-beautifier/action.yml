@@ -41,7 +41,7 @@ runs:
       run: |
         terraform graph | \
           terraform-graph-beautifier \
-          --exclude="module.root.provider" |
+          --exclude="module.root.provider" \
           --output-type=cyto-html \
           -debug \
           > dependency-graph.html
