@@ -42,10 +42,9 @@ runs:
       #     -debug \
       #     > dependency-graph.html
       run: |
-        docker run --rm -i \
+        terraform graph | docker run --rm -i \
           --name terraform-graph-beautifier \
           ghcr.io/pcasteran/terraform-graph-beautifier:latest-linux \
-          --input dependency-graph.dot \
           --output-type=cyto-html \
           > dependency-graph.html
       working-directory: ${{ inputs.working-directory }}
