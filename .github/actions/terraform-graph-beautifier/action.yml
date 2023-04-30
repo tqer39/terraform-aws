@@ -42,7 +42,7 @@ runs:
       #     -debug \
       #     > dependency-graph.html
       run: |
-        terraform graph | sed -e 's/digraph/digraph G/g' docker run --rm -i \
+        terraform graph | sed -e 's/digraph/digraph G/g' | docker run --rm -i \
           --name terraform-graph-beautifier \
           ghcr.io/pcasteran/terraform-graph-beautifier:latest-linux \
           --output-type=cyto-html \
