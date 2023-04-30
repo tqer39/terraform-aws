@@ -28,7 +28,7 @@ runs:
 
     - name: Terraform Graph
       run: |
-        terraform graph | sed -e 's/digraph/digraph G/g' > dependency-graph.dot
+        terraform graph | sed -e 's/digraph/digraph "graph"/g' > dependency-graph.dot
         cat dependency-graph.dot
       working-directory: ${{ inputs.working-directory }}
       shell: bash
@@ -42,7 +42,7 @@ runs:
       #     -debug \
       #     > dependency-graph.html
       run: |
-        terraform graph | sed -e 's/digraph/digraph G/g' | docker run --rm -i \
+        terraform graph | sed -e 's/digraph/digraph "graph"/g' | docker run --rm -i \
           --name terraform-graph-beautifier \
           ghcr.io/pcasteran/terraform-graph-beautifier:latest-linux \
           --output-type=cyto-html \
