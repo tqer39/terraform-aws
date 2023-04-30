@@ -42,6 +42,7 @@ runs:
         terraform graph | \
           sed -e 's/%0A/\\n/g' | \
           sed -e 's/\\t//g' | \
+          sed -e 's/\"/"/g' | \
           terraform-graph-beautifier \
           --output-type=cyto-html \
           -debug \
