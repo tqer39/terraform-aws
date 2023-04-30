@@ -28,7 +28,7 @@ runs:
 
     - name: Terraform Graph
       run: |
-        terraform graph > dependency-graph.dot
+        terraform graph > | sed -e 's/digraph/digraph G/g' | dependency-graph.dot
         cat dependency-graph.dot
       working-directory: ${{ inputs.working-directory }}
       shell: bash
