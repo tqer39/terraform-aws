@@ -40,10 +40,8 @@ runs:
     - name: Terraform Graph
       run: |
         terraform graph | \
-          sed -e 's/%0A/\\n/g' | \
-          sed -e 's/\\t//g' | \
-          sed -e 's/\"/"/g' | \
           terraform-graph-beautifier \
+          --exclude="module.root.provider" |
           --output-type=cyto-html \
           -debug \
           > dependency-graph.html
