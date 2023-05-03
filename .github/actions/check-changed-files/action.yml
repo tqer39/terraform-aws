@@ -1,0 +1,22 @@
+---
+name: Check for changes in Terraform files
+
+description: Check for changes in Terraform files
+
+inputs:
+  TF_PATH:
+    description: Terraform の実行対象ディレクトリ
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Run Check for changes in Terraform files
+      run: |
+        chmod +x ./.github/scripts/check-for-changes-in-terraform-files.sh
+        echo "check_changed=1" >> $GITHUB_ENV
+        ./.github/scripts/check-for-changes-in-terraform-files.sh \
+          "${{ inputs.TF_PATH }}" \
+          "${{ github.head_ref }}"
+        echo "check_changed=$?" >> $GITHUB_ENV
+      shell: bash
