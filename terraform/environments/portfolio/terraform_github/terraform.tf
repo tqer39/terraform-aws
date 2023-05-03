@@ -7,7 +7,7 @@ terraform {
     }
     http = {
       source  = "hashicorp/http"
-      version = "3.0.1"
+      version = "3.3.0"
     }
     tls = {
       source  = "hashicorp/tls"
