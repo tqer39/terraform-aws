@@ -12,14 +12,13 @@ runs:
   using: composite
   steps:
     - name: Get current Terraform version
-      id: get-tf-version
-      run: echo ::set-output name=TERRAFORM_VERSION::$(grep terraform .tool-versions | cut -d' ' -f2)
+      run: echo "TERRAFORM_VERSION=$(grep terraform .tool-versions | cut -d' ' -f2)" >> $GITHUB_ENV
       shell: bash
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version: ${{ steps.get-tf-version.outputs.TERRAFORM_VERSION }}
+        terraform_version: env.TERRAFORM_VERSION
 
     - name: Terraform Format
       run: terraform fmt -check -recursive -diff

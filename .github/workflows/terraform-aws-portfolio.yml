@@ -95,7 +95,7 @@ jobs:
           env: ${{ env.AWS_ENV_NAME }}
 
       - name: Terraform Apply
-        if: env.check_changed == 0 && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        if: env.check_changed == 0 && contains(fromJSON('["push", "workflow_dispatch"]'), github.event_name)
         uses: ./.github/actions/terraform-apply
         with:
           working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
