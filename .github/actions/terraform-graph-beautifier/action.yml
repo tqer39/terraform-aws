@@ -1,0 +1,52 @@
+---
+name: Terraform Graph Beautifier
+
+description: Terraform Graph Beautifier
+
+inputs:
+  working-directory:
+    description: Terraform CLI 実行時のパス
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Go
+      uses: ./.github/actions/setup-go
+
+    - name: Install Terraform Graph Beautifier
+      run: |
+        go install github.com/pcasteran/terraform-graph-beautifier@latest
+
+        go version
+        which go
+        which terraform-graph-beautifier
+        which terraform
+        terraform -v
+        terraform-graph-beautifier -v
+      shell: bash
+
+    - name: Terraform Graph
+      run: |
+        terraform graph | sed -e 's/digraph/digraph "graph"/g' > dependency-graph.dot
+        cat dependency-graph.dot
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+
+    - name: Terraform Graph Beautifier
+      # run: |
+      #   terraform-graph-beautifier --input dependency-graph.dot \
+      #     terraform-graph-beautifier \
+      #     --exclude="module.root.provider" \
+      #     --output-type=cyto-html \
+      #     -debug \
+      #     > dependency-graph.html
+      run: |
+        terraform graph | sed -e 's/digraph/digraph "graph"/g' | docker run --rm -i \
+          --name terraform-graph-beautifier \
+          ghcr.io/pcasteran/terraform-graph-beautifier:latest-linux \
+          --output-type=cyto-html \
+          -debug \
+          > dependency-graph.html
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
