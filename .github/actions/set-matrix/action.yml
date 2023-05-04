@@ -19,6 +19,24 @@ runs:
     - name: make values
       id: set-matrix
       run: |
-        TEMP="$(echo "[$(sed "s/^/\"/g" ".github/workflows/deploy_pipeline/${{ inputs.AWS_ENV_NAME }}" | sed "s/$/\",/g" | sed "$ s/,$//g")]" | jq -c)"
-        echo "matrix=${TEMP}" >> $GITHUB_OUTPUT
+        declare -a deploy_pipelines=($(cat ./.github/workflows/deploy_pipeline/${{ env.AWS_ENV_NAME }}))
+        declare -a temp=()
+        chmod +x ./.github/scripts/check-for-changes-in-terraform-files.sh
+
+        for pipeline in "${deploy_pipelines[@]}"; do
+          ./.github/scripts/check-for-changes-in-terraform-files.sh \
+            "terraform/environments/${{ env.AWS_ENV_NAME }}/${pipeline}" \
+            "${{ github.head_ref }}"
+
+          # 処理対象のデプロイパイプラインを追加
+          if [ "$?" == 0 ]; then
+            temp+=("$pipeline")
+          fi
+        done
+
+        joined_array=$(printf "\"%s\"," "${temp[@]}")
+        joined_array=${joined_array%,}
+        joined_array="[$joined_array]"
+        echo "joined_array: ${joined_array}"
+        echo "matrix=$joined_array" >> $GITHUB_OUTPUT
       shell: bash
