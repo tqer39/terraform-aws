@@ -10,6 +10,9 @@ inputs:
   github-token:
     description: サードパーティの Action を実行するための権限を付与するための認証用トークン
     required: true
+  AWS_ACCOUNT_ID:
+    description: AWS アカウント ID
+    required: true
   working-directory:
     description: Terraform CLI 実行時のパス
     required: true
@@ -57,7 +60,17 @@ runs:
       run: echo "ERROR_MSG=difference check CIがエラー終了しました" >> "$GITHUB_ENV"
       shell: bash
 
-    - name: Terraform Plan (failure) -> Status
-      if: steps.terraform-plan.outcome == 'failure'
-      run: exit 1
+    - name: Slack Notification (failure)
+      continue-on-error: true
+      if: failure()
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_CHANNEL: "#ntf_gh_private-lab"
+        SLACK_COLOR: danger
+        SLACK_TITLE: "${{ inputs.AWS_ENV_NAME }}(${{ inputs.AWS_ACCOUNT_ID }}): ${{ env.ERROR_MSG }}"
+        SLACK_MESSAGE: "<!subteam^U0RFFAK9U> 確認してください。\npath: `${{ inputs.working-directory }}`"
+        SLACK_LINK_NAMES: "true"
+        SLACK_USERNAME: github-bot
+        SLACK_ICON_EMOJI: ":x:"
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
       shell: bash
