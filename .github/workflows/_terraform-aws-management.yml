@@ -76,7 +76,7 @@ jobs:
       - name: Terraform Plan
         uses: ./.github/actions/terraform-plan
         with:
-          env_name: ${{ env.AWS_ENV_NAME }}
+          AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
           working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
