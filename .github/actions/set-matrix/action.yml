@@ -29,9 +29,7 @@ runs:
             "${{ github.head_ref }}"
 
           # 処理対象のデプロイパイプラインを追加
-          if [ "$?" == 0 ]; then
-            temp+=("$pipeline")
-          fi
+          [ "$?" == 0 ] && temp+=("$pipeline")
         done
 
         joined_array=$(printf "\"%s\"," "${temp[@]}")
