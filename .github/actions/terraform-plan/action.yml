@@ -76,4 +76,3 @@ runs:
         SLACK_USERNAME: github-bot
         SLACK_ICON_EMOJI: ":x:"
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-      shell: bash
