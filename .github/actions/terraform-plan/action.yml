@@ -4,17 +4,17 @@ name: Terraform Plan
 description: Terraform Plan
 
 inputs:
+  AWS_ACCOUNT_ID:
+    description: AWS アカウント ID
+    required: true
   AWS_ENV_NAME:
     description: 環境名
-    required: true
-  SLACK_WEBHOOK_URL:
-    description: Slack の Webhook URL
     required: true
   github-token:
     description: サードパーティの Action を実行するための権限を付与するための認証用トークン
     required: true
-  AWS_ACCOUNT_ID:
-    description: AWS アカウント ID
+  SLACK_WEBHOOK_URL:
+    description: Slack の Webhook URL
     required: true
   working-directory:
     description: Terraform CLI 実行時のパス

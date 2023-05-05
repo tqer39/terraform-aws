@@ -76,9 +76,9 @@ jobs:
         with:
           AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
           AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Start Deployment
         if: github.ref == 'refs/heads/main'
