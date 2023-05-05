@@ -1,0 +1,17 @@
+---
+name: Terraform Plan - Portfolio (difference check)
+
+on:
+  schedule:
+    # 毎日 7:00(JST) に実行
+    - cron: "0 22 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: terraform-aws-portfolio-difference-check
+  cancel-in-progress: true
+
+jobs:
+  terraform-difference-check:
+    name: Terraform portfolio
+    uses: ./.github/workflows/_terraform-aws-portfolio.yml
