@@ -35,6 +35,7 @@ runs:
       uses: itkq/actions-tfcmt/setup@main
 
     - name: Terraform Plan
+      continue-on-error: true
       run: |
         TARGET=$(echo ${{ inputs.working-directory }} | sed -e 's|^.*terraform/environments/||' | cut -c 1-36)
         tfcmt --var target:$TARGET plan -patch -- terraform plan -detailed-exitcode -no-color
