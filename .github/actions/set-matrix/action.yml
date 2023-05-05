@@ -33,10 +33,7 @@ runs:
         done
 
         joined_array=$(printf "\"%s\"," "${temp[@]}")
-        joined_array=${joined_array%,}
-        joined_array="[$joined_array]"
-        echo "joined_array: ${joined_array}"
-        echo "joined_array=$joined_array" >> $GITHUB_ENV
+        echo "joined_array=$(echo "[${joined_array%,}]")" >> $GITHUB_ENV
       shell: bash
 
     - name: push
@@ -44,13 +41,11 @@ runs:
       run: |
         declare -a deploy_pipelines=($(cat ./.github/workflows/deploy_pipeline/${{ env.AWS_ENV_NAME }}))
         joined_array=$(printf "\"%s\"," "${deploy_pipelines[@]}")
-        joined_array=${joined_array%,}
-        joined_array="[$joined_array]"
-        echo "joined_array: ${joined_array}"
-        echo "joined_array=$joined_array" >> $GITHUB_ENV
+        echo "joined_array=$(echo "[${joined_array%,}]")" >> $GITHUB_ENV
       shell: bash
 
     - name: make values
       id: set-matrix
-      run: echo "matrix=${{ env.joined_array }}" >> $GITHUB_OUTPUT
+      run: |
+        echo "matrix=$(echo $joined_array | jq -c)" >> $GITHUB_OUTPUT
       shell: bash
