@@ -5,7 +5,7 @@ on:
   pull_request:
     paths:
       - ".github/actions/**/action.yml"
-      - ".github/workflows/terraform-aws-portfolio.yml"
+      - ".github/workflows/_terraform-aws-portfolio.yml"
       - ".tool-versions"
       - "terraform/environments/portfolio/**"
       - "terraform/modules/**"
@@ -15,11 +15,12 @@ on:
       - main
     paths:
       - ".github/actions/**/action.yml"
-      - ".github/workflows/terraform-aws-portfolio.yml"
+      - ".github/workflows/_terraform-aws-portfolio.yml"
       - ".tool-versions"
       - "terraform/environments/portfolio/**"
       - "terraform/modules/**"
       - "terraform/usecases/**"
+  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -73,9 +74,11 @@ jobs:
       - name: Terraform Plan
         uses: ./.github/actions/terraform-plan
         with:
-          env_name: ${{ env.AWS_ENV_NAME }}
-          working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
+          AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
+          AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
 
       - name: Start Deployment
         if: github.ref == 'refs/heads/main'

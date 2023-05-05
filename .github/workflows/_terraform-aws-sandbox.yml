@@ -1,15 +1,13 @@
 ---
-name: Terraform - AWS - Management
+name: Terraform - AWS - Sandbox
 
 on:
   pull_request:
-    branches:
-      - main
     paths:
       - ".github/actions/**/action.yml"
-      - ".github/workflows/terraform-aws-management.yml"
+      - ".github/workflows/_terraform-aws-sandbox.yml"
       - ".tool-versions"
-      - "terraform/environments/management/**"
+      - "terraform/environments/sandbox/**"
       - "terraform/modules/**"
       - "terraform/usecases/**"
   push:
@@ -17,11 +15,12 @@ on:
       - main
     paths:
       - ".github/actions/**/action.yml"
-      - ".github/workflows/terraform-aws-management.yml"
+      - ".github/workflows/_terraform-aws-sandbox.yml"
       - ".tool-versions"
-      - "terraform/environments/management/**"
+      - "terraform/environments/sandbox/**"
       - "terraform/modules/**"
       - "terraform/usecases/**"
+  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -30,12 +29,12 @@ permissions:
   id-token: write
   pull-requests: write
 
-concurrency: terraform-aws-management
+concurrency: terraform-aws-sandbox
 
 env:
-  AWS_ACCOUNT_ID: 577523824419
-  AWS_ENV_NAME: management
-  OIDC_IAM_ROLE: management-terraform-aws-deploy
+  AWS_ACCOUNT_ID: 107662415716
+  AWS_ENV_NAME: sandbox
+  OIDC_IAM_ROLE: sandbox-terraform-aws-deploy
 
 jobs:
   set-matrix:
@@ -75,9 +74,11 @@ jobs:
       - name: Terraform Plan
         uses: ./.github/actions/terraform-plan
         with:
-          env_name: ${{ env.AWS_ENV_NAME }}
-          working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
+          AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
+          AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
 
       - name: Start Deployment
         if: github.ref == 'refs/heads/main'

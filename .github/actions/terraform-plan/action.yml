@@ -4,11 +4,17 @@ name: Terraform Plan
 description: Terraform Plan
 
 inputs:
-  env_name:
-    description: 環境名（dev, stg, prod）
+  AWS_ACCOUNT_ID:
+    description: AWS アカウント ID
+    required: true
+  AWS_ENV_NAME:
+    description: 環境名
     required: true
   github-token:
     description: サードパーティの Action を実行するための権限を付与するための認証用トークン
+    required: true
+  SLACK_WEBHOOK_URL:
+    description: Slack の Webhook URL
     required: true
   working-directory:
     description: Terraform CLI 実行時のパス
@@ -32,16 +38,41 @@ runs:
       uses: itkq/actions-tfcmt/setup@main
 
     - name: Terraform Plan
-      id: terraform-plan
+      continue-on-error: true
       run: |
         TARGET=$(echo ${{ inputs.working-directory }} | sed -e 's|^.*terraform/environments/||' | cut -c 1-36)
-        tfcmt --var target:$TARGET plan -patch -- terraform plan -no-color
+        tfcmt --var target:$TARGET plan -patch -- terraform plan -detailed-exitcode -no-color
+        case $? in
+          0) echo "TF_PLAN_STATUS=no-changes" ;;
+          1) echo "TF_PLAN_STATUS=error" ;;
+          2) echo "TF_PLAN_STATUS=has-diff" ;;
+        esac
+        echo "TF_PLAN_STATUS=$TF_PLAN_STATUS" >> $GITHUB_ENV
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
       working-directory: ${{ inputs.working-directory }}
       shell: bash
 
-    - name: Terraform Plan (failure) -> Status
-      if: steps.terraform-plan.outcome == 'failure'
-      run: exit 1
+    - name: Set Slack Message (Terraform Plan failure)
+      if: env.TF_PLAN_STATUS == 'has-diff'
+      run: echo "ERROR_MSG=インフラのコードと実態のリソースに差分があります" >> "$GITHUB_ENV"
       shell: bash
+
+    - name: Set Slack Message (another error)
+      if: failure() && env.TF_PLAN_STATUS == 'error'
+      run: echo "ERROR_MSG=difference check CIがエラー終了しました" >> "$GITHUB_ENV"
+      shell: bash
+
+    - name: Slack Notification (failure)
+      continue-on-error: true
+      if: failure()
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_CHANNEL: "#ntf_gh_private-lab"
+        SLACK_COLOR: danger
+        SLACK_TITLE: "${{ inputs.AWS_ENV_NAME }}(${{ inputs.AWS_ACCOUNT_ID }}): ${{ env.ERROR_MSG }}"
+        SLACK_MESSAGE: "<!subteam^U0RFFAK9U> 確認してください。\npath: `${{ inputs.working-directory }}`"
+        SLACK_LINK_NAMES: "true"
+        SLACK_USERNAME: github-bot
+        SLACK_ICON_EMOJI: ":x:"
+        SLACK_WEBHOOK: ${{ inputs.SLACK_WEBHOOK }}
