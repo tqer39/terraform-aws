@@ -52,6 +52,11 @@ runs:
       run: echo "ERROR_MSG=インフラのコードと実態のリソースに差分があります" >> "$GITHUB_ENV"
       shell: bash
 
+    - name: Set Slack Message (another error)
+      if: failure() && env.TF_PLAN_STATUS == 'error'
+      run: echo "ERROR_MSG=difference check CIがエラー終了しました" >> "$GITHUB_ENV"
+      shell: bash
+
     - name: Terraform Plan (failure) -> Status
       if: steps.terraform-plan.outcome == 'failure'
       run: exit 1
