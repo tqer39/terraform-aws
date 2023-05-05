@@ -35,7 +35,13 @@ runs:
       id: terraform-plan
       run: |
         TARGET=$(echo ${{ inputs.working-directory }} | sed -e 's|^.*terraform/environments/||' | cut -c 1-36)
-        tfcmt --var target:$TARGET plan -patch -- terraform plan -no-color
+        tfcmt --var target:$TARGET plan -patch -- terraform plan -detailed-exitcode -no-color
+        case $? in
+          0) echo "TF_PLAN_STATUS=no-changes" >> $GITHUB_ENV ;;
+          1) echo "TF_PLAN_STATUS=error"      >> $GITHUB_ENV ;;
+          2) echo "TF_PLAN_STATUS=has-diff"   >> $GITHUB_ENV ;;
+        esac
+        echo "TF_PLAN_STATUS: $TF_PLAN_STATUS"
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
       working-directory: ${{ inputs.working-directory }}
