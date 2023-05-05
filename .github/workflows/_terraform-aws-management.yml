@@ -1,13 +1,15 @@
 ---
-name: Terraform - AWS - Sandbox
+name: Terraform - AWS - Management
 
 on:
   pull_request:
+    branches:
+      - main
     paths:
       - ".github/actions/**/action.yml"
-      - ".github/workflows/terraform-aws-sandbox.yml"
+      - ".github/workflows/_terraform-aws-management.yml"
       - ".tool-versions"
-      - "terraform/environments/sandbox/**"
+      - "terraform/environments/management/**"
       - "terraform/modules/**"
       - "terraform/usecases/**"
   push:
@@ -15,11 +17,12 @@ on:
       - main
     paths:
       - ".github/actions/**/action.yml"
-      - ".github/workflows/terraform-aws-sandbox.yml"
+      - ".github/workflows/_terraform-aws-management.yml"
       - ".tool-versions"
-      - "terraform/environments/sandbox/**"
+      - "terraform/environments/management/**"
       - "terraform/modules/**"
       - "terraform/usecases/**"
+  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -28,12 +31,12 @@ permissions:
   id-token: write
   pull-requests: write
 
-concurrency: terraform-aws-sandbox
+concurrency: terraform-aws-management
 
 env:
-  AWS_ACCOUNT_ID: 107662415716
-  AWS_ENV_NAME: sandbox
-  OIDC_IAM_ROLE: sandbox-terraform-aws-deploy
+  AWS_ACCOUNT_ID: 577523824419
+  AWS_ENV_NAME: management
+  OIDC_IAM_ROLE: management-terraform-aws-deploy
 
 jobs:
   set-matrix:

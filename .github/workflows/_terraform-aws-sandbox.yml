@@ -1,13 +1,13 @@
 ---
-name: Terraform - AWS - Portfolio
+name: Terraform - AWS - Sandbox
 
 on:
   pull_request:
     paths:
       - ".github/actions/**/action.yml"
-      - ".github/workflows/terraform-aws-portfolio.yml"
+      - ".github/workflows/_terraform-aws-sandbox.yml"
       - ".tool-versions"
-      - "terraform/environments/portfolio/**"
+      - "terraform/environments/sandbox/**"
       - "terraform/modules/**"
       - "terraform/usecases/**"
   push:
@@ -15,11 +15,12 @@ on:
       - main
     paths:
       - ".github/actions/**/action.yml"
-      - ".github/workflows/terraform-aws-portfolio.yml"
+      - ".github/workflows/_terraform-aws-sandbox.yml"
       - ".tool-versions"
-      - "terraform/environments/portfolio/**"
+      - "terraform/environments/sandbox/**"
       - "terraform/modules/**"
       - "terraform/usecases/**"
+  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -28,12 +29,12 @@ permissions:
   id-token: write
   pull-requests: write
 
-concurrency: terraform-aws-portfolio
+concurrency: terraform-aws-sandbox
 
 env:
-  AWS_ACCOUNT_ID: "072693953877"
-  AWS_ENV_NAME: portfolio
-  OIDC_IAM_ROLE: portfolio-terraform-aws-deploy
+  AWS_ACCOUNT_ID: 107662415716
+  AWS_ENV_NAME: sandbox
+  OIDC_IAM_ROLE: sandbox-terraform-aws-deploy
 
 jobs:
   set-matrix:

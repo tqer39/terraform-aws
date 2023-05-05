@@ -16,8 +16,8 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: make values
-      id: set-matrix
+    - name: pull_request
+      if: github.event_name == 'pull_request'
       run: |
         declare -a deploy_pipelines=($(cat ./.github/workflows/deploy_pipeline/${{ env.AWS_ENV_NAME }}))
         declare -a temp=()
@@ -38,5 +38,21 @@ runs:
         joined_array=${joined_array%,}
         joined_array="[$joined_array]"
         echo "joined_array: ${joined_array}"
-        echo "matrix=$joined_array" >> $GITHUB_OUTPUT
+        echo "joined_array=$joined_array" >> $GITHUB_ENV
+      shell: bash
+
+    - name: push
+      if: github.event_name == 'push'
+      run: |
+        declare -a deploy_pipelines=($(cat ./.github/workflows/deploy_pipeline/${{ env.AWS_ENV_NAME }}))
+        joined_array=$(printf "\"%s\"," "${deploy_pipelines[@]}")
+        joined_array=${joined_array%,}
+        joined_array="[$joined_array]"
+        echo "joined_array: ${joined_array}"
+        echo "joined_array=$joined_array" >> $GITHUB_ENV
+      shell: bash
+
+    - name: make values
+      id: set-matrix
+      run: echo "matrix=${{ env.joined_array }}" >> $GITHUB_OUTPUT
       shell: bash

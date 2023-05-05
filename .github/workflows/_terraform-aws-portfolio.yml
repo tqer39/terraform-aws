@@ -1,15 +1,13 @@
 ---
-name: Terraform - AWS - Management
+name: Terraform - AWS - Portfolio
 
 on:
   pull_request:
-    branches:
-      - main
     paths:
       - ".github/actions/**/action.yml"
-      - ".github/workflows/terraform-aws-management.yml"
+      - ".github/workflows/_terraform-aws-portfolio.yml"
       - ".tool-versions"
-      - "terraform/environments/management/**"
+      - "terraform/environments/portfolio/**"
       - "terraform/modules/**"
       - "terraform/usecases/**"
   push:
@@ -17,11 +15,12 @@ on:
       - main
     paths:
       - ".github/actions/**/action.yml"
-      - ".github/workflows/terraform-aws-management.yml"
+      - ".github/workflows/_terraform-aws-portfolio.yml"
       - ".tool-versions"
-      - "terraform/environments/management/**"
+      - "terraform/environments/portfolio/**"
       - "terraform/modules/**"
       - "terraform/usecases/**"
+  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -30,12 +29,12 @@ permissions:
   id-token: write
   pull-requests: write
 
-concurrency: terraform-aws-management
+concurrency: terraform-aws-portfolio
 
 env:
-  AWS_ACCOUNT_ID: 577523824419
-  AWS_ENV_NAME: management
-  OIDC_IAM_ROLE: management-terraform-aws-deploy
+  AWS_ACCOUNT_ID: "072693953877"
+  AWS_ENV_NAME: portfolio
+  OIDC_IAM_ROLE: portfolio-terraform-aws-deploy
 
 jobs:
   set-matrix:

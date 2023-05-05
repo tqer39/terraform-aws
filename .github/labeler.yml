@@ -30,13 +30,13 @@
   - "CODEOWNERS"
 
 "management":
-  - ".github/workflows/terraform-aws-management.yml"
+  - ".github/workflows/_terraform-aws-management.yml"
   - "terraform/environments/management/**"
 
 "sandbox":
-  - ".github/workflows/terraform-aws-sandbox.yml"
+  - ".github/workflows/_terraform-aws-sandbox.yml"
   - "terraform/environments/sandbox/**"
 
 "portfolio":
-  - ".github/workflows/terraform-aws-portfolio.yml"
+  - ".github/workflows/_terraform-aws-portfolio.yml"
   - "terraform/environments/portfolio/**"
