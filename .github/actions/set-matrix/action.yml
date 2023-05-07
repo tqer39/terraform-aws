@@ -18,6 +18,7 @@ runs:
   steps:
     - name: pull_request
       if: github.event_name == 'pull_request'
+      continue-on-error: true
       run: |
         declare -a deploy_pipelines=($(cat ./.github/workflows/deploy_pipeline/${{ env.AWS_ENV_NAME }}))
         declare -a temp=()
