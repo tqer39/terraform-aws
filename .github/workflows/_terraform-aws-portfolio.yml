@@ -104,3 +104,25 @@ jobs:
           status: ${{ job.status }}
           env: ${{ steps.deployment.outputs.env }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+
+  hide_comments:
+    name: Hide Comments
+    needs: [terraform]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: contains(fromJSON('["pull_request"]'), github.event_name)
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Check and hide comments
+        run: |
+          chmod +x ./.github/scripts/hide-comments.sh
+          ./.github/scripts/hide-comments.sh \
+            "tqer39" \
+            "terraform-aws" \
+            "portfolio" \
+            "${{ github.event.pull_request.number }}" \
+            "${GITHUB_TOKEN}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
