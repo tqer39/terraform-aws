@@ -75,17 +75,21 @@ function delete_comment() {
   json_payload=$(cat << EOF
 {
   "query": "mutation {
-    deleteIssueComment(input: {id: "${node_id}"}) {
+    deleteIssueComment(input: {
+      id: \"${node_id}\"}
+    ) {
       clientMutationId
     }
-  }
+  }"
 }
 EOF
   )
 
   # Delete the comment
   curl -X POST -H "Authorization: bearer ${GITHUB_TOKEN}" \
-    -d "${json_payload}" https://api.github.com/graphql
+    -d "{
+      \"query\": \"mutation { deleteIssueComment(input: {id: '${node_id}'}) { clientMutationId } }\"
+    }" https://api.github.com/graphql
 }
 
 function main() {
