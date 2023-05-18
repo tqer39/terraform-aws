@@ -21,7 +21,21 @@ on:
       - "terraform/modules/**"
       - "terraform/usecases/**"
   workflow_call:
+    inputs:
+      CHECK_DIFF:
+        description: "差分チェックフラグ"
+        required: true
+        type: string
   workflow_dispatch:
+    inputs:
+      CHECK_DIFF:
+        description: "差分チェックフラグ"
+        required: true
+        type: choice
+        default: "_true"
+        options:
+          - "_true"
+          - "_false"
 
 permissions:
   contents: read
@@ -35,6 +49,7 @@ env:
   AWS_ACCOUNT_ID: "072693953877"
   AWS_ENV_NAME: portfolio
   OIDC_IAM_ROLE: portfolio-terraform-aws-deploy
+  CHECK_DIFF: ${{ inputs.CHECK_DIFF || github.event.inputs.CHECK_DIFF }}
 
 jobs:
   set-matrix:
@@ -76,6 +91,7 @@ jobs:
         with:
           AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
           AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
+          CHECK_DIFF: ${{ env.CHECK_DIFF }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}

@@ -15,3 +15,5 @@ jobs:
   terraform-difference-check:
     name: Terraform portfolio
     uses: ./.github/workflows/_terraform-aws-portfolio.yml
+    with:
+      CHECK_DIFF: "true1"
