@@ -64,7 +64,7 @@ function delete_comments() {
 
     if [[ "${comment_body}" =~ .*No\ changes.*Target.*${ENV_NAME}/.* ]]; then
       echo "node_id: ${node_id}"
-      hide_comment "${node_id}"
+      delete_comment "${node_id}"
     fi
   done
 }
