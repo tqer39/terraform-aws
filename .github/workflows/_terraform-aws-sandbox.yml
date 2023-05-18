@@ -43,7 +43,9 @@ permissions:
   id-token: write
   pull-requests: write
 
-concurrency: terraform-aws-sandbox
+concurrency:
+  group: terraform-aws-sandbox
+  cancel-in-progress: true
 
 env:
   AWS_ACCOUNT_ID: 107662415716

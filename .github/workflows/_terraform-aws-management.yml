@@ -45,7 +45,9 @@ permissions:
   id-token: write
   pull-requests: write
 
-concurrency: terraform-aws-management
+concurrency:
+  group: terraform-aws-management
+  cancel-in-progress: true
 
 env:
   AWS_ACCOUNT_ID: 577523824419
