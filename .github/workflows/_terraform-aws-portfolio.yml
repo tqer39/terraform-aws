@@ -124,8 +124,8 @@ jobs:
           env: ${{ steps.deployment.outputs.env }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
-  hide_comments:
-    name: Hide Comments
+  delete_comments:
+    name: Delete Comments
     needs: [terraform]
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -134,10 +134,10 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Check and hide comments
+      - name: Check and delete comments
         run: |
-          chmod +x ./.github/scripts/hide-comments.sh
-          ./.github/scripts/hide-comments.sh \
+          chmod +x ./.github/scripts/delete-comments.sh
+          ./.github/scripts/delete-comments.sh \
             "tqer39" \
             "terraform-aws" \
             "portfolio" \
