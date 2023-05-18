@@ -75,6 +75,7 @@
     "toset",
     "tqer",
     "unversioned",
-    "usecases"
+    "usecases",
+    "vercel"
   ]
 }
