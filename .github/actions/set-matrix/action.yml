@@ -18,19 +18,22 @@ runs:
   steps:
     - name: pull_request
       if: github.event_name == 'pull_request'
-      continue-on-error: true
       run: |
+        # pull_request の場合は処理対象を絞る
         declare -a deploy_pipelines=($(cat ./.github/workflows/deploy_pipeline/${{ env.AWS_ENV_NAME }}))
         declare -a temp=()
         chmod +x ./.github/scripts/check-for-changes-in-terraform-files.sh
 
         for pipeline in "${deploy_pipelines[@]}"; do
-          ./.github/scripts/check-for-changes-in-terraform-files.sh \
-            "terraform/environments/${{ env.AWS_ENV_NAME }}/${pipeline}" \
-            "${{ github.head_ref }}"
-
-          # 処理対象のデプロイパイプラインを追加
-          [ "$?" == 0 ] && temp+=("$pipeline")
+          if ! ./.github/scripts/check-for-changes-in-terraform-files.sh \
+            "terraform/src/${{ env.AWS_ENV_NAME }}/${pipeline}" \
+            "${{ github.base_ref }}" \
+            "${{ github.head_ref }}" ; then
+            echo "No changes in $pipeline"
+          else
+            # 処理対象のデプロイパイプラインを追加
+            temp+=("$pipeline")
+          fi
         done
 
         joined_array=$(printf "\"%s\"," "${temp[@]}")
@@ -40,6 +43,7 @@ runs:
     - name: push
       if: github.event_name == 'push'
       run: |
+        # push の場合は全て処理対象とする
         declare -a deploy_pipelines=($(cat ./.github/workflows/deploy_pipeline/${{ env.AWS_ENV_NAME }}))
         joined_array=$(printf "\"%s\"," "${deploy_pipelines[@]}")
         echo "joined_array=$(echo "[${joined_array%,}]")" >> $GITHUB_ENV
@@ -48,5 +52,9 @@ runs:
     - name: make values
       id: set-matrix
       run: |
+        matrix=$(echo $joined_array | jq -c)
+        if [ "$matrix" == "[\"\"]" ]; then
+          joined_array="empty"
+        fi
         echo "matrix=$(echo $joined_array | jq -c)" >> $GITHUB_OUTPUT
       shell: bash
