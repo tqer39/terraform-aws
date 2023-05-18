@@ -15,3 +15,5 @@ jobs:
   terraform-difference-check:
     name: Terraform sandbox
     uses: ./.github/workflows/_terraform-aws-sandbox.yml
+    with:
+      CHECK_DIFF: "true1"

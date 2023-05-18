@@ -21,7 +21,21 @@ on:
       - "terraform/modules/**"
       - "terraform/usecases/**"
   workflow_call:
+    inputs:
+      CHECK_DIFF:
+        description: "差分チェックフラグ"
+        required: true
+        type: string
   workflow_dispatch:
+    inputs:
+      CHECK_DIFF:
+        description: "差分チェックフラグ"
+        required: true
+        type: choice
+        default: "_true"
+        options:
+          - "_true"
+          - "_false"
 
 permissions:
   contents: read
@@ -29,12 +43,15 @@ permissions:
   id-token: write
   pull-requests: write
 
-concurrency: terraform-aws-portfolio
+concurrency:
+  group: terraform-aws-portfolio
+  cancel-in-progress: true
 
 env:
   AWS_ACCOUNT_ID: "072693953877"
   AWS_ENV_NAME: portfolio
   OIDC_IAM_ROLE: portfolio-terraform-aws-deploy
+  CHECK_DIFF: ${{ inputs.CHECK_DIFF || github.event.inputs.CHECK_DIFF }}
 
 jobs:
   set-matrix:
@@ -56,6 +73,7 @@ jobs:
   terraform:
     name: Terraform
     needs: [set-matrix]
+    if: ${{ needs.set-matrix.outputs.matrix != 'empty' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -76,6 +94,7 @@ jobs:
         with:
           AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
           AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
+          CHECK_DIFF: ${{ env.CHECK_DIFF }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
@@ -105,8 +124,8 @@ jobs:
           env: ${{ steps.deployment.outputs.env }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
-  hide_comments:
-    name: Hide Comments
+  delete_comments:
+    name: Delete Comments
     needs: [terraform]
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -115,10 +134,10 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Check and hide comments
+      - name: Check and delete comments
         run: |
-          chmod +x ./.github/scripts/hide-comments.sh
-          ./.github/scripts/hide-comments.sh \
+          chmod +x ./.github/scripts/delete-comments.sh
+          ./.github/scripts/delete-comments.sh \
             "tqer39" \
             "terraform-aws" \
             "portfolio" \

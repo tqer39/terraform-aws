@@ -31,6 +31,7 @@
     "esac",
     "fqdns",
     "fuga",
+    "getline",
     "hashi",
     "hashicorp",
     "hediet",
@@ -75,6 +76,7 @@
     "toset",
     "tqer",
     "unversioned",
-    "usecases"
+    "usecases",
+    "vercel"
   ]
 }

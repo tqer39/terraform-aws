@@ -15,3 +15,5 @@ jobs:
   terraform-difference-check:
     name: Terraform management
     uses: ./.github/workflows/_terraform-aws-management.yml
+    with:
+      CHECK_DIFF: "true1"
