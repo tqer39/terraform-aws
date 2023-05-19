@@ -11,6 +11,7 @@ REPOSITORY="$2"
 ENV_NAME="$3"
 PULL_REQUEST_NUMBER="$4"
 GITHUB_TOKEN="$5"
+SEARCH_STRING=".*No\ changes.*Target.*${ENV_NAME}/.*"
 
 if [ -z "${GITHUB_TOKEN}" ]; then
   echo "GITHUB_TOKEN is empty."
@@ -84,7 +85,7 @@ function delete_comments() {
     node_id=$(echo "${comment}" | base64 -di | jq -r '.id')
     comment_body=$(echo "${comment}" | base64 -di | jq -r '.body')
 
-    if [[ "${comment_body}" =~ .*No\ changes.*Target.*${ENV_NAME}/.* ]]; then
+    if [[ "${comment_body}" =~ $SEARCH_STRING ]]; then
       echo "node_id: ${node_id}"
       delete_comment "${node_id}"
     fi
