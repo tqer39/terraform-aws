@@ -126,7 +126,7 @@ jobs:
           env: ${{ steps.deployment.outputs.env }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
-  delete_comments:
+  delete_pr_comments:
     name: Delete PR Comments
     needs: [terraform]
     runs-on: ubuntu-latest
