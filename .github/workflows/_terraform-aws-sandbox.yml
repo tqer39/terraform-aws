@@ -140,7 +140,7 @@ jobs:
           ./.github/scripts/delete_pr_comments.sh \
             "tqer39" \
             "terraform-aws" \
-            "$AWS_ENV_NAME" \
+            "${{ env.AWS_ENV_NAME }}" \
             "${{ github.event.pull_request.number }}" \
             "${GITHUB_TOKEN}"
         env:
