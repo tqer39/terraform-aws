@@ -125,7 +125,7 @@ jobs:
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
   delete_comments:
-    name: Delete Comments
+    name: Delete PR Comments
     needs: [terraform]
     runs-on: ubuntu-latest
     timeout-minutes: 5
