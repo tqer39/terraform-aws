@@ -25,7 +25,7 @@ runs:
         chmod +x ./.github/scripts/check_for_changes_in_terraform_files.sh.sh
 
         for pipeline in "${deploy_pipelines[@]}"; do
-          if ! ./.github/scripts/check_for_changes_in_terraform_files.sh.sh \
+          if ! ./.github/scripts/check_for_changes_in_terraform_files.sh \
             "terraform/src/${{ env.AWS_ENV_NAME }}/${pipeline}" \
             "${{ github.base_ref }}" \
             "${{ github.head_ref }}" ; then
