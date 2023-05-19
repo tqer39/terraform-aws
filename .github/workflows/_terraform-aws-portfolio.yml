@@ -136,8 +136,8 @@ jobs:
 
       - name: Check and delete comments
         run: |
-          chmod +x ./.github/scripts/delete-comments.sh
-          ./.github/scripts/delete-comments.sh \
+          chmod +x ./.github/scripts/delete_pr_comments.sh
+          ./.github/scripts/delete_pr_comments.sh \
             "tqer39" \
             "terraform-aws" \
             "portfolio" \
