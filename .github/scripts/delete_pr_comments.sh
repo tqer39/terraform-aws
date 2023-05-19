@@ -41,15 +41,15 @@ function get_comments() {
 }
 EOF
   )
-    # echo "[debug] json_payload: ${json_payload}"
+    echo "[debug] json_payload: ${json_payload}"
 
     # コメントを取得
     #   コメントに特殊文字があるからかデータが正常な json ではないため
     #   @base64 でエンコードしておき、データを取り出すタイミングでデコードする
     COMMENTS=$(curl -s -X POST -H "Authorization: bearer ${GITHUB_TOKEN}" \
       -H "Content-Type: application/json" -d "${json_payload}" \
-      "https://api.github.com/graphql" | jq '@base64')
-    # echo "[debug] COMMENTS: ${COMMENTS}"
+      "https://api.github.com/graphql")
+    echo "[debug] COMMENTS: ${COMMENTS}"
 
     if [ -z "${COMMENTS}" ]; then
       echo "COMMENTS is empty."
