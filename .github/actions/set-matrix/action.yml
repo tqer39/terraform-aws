@@ -22,10 +22,10 @@ runs:
         # pull_request の場合は処理対象を絞る
         declare -a deploy_pipelines=($(cat ./.github/workflows/deploy_pipeline/${{ env.AWS_ENV_NAME }}))
         declare -a temp=()
-        chmod +x ./.github/scripts/check-for-changes-in-terraform-files.sh
+        chmod +x ./.github/scripts/check_for_changes_in_terraform_files.sh.sh
 
         for pipeline in "${deploy_pipelines[@]}"; do
-          if ! ./.github/scripts/check-for-changes-in-terraform-files.sh \
+          if ! ./.github/scripts/check_for_changes_in_terraform_files.sh.sh \
             "terraform/src/${{ env.AWS_ENV_NAME }}/${pipeline}" \
             "${{ github.base_ref }}" \
             "${{ github.head_ref }}" ; then
