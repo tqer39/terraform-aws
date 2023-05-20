@@ -75,7 +75,7 @@ runs:
       shell: bash
 
     - name: Set Slack Message (another error)
-      if: steps.terraform-plan.outputs.exitcode == '1'
+      if: steps.terraform-plan.outputs.exitcode == 1
       run: echo "ERROR_MSG=difference check CIがエラー終了しました" >> "$GITHUB_ENV"
       shell: bash
 
@@ -91,7 +91,7 @@ runs:
 
     - name: Slack Notification (failure)
       continue-on-error: true
-      if: steps.terraform-plan.outputs.exitcode == '1' || \
+      if: steps.terraform-plan.outputs.exitcode == 1 || \
         (env.TF_PLAN_STATUS == 'has-diff' && ${{ inputs.CHECK_DIFF }} == '_true')
       uses: rtCamp/action-slack-notify@v2
       env:
