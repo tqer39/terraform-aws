@@ -51,7 +51,7 @@ env:
   AWS_ACCOUNT_ID: "072693953877"
   AWS_ENV_NAME: portfolio
   OIDC_IAM_ROLE: portfolio-terraform-aws-deploy
-  CHECK_DIFF: ${{ inputs.CHECK_DIFF || github.event.inputs.CHECK_DIFF }} || "_false"
+  CHECK_DIFF: ${{ inputs.CHECK_DIFF || github.event.inputs.CHECK_DIFF || '_false' }}
 
 jobs:
   set-matrix:
@@ -88,6 +88,10 @@ jobs:
         uses: ./.github/actions/aws-credential
         with:
           oidc-iam-role: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
+
+      - name: CHECK_DIFF
+        run: |
+          echo "CHECK_DIFF: ${{ env.CHECK_DIFF }}"
 
       - name: Terraform Plan
         uses: ./.github/actions/terraform-plan
