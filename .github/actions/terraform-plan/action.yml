@@ -82,11 +82,13 @@ runs:
     - name: CHECk
       run: |
         echo "[debug] TF_PLAN_STATUS: $TF_PLAN_STATUS"
+        echo "[debug] TF_PLAN_STATUS2: $TF_PLAN_STATUS2"
         echo "[debug] TF_PLAN_EXIT_CODE: $TF_PLAN_EXIT_CODE"
         echo "[debug] CHECK_DIFF: $CHECK_DIFF"
       env:
         TF_PLAN_EXIT_CODE: ${{ steps.terraform-plan.outputs.exitcode }}
         CHECK_DIFF: ${{ inputs.CHECK_DIFF }}
+        TF_PLAN_STATUS2: ${{ steps.tfcmt.outputs.TF_PLAN_STATUS }}
       shell: bash
 
     - name: Slack Notification (failure)
