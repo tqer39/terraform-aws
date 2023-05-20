@@ -1,13 +1,14 @@
-query GetPRComments($owner: String!, $repository: String!, $number: Int!) {
+query GetPRComments($owner: String!, $repository: String!, $pr_number: Int!, $end_cursor: String) {
   repository(owner: $owner, name: $repository) {
-    pullRequest(number: $number) {
-      comments(first: 100) {
+    pullRequest(number: $pr_number) {
+      comments(first: 100, after:$end_cursor) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
         nodes {
           id
           body
-          author {
-            login
-          }
         }
       }
     }
