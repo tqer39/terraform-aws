@@ -95,7 +95,7 @@ function delete_comments() {
 # $1: node_id
 function delete_comment() {
   local node_id="$1"
-  query=$(<"delete_pr_comment.graphql")
+  query=$(<"./.github/scripts/delete_pr_comment.graphql")
   query=$(echo "${query}" | tr -d '\n') # 改行があるとダメなので削除
   json_payload=$(cat <<EOF
 {
