@@ -27,8 +27,7 @@ function get_comments() {
   export HAS_NEXT_PAGE="true"
   export END_CURSOR=null
   while [ "${HAS_NEXT_PAGE}" = "true" ]; do
-    query=$(<"./.github/scripts/get_pr_comments.graphql")
-    query=$(echo "${query}" | tr -d '\n') # 改行があるとダメなので削除
+    query=$(tr -d '\n' < "./.github/scripts/get_pr_comments.graphql")
     json_payload=$(cat << EOF
 {
   "query": "${query}",
@@ -95,8 +94,8 @@ function delete_comments() {
 # $1: node_id
 function delete_comment() {
   local node_id="$1"
-  query=$(<"./.github/scripts/delete_pr_comment.graphql")
-  query=$(echo "${query}" | tr -d '\n') # 改行があるとダメなので削除
+  query=$(tr -d '\n' < "./.github/scripts/delete_pr_comment.graphql")
+  # query=$(echo "${query}" | tr -d '\n') # 改行があるとダメなので削除
   json_payload=$(cat <<EOF
 {
   "query": "${query}",
