@@ -90,6 +90,7 @@ jobs:
           oidc-iam-role: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
 
       - name: Terraform Plan
+        id: terraform-plan
         uses: ./.github/actions/terraform-plan
         with:
           AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
@@ -100,7 +101,7 @@ jobs:
           working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
 
       - name: Start Deployment
-        if: env.TF_PLAN_STATUS == 'has-diff' && github.ref == 'refs/heads/main'
+        if: steps.terraform-plan.outputs.TF_PLAN_STATUS == 'has-diff' && github.ref == 'refs/heads/main'
         uses: bobheadxi/deployments@v1
         id: deployment
         with:
@@ -109,7 +110,7 @@ jobs:
           env: ${{ env.AWS_ENV_NAME }}
 
       - name: Terraform Apply
-        if: env.TF_PLAN_STATUS == 'has-diff' && contains(fromJSON('["push", "workflow_dispatch"]'), github.event_name)
+        if: steps.terraform-plan.outputs.TF_PLAN_STATUS == 'has-diff' && contains(fromJSON('["push", "workflow_dispatch"]'), github.event_name)
         uses: ./.github/actions/terraform-apply
         with:
           working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}

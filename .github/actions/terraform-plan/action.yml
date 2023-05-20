@@ -24,6 +24,11 @@ inputs:
     description: Terraform CLI 実行時のパス
     required: true
 
+outputs:
+  TF_PLAN_STATUS:
+    description: Terraform Plan の結果
+    value: steps.tfcmt.outputs.TF_PLAN_STATUS
+
 runs:
   using: composite
   steps:
@@ -80,7 +85,7 @@ runs:
       run: echo "ERROR_MSG=difference check CIがエラー終了しました" >> "$GITHUB_ENV"
       shell: bash
 
-    - name: CHECk
+    - name: CHECK
       run: |
         echo "[debug] TF_PLAN_STATUS2: $TF_PLAN_STATUS2"
         echo "[debug] TF_PLAN_EXIT_CODE: $TF_PLAN_EXIT_CODE"
@@ -93,13 +98,7 @@ runs:
 
     - name: Slack Notification (failure)
       continue-on-error: true
-      # if: (steps.terraform-plan.outputs.exitcode == '1' || \
-      #   (steps.tfcmt.output.TF_PLAN_STATUS == 'has-diff' && ${{ inputs.CHECK_DIFF }} == '_true'))
-
-      # if: steps.terraform-plan.outputs.exitcode == '1'
-      # if: ${{ inputs.CHECK_DIFF }} == '_true'
-      if: steps.tfcmt.outputs.TF_PLAN_STATUS == 'has-diff'
-
+      if: steps.terraform-plan.outputs.exitcode == '1' || (steps.tfcmt.output.TF_PLAN_STATUS == 'has-diff' && ${{ inputs.CHECK_DIFF }} == '_true')
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_CHANNEL: "#ntf_gh_private-lab"
