@@ -53,7 +53,7 @@ env:
   AWS_ACCOUNT_ID: 577523824419
   AWS_ENV_NAME: management
   OIDC_IAM_ROLE: management-terraform-aws-deploy
-  CHECK_DIFF: ${{ inputs.CHECK_DIFF || github.event.inputs.CHECK_DIFF }} || "_false"
+  CHECK_DIFF: ${{ inputs.CHECK_DIFF || github.event.inputs.CHECK_DIFF || '_false' }}
 
 jobs:
   set-matrix:

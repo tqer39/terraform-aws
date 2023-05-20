@@ -51,7 +51,7 @@ env:
   AWS_ACCOUNT_ID: 107662415716
   AWS_ENV_NAME: sandbox
   OIDC_IAM_ROLE: sandbox-terraform-aws-deploy
-  CHECK_DIFF: ${{ inputs.CHECK_DIFF || github.event.inputs.CHECK_DIFF }} || "_false"
+  CHECK_DIFF: ${{ inputs.CHECK_DIFF || github.event.inputs.CHECK_DIFF || '_false' }}
 
 jobs:
   set-matrix:
