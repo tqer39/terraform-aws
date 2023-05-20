@@ -1,5 +1,5 @@
 ---
-terraform:
-  plan:
-    when_no_changes:
-      label: "no-changes"
+# terraform:
+#   plan:
+#     when_no_changes:
+#       label: "no-changes"
