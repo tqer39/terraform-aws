@@ -17,7 +17,7 @@ inputs:
   github-token:
     description: サードパーティの Action を実行するための権限を付与するための認証用トークン
     required: true
-  SLACK_WEBHOOK_URL:
+  SLACK_WEBHOOK:
     description: Slack の Webhook URL
     required: true
   working-directory:
