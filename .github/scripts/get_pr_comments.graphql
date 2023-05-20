@@ -1,5 +1,5 @@
-query GetPRComments($owner: String!, $name: String!, $number: Int!) {
-  repository(owner: $owner, name: $name) {
+query GetPRComments($owner: String!, $repository: String!, $number: Int!) {
+  repository(owner: $owner, name: $repository) {
     pullRequest(number: $number) {
       comments(first: 100) {
         nodes {
