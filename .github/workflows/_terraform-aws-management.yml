@@ -75,7 +75,7 @@ jobs:
   terraform:
     name: Terraform
     needs: [set-matrix]
-    if: ${{ needs.set-matrix.outputs.matrix != '["empty"]' }}
+    if: ${{ needs.set-matrix.outputs.matrix != '["_empty"]' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
