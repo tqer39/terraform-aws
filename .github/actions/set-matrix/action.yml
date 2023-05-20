@@ -56,6 +56,7 @@ runs:
         if [ "$matrix" == "[\"\"]" ]; then
           joined_array="['empty']"
         fi
+        joined_array="[\"empty\"]"
         echo "[debug] joined_array: ${joined_array}"
         echo "matrix=$(echo $joined_array | jq -c)" >> $GITHUB_OUTPUT
       shell: bash
