@@ -98,7 +98,7 @@ jobs:
           AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
           CHECK_DIFF: ${{ env.CHECK_DIFF }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           working-directory: ./terraform/environments/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
 
       - name: Start Deployment
@@ -126,8 +126,8 @@ jobs:
           env: ${{ steps.deployment.outputs.env }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
-  delete_pr_comments:
-    name: Delete PR Comments
+  hide_comments:
+    name: Hide Comments
     needs: [terraform]
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -136,13 +136,13 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Check and delete comments
+      - name: Check and hide comments
         run: |
-          chmod +x ./.github/scripts/delete_pr_comments.sh
-          ./.github/scripts/delete_pr_comments.sh \
+          chmod +x ./.github/scripts/hide-comments.sh
+          ./.github/scripts/hide-comments.sh \
             "tqer39" \
             "terraform-aws" \
-            "${{ env.AWS_ENV_NAME }}" \
+            "management" \
             "${{ github.event.pull_request.number }}" \
             "${GITHUB_TOKEN}"
         env:
