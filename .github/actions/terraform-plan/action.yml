@@ -50,6 +50,7 @@ runs:
 
     - name: tfcmt
       if: steps.terraform-plan.outputs.exitcode != '1'
+      id: tfcmt
       run: |
         case "$TF_PLAN_EXIT_CODE" in
           0) TF_PLAN_STATUS="no-changes" ;;
@@ -61,8 +62,8 @@ runs:
         TARGET=$(echo ${{ inputs.working-directory }} | sed -e 's|^.*terraform/environments/||' | cut -c 1-36)
         tfcmt --var target:$TARGET plan -patch -- cat tf_plan.txt
 
-        echo "TF_PLAN_STATUS=$TF_PLAN_STATUS"
-        echo "TF_PLAN_STATUS=$TF_PLAN_STATUS" >> $GITHUB_ENV
+        echo "[debug] TF_PLAN_STATUS: ${TF_PLAN_STATUS}"
+        echo "TF_PLAN_STATUS=$TF_PLAN_STATUS" >> "$GITHUB_OUTPUT"
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
         TF_PLAN_EXIT_CODE: ${{ steps.terraform-plan.outputs.exitcode }}
@@ -79,22 +80,21 @@ runs:
       run: echo "ERROR_MSG=difference check CIがエラー終了しました" >> "$GITHUB_ENV"
       shell: bash
 
-    # - name: CHECk
-    #   run: |
-    #     echo "[debug] TF_PLAN_STATUS: $TF_PLAN_STATUS"
-    #     echo "[debug] TF_PLAN_STATUS2: $TF_PLAN_STATUS2"
-    #     echo "[debug] TF_PLAN_EXIT_CODE: $TF_PLAN_EXIT_CODE"
-    #     echo "[debug] CHECK_DIFF: $CHECK_DIFF"
-    #   env:
-    #     TF_PLAN_EXIT_CODE: ${{ steps.terraform-plan.outputs.exitcode }}
-    #     CHECK_DIFF: ${{ inputs.CHECK_DIFF }}
-    #     TF_PLAN_STATUS2: ${{ steps.tfcmt.outputs.TF_PLAN_STATUS }}
-    #   shell: bash
+    - name: CHECk
+      run: |
+        echo "[debug] TF_PLAN_STATUS2: $TF_PLAN_STATUS2"
+        echo "[debug] TF_PLAN_EXIT_CODE: $TF_PLAN_EXIT_CODE"
+        echo "[debug] CHECK_DIFF: $CHECK_DIFF"
+      env:
+        TF_PLAN_EXIT_CODE: ${{ steps.terraform-plan.outputs.exitcode }}
+        CHECK_DIFF: ${{ inputs.CHECK_DIFF }}
+        TF_PLAN_STATUS2: ${{ steps.tfcmt.outputs.TF_PLAN_STATUS }}
+      shell: bash
 
     - name: Slack Notification (failure)
       continue-on-error: true
       if: (steps.terraform-plan.outputs.exitcode == '1' || \
-        (env.TF_PLAN_STATUS == 'has-diff' && ${{ inputs.CHECK_DIFF }} == '_true'))
+        (steps.tfcmt.output.TF_PLAN_STATUS == 'has-diff' && ${{ inputs.CHECK_DIFF }} == '_true'))
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_CHANNEL: "#ntf_gh_private-lab"
