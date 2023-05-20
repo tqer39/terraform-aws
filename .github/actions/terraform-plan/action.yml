@@ -85,7 +85,7 @@ runs:
         echo "[debug] TF_PLAN_EXIT_CODE: $TF_PLAN_EXIT_CODE"
         echo "[debug] CHECK_DIFF: $CHECK_DIFF"
       env:
-        TF_PLAN_EXIT_CODE: steps.terraform-plan.outputs.exitcode
+        TF_PLAN_EXIT_CODE: ${{ steps.terraform-plan.outputs.exitcode }}
         CHECK_DIFF: ${{ inputs.CHECK_DIFF }}
       shell: bash
 
