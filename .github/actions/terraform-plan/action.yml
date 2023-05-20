@@ -70,7 +70,7 @@ runs:
       shell: bash
 
     - name: Set Slack Message (Terraform Plan failure)
-      if: env.TF_PLAN_STATUS == 'has-diff' && inputs.CHECK_DIFF == '_true'
+      if: env.TF_PLAN_STATUS == 'has-diff' && ${{ inputs.CHECK_DIFF }} == '_true'
       run: echo "ERROR_MSG=インフラのコードと実態のリソースに差分があります" >> "$GITHUB_ENV"
       shell: bash
 
@@ -82,7 +82,7 @@ runs:
     - name: Slack Notification (failure)
       continue-on-error: true
       if: steps.terraform-plan.outputs.exitcode == '1' || \
-        (env.TF_PLAN_STATUS == 'has-diff' && inputs.CHECK_DIFF == '_true')
+        (env.TF_PLAN_STATUS == 'has-diff' && ${{ inputs.CHECK_DIFF }} == '_true')
       uses: rtCamp/action-slack-notify@v2
       env:
         SLACK_CHANNEL: "#ntf_gh_private-lab"
