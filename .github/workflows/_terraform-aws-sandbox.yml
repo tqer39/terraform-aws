@@ -142,6 +142,4 @@ jobs:
             "terraform-aws" \
             "${{ env.AWS_ENV_NAME }}" \
             "${{ github.event.pull_request.number }}" \
-            "${GITHUB_TOKEN}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            "${{ secrets.GITHUB_TOKEN }}"

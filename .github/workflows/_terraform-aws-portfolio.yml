@@ -89,10 +89,6 @@ jobs:
         with:
           oidc-iam-role: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
 
-      - name: CHECK_DIFF
-        run: |
-          echo "CHECK_DIFF: ${{ env.CHECK_DIFF }}"
-
       - name: Terraform Plan
         uses: ./.github/actions/terraform-plan
         with:
@@ -146,6 +142,4 @@ jobs:
             "terraform-aws" \
             "${{ env.AWS_ENV_NAME }}" \
             "${{ github.event.pull_request.number }}" \
-            "${GITHUB_TOKEN}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            "${{ secrets.GITHUB_TOKEN }}"
