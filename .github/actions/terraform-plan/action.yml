@@ -70,7 +70,7 @@ runs:
       shell: bash
 
     - name: Set Slack Message (Terraform Plan failure)
-      if: env.TF_PLAN_STATUS == 'has-diff' && ${{ inputs.CHECK_DIFF }} == '_true'
+      if: env.TF_PLAN_STATUS == 'has-diff' && inputs.CHECK_DIFF == '_true'
       run: echo "ERROR_MSG=インフラのコードと実態のリソースに差分があります" >> "$GITHUB_ENV"
       shell: bash
 
