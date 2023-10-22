@@ -30,7 +30,7 @@ repos:
 
   # cspell
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v7.0.1
+    rev: v7.3.2
     hooks:
       - id: cspell
 
