@@ -73,7 +73,7 @@ jobs:
           AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
 
   terraform:
-    name: Terraform
+    name: Terraform - AWS - Management A
     needs: [set-matrix]
     if: ${{ needs.set-matrix.outputs.matrix != '["_empty"]' }}
     runs-on: ubuntu-latest
