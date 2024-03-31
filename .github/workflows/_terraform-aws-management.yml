@@ -117,3 +117,20 @@ jobs:
             "${{ env.AWS_ENV_NAME }}" \
             "${{ github.event.pull_request.number }}" \
             "${{ secrets.GITHUB_TOKEN }}"
+
+  workflow-result-terraform-aws-management:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [terraform-aws-management]
+    if: always()
+    steps:
+      - name: Failure
+        if: >-
+          contains(needs.*.result, 'failure')
+          || contains(needs.*.result, 'cancelled')
+        run: |
+          echo "workflow failure"
+          exit 1
+      - name: Success
+        run: |
+          echo "workflow success"
