@@ -12,7 +12,7 @@ runs:
   using: composite
   steps:
     - name: Get current Terraform version
-      run: echo "TERRAFORM_VERSION=$(grep terraform .tool-versions | cut -d' ' -f2)" >> $GITHUB_ENV
+      run: echo "TERRAFORM_VERSION=$(cat .terraform-version)" >> $GITHUB_ENV
       shell: bash
 
     - name: Setup Terraform
