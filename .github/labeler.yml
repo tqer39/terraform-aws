@@ -1,42 +1,57 @@
-"editorconfig":
-  - ".editorconfig"
-
-"document":
-  - "**/*.md"
-  - "**/*.txt"
-  - "**/*.rst"
-  - "LICENSE"
-
-"terraform":
-  - ".github/actions/terraform**/action.yml"
-  - ".github/workflows/terraform**.yml"
-
-"textlint":
-  - "**/.textlint*"
-
-"yamllint":
-  - "**/.yamllint"
-
-"markdownlint":
-  - "**/.markdownlint*.json"
-
-"asdf":
-  - "**/.tool-versions"
-
-"actionlint":
-  - ".github/workflows/actionlint.yml"
-
-"CODEOWNERS":
-  - "CODEOWNERS"
-
-"management":
-  - ".github/workflows/_terraform-aws-management.yml"
-  - "terraform/environments/management/**"
-
-"sandbox":
-  - ".github/workflows/_terraform-aws-sandbox.yml"
-  - "terraform/environments/sandbox/**"
-
-"portfolio":
-  - ".github/workflows/_terraform-aws-portfolio.yml"
-  - "terraform/environments/portfolio/**"
+---
+rules:
+  - matchers:
+      - ".editorconfig"
+    labels:
+      - "editorconfig"
+  - matchers:
+      - "**/*.md"
+      - "**/*.txt"
+      - "**/*.rst"
+      - "LICENSE"
+    labels:
+      - "document"
+  - matchers:
+      - ".github/actions/terraform**/action.yml"
+      - ".github/workflows/terraform**.yml"
+    labels:
+      - "terraform"
+  - matchers:
+      - "**/.textlint*"
+    labels:
+      - "textlint"
+  - matchers:
+      - "**/.yamllint"
+    labels:
+      - "yamllint"
+  - matchers:
+      - "**/.markdownlint*.json"
+    labels:
+      - "markdownlint"
+  - matchers:
+      - "**/.tool-versions"
+    labels:
+      - "asdf"
+  - matchers:
+      - ".github/workflows/actionlint.yml"
+    labels:
+      - "actionlint"
+  - matchers:
+      - "CODEOWNERS"
+    labels:
+      - "CODEOWNERS"
+  - matchers:
+      - ".github/workflows/_terraform-aws-management.yml"
+      - "terraform/environments/management/**"
+    labels:
+      - "management"
+  - matchers:
+      - ".github/workflows/_terraform-aws-sandbox.yml"
+      - "terraform/environments/sandbox/**"
+    labels:
+      - "sandbox"
+  - matchers:
+      - ".github/workflows/_terraform-aws-portfolio.yml"
+      - "terraform/environments/portfolio/**"
+    labels:
+      - "portfolio"
