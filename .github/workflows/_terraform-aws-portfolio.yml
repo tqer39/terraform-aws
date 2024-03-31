@@ -3,23 +3,11 @@ name: Terraform - AWS - Portfolio
 
 on:
   pull_request:
-    paths:
-      - ".github/actions/**/action.yml"
-      - ".github/workflows/_terraform-aws-portfolio.yml"
-      - ".tool-versions"
-      - "terraform/environments/portfolio/**"
-      - "terraform/modules/**"
-      - "terraform/usecases/**"
+    branches:
+      - main
   push:
     branches:
       - main
-    paths:
-      - ".github/actions/**/action.yml"
-      - ".github/workflows/_terraform-aws-portfolio.yml"
-      - ".tool-versions"
-      - "terraform/environments/portfolio/**"
-      - "terraform/modules/**"
-      - "terraform/usecases/**"
   workflow_call:
     inputs:
       CHECK_DIFF:
@@ -37,14 +25,8 @@ on:
           - "_true"
           - "_false"
 
-permissions:
-  contents: read
-  deployments: write
-  id-token: write
-  pull-requests: write
-
 concurrency:
-  group: terraform-aws-portfolio
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -55,37 +37,34 @@ env:
 
 jobs:
   set-matrix:
-    name: Set Matrix
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
-      - name: Set Matrix
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/set-matrix
         id: set-matrix
-        uses: ./.github/actions/set-matrix
         with:
           AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
 
-  terraform:
-    name: Terraform
+  terraform-aws-portfolio:
     needs: [set-matrix]
     if: ${{ needs.set-matrix.outputs.matrix != '["_empty"]' }}
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # For aws-actions/configure-aws-credentials
+      contents: read # For aws-actions/configure-aws-credentials
+      deployments: write # For bobheadxi/deployments
+      pull-requests: write # For bobheadxi/deployments
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         directory: ${{ fromJson(needs.set-matrix.outputs.matrix )}}
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
-      - name: AWS Credential
-        uses: ./.github/actions/aws-credential
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/aws-credential
         with:
           oidc-iam-role: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
 
@@ -124,16 +103,14 @@ jobs:
           env: ${{ steps.deployment.outputs.env }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
-  delete_pr_comments:
+  delete-pr-comments:
+    needs: [terraform-aws-portfolio]
+    if: contains(fromJSON('["pull_request"]'), github.event_name)
     name: Delete PR Comments
-    needs: [terraform]
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: contains(fromJSON('["pull_request"]'), github.event_name)
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Check and delete comments
         run: |
           chmod +x ./.github/scripts/delete_pr_comments.sh
