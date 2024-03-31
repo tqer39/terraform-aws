@@ -3,23 +3,9 @@ name: Terraform - AWS - Sandbox
 
 on:
   pull_request:
-    paths:
-      - ".github/actions/**/action.yml"
-      - ".github/workflows/_terraform-aws-sandbox.yml"
-      - ".tool-versions"
-      - "terraform/environments/sandbox/**"
-      - "terraform/modules/**"
-      - "terraform/usecases/**"
   push:
     branches:
       - main
-    paths:
-      - ".github/actions/**/action.yml"
-      - ".github/workflows/_terraform-aws-sandbox.yml"
-      - ".tool-versions"
-      - "terraform/environments/sandbox/**"
-      - "terraform/modules/**"
-      - "terraform/usecases/**"
   workflow_call:
     inputs:
       CHECK_DIFF:
@@ -37,14 +23,8 @@ on:
           - "_true"
           - "_false"
 
-permissions:
-  contents: read
-  deployments: write
-  id-token: write
-  pull-requests: write
-
 concurrency:
-  group: terraform-aws-sandbox
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -55,37 +35,34 @@ env:
 
 jobs:
   set-matrix:
-    name: Set Matrix
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
-      - name: Set Matrix
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/set-matrix
         id: set-matrix
-        uses: ./.github/actions/set-matrix
         with:
           AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
 
-  terraform:
-    name: Terraform
+  terraform-aws-sandbox:
     needs: [set-matrix]
     if: ${{ needs.set-matrix.outputs.matrix != '["_empty"]' }}
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # For aws-actions/configure-aws-credentials
+      contents: read # For aws-actions/configure-aws-credentials
+      deployments: write # For bobheadxi/deployments
+      pull-requests: write # For bobheadxi/deployments
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         directory: ${{ fromJson(needs.set-matrix.outputs.matrix )}}
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
-      - name: AWS Credential
-        uses: ./.github/actions/aws-credential
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/aws-credential
         with:
           oidc-iam-role: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
 
@@ -124,16 +101,13 @@ jobs:
           env: ${{ steps.deployment.outputs.env }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
-  delete_pr_comments:
-    name: Delete PR Comments
-    needs: [terraform]
+  delete-pr-comments:
+    needs: [terraform-aws-sandbox]
+    if: contains(fromJSON('["pull_request"]'), github.event_name)
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: contains(fromJSON('["pull_request"]'), github.event_name)
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Check and delete comments
         run: |
           chmod +x ./.github/scripts/delete_pr_comments.sh
@@ -143,3 +117,20 @@ jobs:
             "${{ env.AWS_ENV_NAME }}" \
             "${{ github.event.pull_request.number }}" \
             "${{ secrets.GITHUB_TOKEN }}"
+
+  workflow-result-terraform-aws-sandbox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [terraform-aws-sandbox]
+    if: always()
+    steps:
+      - name: Failure
+        if: >-
+          contains(needs.*.result, 'failure')
+          || contains(needs.*.result, 'cancelled')
+        run: |
+          echo "workflow failure"
+          exit 1
+      - name: Success
+        run: |
+          echo "workflow success"
