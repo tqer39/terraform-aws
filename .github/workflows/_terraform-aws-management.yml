@@ -104,7 +104,6 @@ jobs:
   delete-pr-comments:
     needs: [terraform-aws-management]
     if: contains(fromJSON('["pull_request"]'), github.event_name)
-    name: Delete PR Comments
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
