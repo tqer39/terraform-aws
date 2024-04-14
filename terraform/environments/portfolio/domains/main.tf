@@ -9,9 +9,3 @@ module "root_certificate" {
 
   domain_name = "*.tqer39.dev"
 }
-
-module "portfolio_domain" {
-  source = "../../../usecases/domain"
-
-  domain_name = "portfolio.tqer39.com"
-}
