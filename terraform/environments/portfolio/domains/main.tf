@@ -7,5 +7,5 @@ module "root_domain" {
 module "root_certificate" {
   source = "../../../usecases/certificate"
 
-  domain_name = "*.tqer39.dev"
+  domain_name = "tqer39.dev"
 }
