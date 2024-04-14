@@ -5,10 +5,6 @@
  * - [time_capsule](https://github.com/tqer39/time-capsule) 用です。
  */
 
-data "aws_iam_policy" "deploy_allow_specifics" {
-  name = "deploy-allow-specifics"
-}
-
 data "aws_iam_policy" "deploy_deny_specifics" {
   name = "deploy-deny-specifics"
 }
