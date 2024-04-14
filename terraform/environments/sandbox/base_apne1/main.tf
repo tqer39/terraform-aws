@@ -4,6 +4,10 @@ module "tfstate_s3_bucket" {
   bucket_name = local.tfstate_bucket_name.apne1
 }
 
+module "oidc_github_actions_id_provider" {
+  source = "../../../usecases/id_provider"
+}
+
 module "deploy_role" {
   source = "../../../usecases/deploy_role/terraform_aws"
 
