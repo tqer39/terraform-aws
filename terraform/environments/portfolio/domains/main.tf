@@ -11,7 +11,7 @@ module "root_certificate" {
 }
 
 module "portfolio_domain" {
-  source = "../../../usecases/root_domain"
+  source = "../../../usecases/domain"
 
   domain_name = "portfolio.tqer39.com"
 }
