@@ -90,7 +90,7 @@ resource "aws_iam_role" "this" {
   name               = "${var.aws_env_name}-${var.repository}-deploy"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
   managed_policy_arns = [
-    data.aws_iam_policy.deploy_policy.arn,
+    aws_iam_policy.deploy_policy.arn,
     data.aws_iam_policy.deploy_deny_specifics.arn,
   ]
 }
