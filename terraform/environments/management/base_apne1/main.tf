@@ -5,7 +5,7 @@ module "tfstate_s3_bucket" {
 }
 
 module "oidc_github_actions_id_provider" {
-  source = "../../../usecases/id_provider"
+  source = "../../../modules/id_provider"
 }
 
 removed {
