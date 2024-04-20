@@ -1,5 +1,5 @@
 module "tfstate_s3_bucket" {
-  source = "../../../usecases/terraform_tfstate_bucket"
+  source = "../../../modules/terraform_tfstate_bucket"
 
   bucket_name = local.tfstate_bucket_name.apne1
 }
