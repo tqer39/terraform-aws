@@ -8,13 +8,6 @@ module "oidc_github_actions_id_provider" {
   source = "../../../modules/id_provider"
 }
 
-removed {
-  from = module.oidc_github_actions_id_provider
-  lifecycle {
-    destroy = false
-  }
-}
-
 # module "deploy_role" {
 #   source = "../../../usecases/deploy_role/terraform_aws"
 
