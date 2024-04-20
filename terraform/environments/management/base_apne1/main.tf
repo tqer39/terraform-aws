@@ -4,9 +4,9 @@ module "tfstate_s3_bucket" {
   bucket_name = local.tfstate_bucket_name.apne1
 }
 
-# module "oidc_github_actions_id_provider" {
-#   source = "../../../usecases/id_provider"
-# }
+module "oidc_github_actions_id_provider" {
+  source = "../../../usecases/id_provider"
+}
 
 removed {
   from = module.oidc_github_actions_id_provider
