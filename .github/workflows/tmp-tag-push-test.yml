@@ -7,7 +7,9 @@ on:
       - 'v*'
 
 jobs:
-  set-matrix:
+  tag-push-test:
+    environment:
+      name: test-tag-push
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
