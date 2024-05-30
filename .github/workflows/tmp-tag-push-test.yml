@@ -1,0 +1,16 @@
+---
+name: tag push test
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  set-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: tag push
+        run: |
+          echo "tag push"
