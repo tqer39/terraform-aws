@@ -48,7 +48,7 @@ fi
 # Install Terraform CLI using tfenv and .terraform-version
 if command -v tfenv &> /dev/null; then
   if [ -f ".terraform-version" ]; then
-    tfenv install -s
+    tfenv install
     tfenv use
   fi
 fi
