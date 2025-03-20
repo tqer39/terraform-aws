@@ -37,3 +37,10 @@ if ! command -v anyenv &> /dev/null; then
   echo 'eval "$(anyenv init -)"' >> ~/.bashrc
   exec bash -l
 fi
+
+# Install tfenv using anyenv
+if command -v anyenv &> /dev/null; then
+  if [ ! -d "$(anyenv root)/envs/tfenv" ]; then
+    anyenv install tfenv
+  fi
+fi
