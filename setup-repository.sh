@@ -55,3 +55,15 @@ if command -v tfenv &> /dev/null; then
     tfenv use
   fi
 fi
+
+# Install Rancher Desktop
+if ! command -v rancher-desktop &> /dev/null; then
+  if [ "$(uname)" == 'Darwin' ]; then
+    brew install --cask rancher
+  elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+    curl -fsSL https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/Release.key | sudo gpg --dearmor -o /usr/share/keyrings/rancher-archive-keyring.gpg
+    echo "deb [signed-by=/usr/share/keyrings/rancher-archive-keyring.gpg] https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/ ./" | sudo tee /etc/apt/sources.list.d/rancher.list
+    sudo apt-get update
+    sudo apt-get install -y rancher-desktop
+  fi
+fi

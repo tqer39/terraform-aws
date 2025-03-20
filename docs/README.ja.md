@@ -51,20 +51,10 @@ gitGraph
 make install
 ```
 
-### tfenv
+## Update Repository
 
 ```bash
-anyenv install tfenv
-which tfenv
-```
-
-### Terraform
-
-```bash
-tfenv install
-which terraform
-terraform install
-terraform -version
+make update
 ```
 
 ### Rancher Desktop
