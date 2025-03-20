@@ -51,33 +51,6 @@ gitGraph
 make install
 ```
 
-### anyenv
-
-#### zsh
-
-```bash
-anyenv init
-anyenv install --init
-echo 'eval "$(anyenv init -)"' >> ~/.zshrc
-exec $SHELL -l
-mkdir -p "$(anyenv root)/plugins"
-git clone https://github.com/znz/anyenv-update.git "$(anyenv root)/plugins/anyenv-update"
-```
-
-#### fish
-
-```bash
-anyenv init - fish | source
-anyenv install --init
-set -Ux fish_user_paths $HOME/.anyenv/bin $fish_user_paths
-echo 'set -x PATH ~/.anyenv/bin $PATH' >> ~/.config/fish/config.fish
-echo 'eval (anyenv init - | source)' >> ~/.config/fish/config.fish
-exec fish -l
-mkdir -p (anyenv root)/plugins
-git clone https://github.com/znz/anyenv-update.git (anyenv root)/plugins/anyenv-update
-which anyenv
-```
-
 ### tfenv
 
 ```bash
