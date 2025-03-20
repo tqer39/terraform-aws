@@ -1,6 +1,10 @@
 #!/bin/bash
 
+#
 # This script is used to setup the repository for the first time.
+#
+
+# Install Homebrew
 if [ "$(uname)" == 'Darwin' ]; then
   # macOS
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
