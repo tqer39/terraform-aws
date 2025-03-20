@@ -17,9 +17,11 @@ fi
 if [ -d "/home/linuxbrew/.linuxbrew/bin" ]; then
   echo 'export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"' >> ~/.bashrc
   export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+  source ~/.bashrc
 elif [ -d "/opt/homebrew/bin" ]; then
   echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.bashrc
   export PATH="/opt/homebrew/bin:$PATH"
+  source ~/.bashrc
 fi
 
 brew bundle
