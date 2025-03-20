@@ -1,6 +1,6 @@
 # Makefile
 
-.PHONY: install
+.PHONY: install update
 
 install:
 	# Check if bash is installed, and install it if not
@@ -15,3 +15,6 @@ install:
 		fi; \
 	fi
 	bash setup-repository.sh
+
+update:
+	bash update-repository.sh
