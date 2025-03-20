@@ -11,6 +11,7 @@ on:
 jobs:
   test-setup-repository-linux:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout repository
@@ -31,6 +32,7 @@ jobs:
 
   test-setup-repository-macos:
     runs-on: macos-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout repository
