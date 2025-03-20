@@ -13,6 +13,15 @@ elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
+# Add Homebrew to PATH
+if [ -d "/home/linuxbrew/.linuxbrew/bin" ]; then
+  echo 'export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"' >> ~/.bashrc
+  export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+elif [ -d "/opt/homebrew/bin" ]; then
+  echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.bashrc
+  export PATH="/opt/homebrew/bin:$PATH"
+fi
+
 brew bundle
 
 # Install anyenv
