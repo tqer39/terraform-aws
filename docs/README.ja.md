@@ -47,8 +47,8 @@ gitGraph
 
 ## Setup Repository
 
-```shell
-./setup-repository.sh
+```bash
+make install
 ```
 
 ### anyenv
@@ -235,4 +235,3 @@ terraform -chdir="$TF_PATH" fmt
 terraform -chdir="$TF_PATH" validate
 terraform -chdir="$TF_PATH" plan
 terraform -chdir="$TF_PATH" apply -auto-approve
-```
