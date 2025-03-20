@@ -78,3 +78,12 @@ if ! command -v session-manager-plugin &> /dev/null; then
     rm /tmp/session-manager-plugin.deb
   fi
 fi
+
+# Install aws-vault
+if ! command -v aws-vault &> /dev/null; then
+  if [ "$(uname)" == 'Darwin' ]; then
+    brew install --cask aws-vault
+  elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+    brew install aws-vault
+  fi
+fi
