@@ -45,10 +45,6 @@ gitGraph
 1. GitHub Actions から AWS のリソースをデプロイするときの認証方式は OIDC です。
 1. Credential は管理面の手間がかかるため採用していません。
 
-## EditorConfig 設定
-
-包括的なコーディング規約として EditorConfig を使用しているため、[公式ページの Download a Plugin](https://editorconfig.org/#download) のエディタ・IDE を使用している場合は、プラグインを追加してください。
-
 ## Setup
 
 ```shell
