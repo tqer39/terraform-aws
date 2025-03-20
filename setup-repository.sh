@@ -24,7 +24,10 @@ elif [ -d "/opt/homebrew/bin" ]; then
   source ~/.bashrc
 fi
 
-brew bundle
+# Install git if not available
+if ! command -v git &> /dev/null; then
+  brew install git
+fi
 
 # Install anyenv
 if ! command -v anyenv &> /dev/null; then
