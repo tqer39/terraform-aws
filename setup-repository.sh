@@ -44,3 +44,11 @@ if command -v anyenv &> /dev/null; then
     anyenv install tfenv
   fi
 fi
+
+# Install Terraform CLI using tfenv and .terraform-version
+if command -v tfenv &> /dev/null; then
+  if [ -f ".terraform-version" ]; then
+    tfenv install
+    tfenv use
+  fi
+fi
