@@ -10,3 +10,12 @@ elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
 fi
 
 brew bundle
+
+# Install anyenv
+if ! command -v anyenv &> /dev/null; then
+  git clone https://github.com/anyenv/anyenv ~/.anyenv
+  export PATH="$HOME/.anyenv/bin:$PATH"
+  eval "$(anyenv init -)"
+  mkdir -p $(anyenv root)/plugins
+  git clone https://github.com/znz/anyenv-update.git $(anyenv root)/plugins/anyenv-update
+fi
