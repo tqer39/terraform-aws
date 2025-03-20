@@ -1,0 +1,45 @@
+name: Test Setup Repository Script
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-setup-repository-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Homebrew
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential curl file git
+
+      - name: Run setup-repository.sh
+        run: |
+          chmod +x ./setup-repository.sh
+          ./setup-repository.sh
+
+      - name: Verify aws-vault installation
+        run: aws-vault --version
+
+  test-setup-repository-macos:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run setup-repository.sh
+        run: |
+          chmod +x ./setup-repository.sh
+          ./setup-repository.sh
+
+      - name: Verify aws-vault installation
+        run: aws-vault --version
