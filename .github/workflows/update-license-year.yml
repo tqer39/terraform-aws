@@ -1,0 +1,31 @@
+---
+name: Update License Year
+
+on:
+  schedule:
+    - cron: "0 0 1 1 *" # 毎年1月1日に実行
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  commit-changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write # git push するために必要
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate GitHub App Token
+        id: app_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.GHA_APP_ID }}
+          private-key: ${{ secrets.GHA_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - uses: tqer39/update-license-year@v1.0.0
+        with:
+          github-token: ${{ steps.app_token.outputs.token }}
