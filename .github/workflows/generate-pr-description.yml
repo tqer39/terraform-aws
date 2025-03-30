@@ -24,8 +24,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: tqer39/openai-generate-pr-description@v1.0.3
+      - uses: tqer39/openai-generate-pr-description@v1.0.5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           openai-model: "gpt-4o"
+          locale: "ja"
