@@ -3,7 +3,7 @@
 # Update anyenv plugins and environments
 if command -v anyenv &> /dev/null; then
   if [ -d "$(anyenv root)/plugins/anyenv-update" ]; then
-    $(anyenv root)/plugins/anyenv-update/bin/anyenv-update
+    "$(anyenv root)/plugins/anyenv-update/bin/anyenv-update"
   fi
 fi
 
