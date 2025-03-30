@@ -5,10 +5,11 @@
 #
 
 # Install Homebrew
+uname_s=$(uname -s)
 if [ "$(uname)" == 'Darwin' ]; then
   # macOS
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+elif [ "${uname_s:0:5}" == 'Linux' ]; then
   # Linux
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
