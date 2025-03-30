@@ -54,7 +54,7 @@ resource "aws_iam_role" "this" {
 }
 
 resource "aws_iam_role_policy_attachments_exclusive" "this" {
-  role = aws_iam_role.this.name
+  role_name = aws_iam_role.this.name
   policy_arns = [
     aws_iam_policy.this.arn,
     data.aws_iam_policy.deploy_deny_specifics.arn,
