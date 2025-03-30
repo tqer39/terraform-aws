@@ -30,14 +30,14 @@ repos:
 
   # cspell
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v8.7.0
+    rev: v8.8.2
     hooks:
       - id: cspell
 
   # markdownlint
   # see: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.39.0
+    rev: v0.41.0
     hooks:
       - id: markdownlint
 
@@ -76,19 +76,19 @@ repos:
 
   # actionlint
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.6.27
+    rev: v1.7.1
     hooks:
       - id: actionlint-docker
 
   # renovate-config-validator
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 37.311.0
+    rev: 37.340.5
     hooks:
       - id: renovate-config-validator
         files: renovate.json
 
   # terraform fmt
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.89.0
+    rev: v1.90.0
     hooks:
       - id: terraform_fmt

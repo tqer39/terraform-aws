@@ -1,0 +1,20 @@
+---
+name: tag push test
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  tag-push-test:
+    environment:
+      name: test-tag-push
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: tag push
+        run: |
+          echo "tag push"
