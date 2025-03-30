@@ -1,5 +1,7 @@
 {
-  "dictionaries": ["custom-words"],
+  "dictionaries": [
+    "custom-words"
+  ],
   "files": [
     "**",
     ".*/**"
@@ -45,6 +47,7 @@
     "kentaro",
     "keyrings",
     "kubernetes",
+    "linuxbrew",
     "markdownlint",
     "mergify",
     "mkdir",
