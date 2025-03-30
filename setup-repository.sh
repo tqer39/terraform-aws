@@ -36,7 +36,7 @@ if ! command -v anyenv &> /dev/null; then
   export PATH="$HOME/.anyenv/bin:$PATH"
   eval "$(anyenv init -)"
   mkdir -p "$(anyenv root)/plugins"
-  git clone https://github.com/znz/anyenv-update.git $(anyenv root)/plugins/anyenv-update
+  git clone https://github.com/znz/anyenv-update.git "$(anyenv root)/plugins/anyenv-update"
 
   echo 'eval "$(anyenv init -)"' >> ~/.bashrc
   exec bash -l
