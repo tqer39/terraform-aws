@@ -38,7 +38,7 @@ if ! command -v anyenv &> /dev/null; then
   mkdir -p "$(anyenv root)/plugins"
   git clone https://github.com/znz/anyenv-update.git "$(anyenv root)/plugins/anyenv-update"
 
-  echo 'eval "$(anyenv init -)"' >> ~/.bashrc
+  echo "eval $(anyenv init -)" >> ~/.bashrc
   exec bash -l
 fi
 
