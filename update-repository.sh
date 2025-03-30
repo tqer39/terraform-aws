@@ -15,6 +15,6 @@ fi
 # Update Terraform CLI to the latest version
 if command -v tfenv &> /dev/null; then
   latest_version=$(tfenv list-remote | head -n 1)
-  tfenv install ${latest_version}
-  tfenv use ${latest_version}
+  tfenv install "${latest_version}"
+  tfenv use "${latest_version}"
 fi
