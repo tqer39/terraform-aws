@@ -22,6 +22,6 @@
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_accounts"></a> [accounts](#input\_accounts) | (Require) List of accounts to create. | `any` | `null` | no |
-| <a name="input_organizational_units"></a> [organizational\_units](#input\_organizational\_units) | (Require) List of organizational units to create. | <pre>list(object({<br>    name = string<br>  }))</pre> | n/a | yes |
+| <a name="input_organizational_units"></a> [organizational\_units](#input\_organizational\_units) | (Require) List of organizational units to create. | <pre>list(object({<br/>    name = string<br/>  }))</pre> | n/a | yes |
 | <a name="input_owner"></a> [owner](#input\_owner) | (Require) Owner of the accounts. | `string` | n/a | yes |
 <!-- END_TF_DOCS -->

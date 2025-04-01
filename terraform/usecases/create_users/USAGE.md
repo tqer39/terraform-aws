@@ -17,5 +17,5 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_users"></a> [users](#input\_users) | n/a | <pre>list(object({<br>    name = string<br>  }))</pre> | n/a | yes |
+| <a name="input_users"></a> [users](#input\_users) | n/a | <pre>list(object({<br/>    name = string<br/>  }))</pre> | n/a | yes |
 <!-- END_TF_DOCS -->
