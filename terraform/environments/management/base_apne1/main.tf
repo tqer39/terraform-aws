@@ -1,18 +1,11 @@
 module "tfstate_s3_bucket" {
-  source = "../../../usecases/terraform_tfstate_bucket"
+  source = "../../../modules/terraform_tfstate_bucket"
 
   bucket_name = local.tfstate_bucket_name.apne1
 }
 
-# module "oidc_github_actions_id_provider" {
-#   source = "../../../usecases/id_provider"
-# }
-
-removed {
-  from = module.oidc_github_actions_id_provider
-  lifecycle {
-    destroy = false
-  }
+module "oidc_github_actions_id_provider" {
+  source = "../../../modules/id_provider"
 }
 
 # module "deploy_role" {
