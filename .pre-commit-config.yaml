@@ -4,6 +4,7 @@
 exclude: |
   (?x)^(
     .+/USAGE.md
+    | \.terraform\.lock\.hcl
   )$
 
 repos:
@@ -33,6 +34,7 @@ repos:
     rev: v8.8.2
     hooks:
       - id: cspell
+        exclude: \.terraform\.lock\.hcl
 
   # markdownlint
   # see: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md

@@ -5,22 +5,25 @@
 #
 
 # Install Homebrew
+uname_s=$(uname -s)
 if [ "$(uname)" == 'Darwin' ]; then
   # macOS
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+elif [ "${uname_s:0:5}" == 'Linux' ]; then
   # Linux
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 # Add Homebrew to PATH
 if [ -d "/home/linuxbrew/.linuxbrew/bin" ]; then
-  echo 'export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"' >> ~/.bashrc
+  echo "export PATH=\"/home/linuxbrew/.linuxbrew/bin:$PATH\"" >> ~/.bashrc
   export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
+  # shellcheck source=/dev/null
   source ~/.bashrc
 elif [ -d "/opt/homebrew/bin" ]; then
-  echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.bashrc
+  echo "export PATH=\"/opt/homebrew/bin:$PATH\"" >> ~/.bashrc
   export PATH="/opt/homebrew/bin:$PATH"
+  # shellcheck source=/dev/null
   source ~/.bashrc
 fi
 
@@ -34,10 +37,10 @@ if ! command -v anyenv &> /dev/null; then
   git clone https://github.com/anyenv/anyenv ~/.anyenv
   export PATH="$HOME/.anyenv/bin:$PATH"
   eval "$(anyenv init -)"
-  mkdir -p $(anyenv root)/plugins
-  git clone https://github.com/znz/anyenv-update.git $(anyenv root)/plugins/anyenv-update
+  mkdir -p "$(anyenv root)/plugins"
+  git clone https://github.com/znz/anyenv-update.git "$(anyenv root)/plugins/anyenv-update"
 
-  echo 'eval "$(anyenv init -)"' >> ~/.bashrc
+  echo "eval $(anyenv init -)" >> ~/.bashrc
   exec bash -l
 fi
 
@@ -60,7 +63,7 @@ fi
 if ! command -v rancher-desktop &> /dev/null; then
   if [ "$(uname)" == 'Darwin' ]; then
     brew install --cask rancher
-  elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+  elif [ "${uname_s:0:5}" == 'Linux' ]; then
     curl -fsSL https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/Release.key | sudo gpg --dearmor -o /usr/share/keyrings/rancher-archive-keyring.gpg
     echo "deb [signed-by=/usr/share/keyrings/rancher-archive-keyring.gpg] https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/ ./" | sudo tee /etc/apt/sources.list.d/rancher.list
     sudo apt-get update
@@ -72,7 +75,7 @@ fi
 if ! command -v session-manager-plugin &> /dev/null; then
   if [ "$(uname)" == 'Darwin' ]; then
     brew install --cask session-manager-plugin
-  elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+  elif [ "${uname_s:0:5}" == 'Linux' ]; then
     curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "/tmp/session-manager-plugin.deb"
     sudo dpkg -i /tmp/session-manager-plugin.deb
     rm /tmp/session-manager-plugin.deb
@@ -83,7 +86,7 @@ fi
 if ! command -v aws-vault &> /dev/null; then
   if [ "$(uname)" == 'Darwin' ]; then
     brew install --cask aws-vault
-  elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+  elif [ "${uname_s:0:5}" == 'Linux' ]; then
     brew install aws-vault
   fi
 fi
