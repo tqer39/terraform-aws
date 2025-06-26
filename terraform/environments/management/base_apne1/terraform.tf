@@ -17,7 +17,7 @@ terraform {
   backend "s3" {
     bucket  = "terraform-tfstate-tqer39-577523824419-ap-northeast-1"
     encrypt = true
-    key     = "terraform-aws/terraform/environments/management/management-base_apne1.tfstate"
+    key     = "management/management-base_apne1.tfstate"
     region  = "ap-northeast-1"
   }
 }
