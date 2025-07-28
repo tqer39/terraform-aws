@@ -16,7 +16,7 @@ jobs:
     if: startsWith(github.head_ref, 'renovate/')
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.2.2
 
       - name: Get current Terraform version
         run: echo "TERRAFORM_VERSION=$(grep terraform .tool-versions | cut -d' ' -f2)" >> "$GITHUB_ENV"
