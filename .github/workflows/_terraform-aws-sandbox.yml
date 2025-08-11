@@ -40,7 +40,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/set-matrix
         id: set-matrix
         with:
@@ -61,7 +61,7 @@ jobs:
       matrix:
         directory: ${{ fromJson(needs.set-matrix.outputs.matrix )}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/aws-credential
         with:
           oidc-iam-role: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
@@ -107,7 +107,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Check and delete comments
         run: |
           chmod +x ./.github/scripts/delete_pr_comments.sh
