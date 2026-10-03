@@ -49,6 +49,8 @@ DNS 委任の現状と、ドメイン登録そのものの管理先は未確認�
 
 ## 過去の API 調査記録（今回未再検証）
 
+<!-- cspell:ignore ZKDCJD -->
+
 - Organizations の一覧は上記 5 アカウントで、すべて `ACTIVE`。
 - SSO からは 5 アカウントすべてに `AdministratorAccess` ロールの割り当てが見える。
   個々のサービスへの実効権限は、SCP 等も含めて今後確認する。
