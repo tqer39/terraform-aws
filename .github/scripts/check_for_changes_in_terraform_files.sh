@@ -64,7 +64,9 @@ function is_changed () {
 }
 
 for file in $CHANGED_FILES; do
-  if [[ "${file}" =~ ^\.github/(actions|workflows)/.*\.yml$ ]]; then
+  if [[ "${file}" =~ ^\.github/actions/.*\.yml$ ]] ||
+    [[ "${file}" =~ ^\.github/workflows/(_terraform-aws-.*|terraform-aws-.*-diff-check)\.yml$ ]] ||
+    [[ "${file}" == .github/workflows/deploy_pipeline/* ]]; then
     echo "共通のワークフローが修正されたのでこのデプロイパイプラインは処理対象です。"
     exit 0
   fi

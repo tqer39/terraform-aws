@@ -20,6 +20,9 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
+      - name: Test Terraform workflow change detection
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
+
       - uses: pre-commit/action@v3.0.1
         with:
           extra_args: -a --show-diff-on-failure
