@@ -38,7 +38,7 @@ if ! command -v anyenv &> /dev/null; then
   git clone https://github.com/znz/anyenv-update.git $(anyenv root)/plugins/anyenv-update
 
   echo 'eval "$(anyenv init -)"' >> ~/.bashrc
-  exec bash -l
+  # Continue setup in this process; exec would skip the remaining installers.
 fi
 
 # Install tfenv using anyenv
@@ -86,4 +86,11 @@ if ! command -v aws-vault &> /dev/null; then
   elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
     brew install aws-vault
   fi
+fi
+
+# Preserve Homebrew PATH for subsequent GitHub Actions steps.
+if [ -n "${GITHUB_PATH:-}" ]; then
+  brew --prefix | while IFS= read -r brew_prefix; do
+    printf '%s/bin\n%s/sbin\n' "$brew_prefix" "$brew_prefix" >> "$GITHUB_PATH"
+  done
 fi
