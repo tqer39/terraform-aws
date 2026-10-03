@@ -67,3 +67,4 @@ tqer
 unversioned
 usecases
 vercel
+linuxbrew

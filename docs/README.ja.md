@@ -51,6 +51,9 @@ gitGraph
 make install
 ```
 
+セットアップは同じシェルプロセスで最後まで実行します。
+GitHub Actions では Homebrew の PATH を後続ステップへ引き継ぎます。
+
 ## Update Repository
 
 ```bash
