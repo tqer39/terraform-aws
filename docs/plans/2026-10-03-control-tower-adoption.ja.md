@@ -154,7 +154,9 @@ Control Tower が変更した値を Terraform が巻き戻さないよう、実�
 ## Control Tower の公式仕様に基づく注意点
 
 既存 Organizations に導入する場合は、既存の管理アカウントを使用できる。
-既存 IAM Identity Center を使用する場合、Control Tower のホームリージョンを合わせる必要がある。
+既存 IAM Identity Center が `us-east-1` にある場合は、選択したホームリージョンにかかわらずそのインスタンスを使用する。
+それ以外のリージョンにある場合は、Control Tower のホームリージョンを合わせる必要がある。
+[IAM Identity Center のリージョン要件](https://docs.aws.amazon.com/controltower/latest/userguide/getting-started-prereqs.html)
 [既存組織への統制拡張](https://docs.aws.amazon.com/controltower/latest/userguide/about-extending-governance.html)
 
 ホームリージョンは Landing Zone 設定後に変更できない。
