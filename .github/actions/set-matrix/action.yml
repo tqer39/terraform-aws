@@ -1,61 +1,20 @@
 ---
 name: set matrix
-
-description: Set matrix
-
+description: Select Terraform roots from the event commit range
 inputs:
   AWS_ENV_NAME:
     description: AWS の環境名
     required: true
-
 outputs:
   matrix:
     description: Terraform の実行対象ディレクトリのリスト
     value: ${{ steps.set-matrix.outputs.matrix }}
-
 runs:
   using: composite
   steps:
-    - name: pull_request
-      if: github.event_name == 'pull_request'
-      run: |
-        # pull_request の場合は処理対象を絞る
-        declare -a deploy_pipelines=($(cat ./.github/workflows/deploy_pipeline/${{ env.AWS_ENV_NAME }}))
-        declare -a temp=()
-        chmod +x ./.github/scripts/check_for_changes_in_terraform_files.sh
-
-        for pipeline in "${deploy_pipelines[@]}"; do
-          if ! ./.github/scripts/check_for_changes_in_terraform_files.sh \
-            "terraform/src/${{ env.AWS_ENV_NAME }}/${pipeline}" \
-            "${{ github.base_ref }}" \
-            "${{ github.head_ref }}" ; then
-            echo "No changes in $pipeline"
-          else
-            # 処理対象のデプロイパイプラインを追加
-            temp+=("$pipeline")
-          fi
-        done
-
-        joined_array=$(printf "\"%s\"," "${temp[@]}")
-        echo "joined_array=$(echo "[${joined_array%,}]")" >> $GITHUB_ENV
-      shell: bash
-
-    - name: push
-      if: github.event_name == 'push'
-      run: |
-        # push の場合は全て処理対象とする
-        declare -a deploy_pipelines=($(cat ./.github/workflows/deploy_pipeline/${{ env.AWS_ENV_NAME }}))
-        joined_array=$(printf "\"%s\"," "${deploy_pipelines[@]}")
-        echo "joined_array=$(echo "[${joined_array%,}]")" >> $GITHUB_ENV
-      shell: bash
-
-    - name: make values
+    - name: Select deployment roots
       id: set-matrix
-      run: |
-        matrix=$(echo $joined_array | jq -c)
-        if [ "$matrix" == "[\"\"]" ]; then
-          joined_array='["_empty"]'
-        fi
-        echo "[debug] joined_array: ${joined_array}"
-        echo "matrix=$(echo $joined_array | jq -c)" >> $GITHUB_OUTPUT
+      env:
+        AWS_ENV_NAME: ${{ inputs.AWS_ENV_NAME }}
+      run: python3 .github/scripts/terraform_matrix.py
       shell: bash
