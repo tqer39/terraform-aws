@@ -196,3 +196,26 @@ SSO のロール名だけで権限を判断せず、各アカウントの STS �
 現行の公式手順では、3.1 未満の Landing Zone は Reset を選べず、3.1 以上への Update が必要。
 2.7 の記録を再確認し、更新先バージョン固有の前提条件を調べてから実行する。
 [ドリフト修復とバージョン別の動作](https://docs.aws.amazon.com/controltower/latest/userguide/resolve-drift.html)
+
+## Landing Zone 4.0 を選ぶ場合の更新前提（2026-10-04 確認）
+
+採用版は未確定であり、この節は更新の実行承認や準備完了を示さない。
+公式の移行手順に基づき、次の項目を非公開の実環境記録と照合してから更新手順を確定する。
+
+- 既存版から 4.0 への更新と、Config / SecurityRoles 連携の無効化を同時に行わない。
+  サービス連携用アカウントには同じ親 OU への所属要件がある。OU 移動を伴う場合は、
+  SCP・Terraform の所属管理・既存統制への影響を先に確認する。
+- API 更新では CloudTrail サービスロールのポリシー要件が変わる。
+  読み取り確認後、必要な IAM 変更を更新手順に含めて別途レビューする。
+- ドリフト通知は EventBridge に変わるため、通知先と受信確認を更新作業の対象にする。
+
+根拠: [4.0 の主要変更](https://docs.aws.amazon.com/controltower/latest/userguide/key-changes-lz-v4.html)。
+
+Config 連携を継続する場合、既存データの自動移動は行われず、新しい配送先が作成される。
+Landing Zone 更新後は、対象 OU の再登録または ConfigBaseline の更新・有効化までを一連の作業として計画する。
+その間に S3 配送が中断し得るため、記録保持期間内の履歴取得と配送再開の確認方法を用意する。
+旧バケットの保持解除を更新成功だけで判断せず、旧データの参照・復旧要件を満たすまで残す。
+根拠: [Config の移行動作](https://docs.aws.amazon.com/controltower/latest/userguide/config-updates-v4.html)。
+
+新規検証アカウントの払い出しは、既存 Landing Zone・対象 OU・管理アクセス・ログ配送を検証した後に行う。
+アカウント名・未使用メールアドレス・月額予算・保持期間が未確定の間は、作成 API を実行しない。
