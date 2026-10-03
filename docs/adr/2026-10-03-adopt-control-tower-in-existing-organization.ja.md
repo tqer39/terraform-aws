@@ -52,4 +52,5 @@ state・認証・復旧経路は依存する作業が終わるまで維持する
 ## 関連文書
 
 - [Control Tower の段階導入と既存環境の撤去計画](../plans/2026-10-03-control-tower-adoption.ja.md)
+- [第 1 段階の調査記録と保護対象](../investigations/2026-10-03-control-tower-phase1-inventory.ja.md)
 - [ADR の管理](README.md)
