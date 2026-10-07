@@ -1,7 +1,6 @@
-"""Exercise rule generation and skill references in an isolated repository."""
+"""Exercise rule and skill generation in an isolated repository."""
 
 from pathlib import Path
-import re
 import shutil
 import subprocess
 import tempfile
@@ -55,21 +54,20 @@ class RulesyncTest(unittest.TestCase):
         self.assertEqual(before, {path: (self.root / path).read_bytes()
                                   for path in before})
 
-    def test_every_skill_resolves_the_same_canonical_procedure(self):
+    def test_skill_origin_changes_are_embedded_in_every_tool(self):
+        origin = self.root / '.rulesync/skills/update-gitignore/SKILL.md'
+        marker = 'Regression fixture: updated skill procedure.'
+        origin.write_text(origin.read_text() + '\n' + marker + '\n')
         self.assert_success(self.generate())
-        origin = self.root / 'docs/rules/update-gitignore.md'
+        body = origin.read_text().split('---', 2)[2].strip()
         for relative in SKILL_OUTPUTS:
             with self.subTest(skill=relative):
-                skill = self.root / relative
-                links = re.findall(r'\]\(([^)]+)\)', skill.read_text())
-                self.assertEqual(len(links), 1)
-                self.assertEqual((skill.parent / links[0]).resolve(), origin)
-                self.assertTrue(origin.is_file())
-                self.assertNotIn('https://www.toptal.com/', skill.read_text())
-        # Skill-only procedures must not be emitted as unconditional rules.
+                generated = (self.root / relative).read_text()
+                self.assertEqual(generated.split('---', 2)[2].strip(), body)
+                self.assertNotIn('docs/rules/', generated)
         for relative in RULE_OUTPUTS:
-            self.assertNotIn('https://www.toptal.com/',
-                             (self.root / relative).read_text())
+            self.assertNotIn(marker, (self.root / relative).read_text())
+        self.assert_success(self.generate(check=True))
 
     def test_check_detects_origin_and_generated_skill_drift(self):
         self.assert_success(self.generate())

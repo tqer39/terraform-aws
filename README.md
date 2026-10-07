@@ -75,12 +75,9 @@ npm run rules:check
 | Cursor | `.cursor/rules/overview.mdc` |
 
 ルールを変更するときは `docs/rules/overview.md` を編集し、再生成してください。
-スキルの詳細な手順は `docs/rules/<スキル名>.md` に置きます。
-`.rulesync/skills/<スキル名>/SKILL.md` には適用条件と原本への参照を記述し、同じコマンドで再生成します。
-各ツールのスキルは実行前に原本を読み、手順を複製しません。
-スキル専用の原本は YAML メタデータに `targets: []` を指定し、ルールの生成対象から除外します。
+スキルの適用条件と手順は `.rulesync/skills/<スキル名>/SKILL.md` を原本として編集し、同じコマンドで再生成します。
 `update-gitignore` は Toptal の最新テンプレートから `.gitignore` の生成ブロックを更新するスキルです。
-手順の原本は [.gitignore の更新手順](docs/rules/update-gitignore.md) です。
+手順の原本は [.gitignore の更新スキル](.rulesync/skills/update-gitignore/SKILL.md) です。
 生成先は Codex の `.agents/skills/`、Claude Code の `.claude/skills/`、
 GitHub Copilot の `.github/skills/`、Cursor の `.cursor/skills/` です。
 生成元・設定・生成ファイルを一緒にコミットします。生成ファイルは直接編集しません。
