@@ -1,5 +1,5 @@
 [tools]
-node = "24"
+node = "24.21.0"
 lefthook = "2.1.14"
 uv = "0.12.15"
 actionlint = "1.7.1"
