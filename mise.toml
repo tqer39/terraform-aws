@@ -22,3 +22,7 @@ run = "lefthook run pre-commit --all-files --no-auto-install --fail-on-changes"
 [tasks.test]
 description = "Run repository regression tests"
 run = ["python3 -m unittest discover -s tests -p 'test_*.py'", "npm run test:renovate"]
+
+[tasks.terraform-validate]
+description = "Validate all Terraform environments without AWS authentication"
+run = 'PATH="$(mise where terraform):$PATH" bash scripts/validate-terraform.sh'

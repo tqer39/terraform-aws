@@ -198,7 +198,7 @@ class ApplyGateTest(unittest.TestCase):
                 actual = all(values[key] == literal.strip("'") for key, literal in clauses)
                 self.assertEqual(actual, expected, (account, event, ref, check, status))
             self.assertIn("vars.TERRAFORM_EXECUTION_ENABLED == 'true' && needs.set-matrix.outputs.matrix", workflow)
-            self.assertIn(f'needs: [set-matrix, terraform-aws-{account}]', workflow)
+            self.assertIn(f'needs: [set-matrix, terraform-pr-validation, terraform-aws-{account}]', workflow)
             caller = (REPO / f'.github/workflows/terraform-aws-{account}-diff-check.yml').read_text()
             self.assertIn('CHECK_DIFF: "_true"', caller)
 

@@ -42,7 +42,8 @@ class TerraformLockfileTest(unittest.TestCase):
         action = (REPO / '.github/actions/setup-terraform/action.yml').read_text()
         command = re.search(r'^\s+run: (terraform init[^\n]*)$', action, re.MULTILINE)
         self.assertIsNotNone(command)
-        self.ci_args = shlex.split(command.group(1))[1:]
+        self.ci_command = command.group(1)
+        self.env['TF_BACKEND'] = 'false'
 
     def write_requirement(self, constraint):
         (self.root / 'main.tf').write_text(
@@ -52,35 +53,42 @@ class TerraformLockfileTest(unittest.TestCase):
             '    }\n  }\n}\n')
 
     def init(self, args):
+        options = ['-backend=false', '-no-color', f'-plugin-dir={self.mirror}']
+        if isinstance(args, str):
+            # Execute the real action command so its quoted env inputs are expanded.
+            command = ['bash', '-e', '-c',
+                       'exec ' + shlex.quote(self.terraform) + args.removeprefix('terraform')
+                       + ' ' + shlex.join(options)]
+        else:
+            command = [self.terraform, *args, *options]
         return subprocess.run(
-            [self.terraform, *args, '-backend=false', '-no-color',
-             f'-plugin-dir={self.mirror}'],
+            command,
             cwd=self.root, env=self.env, capture_output=True, text=True, timeout=30)
 
     def test_ci_keeps_locked_version_when_newer_version_is_available(self):
         self.write_requirement('>= 1.0.0')
-        result = self.init(self.ci_args)
+        result = self.init(self.ci_command)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn('fixture v1.0.0', result.stdout)
         self.assertEqual(self.lock.read_bytes(), self.original)
 
     def test_ci_rejects_missing_lockfile_without_creating_one(self):
         self.lock.unlink()
-        result = self.init(self.ci_args)
+        result = self.init(self.ci_command)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('read-only', result.stderr)
         self.assertFalse(self.lock.exists())
 
     def test_ci_rejects_incompatible_version_without_updating_lockfile(self):
         self.write_requirement('= 2.0.0')
-        result = self.init(self.ci_args)
+        result = self.init(self.ci_command)
         self.assertNotEqual(result.returncode, 0)
         self.assertEqual(self.lock.read_bytes(), self.original)
 
     def test_ci_rejects_changed_package_checksums(self):
         package = next(self.mirror.rglob('terraform-provider-fixture_v1.0.0'))
         package.write_text('changed package')
-        result = self.init(self.ci_args)
+        result = self.init(self.ci_command)
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('checksums', result.stderr)
         self.assertEqual(self.lock.read_bytes(), self.original)

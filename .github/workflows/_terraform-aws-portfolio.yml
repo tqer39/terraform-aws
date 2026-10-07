@@ -23,6 +23,9 @@ on:
           - "_true"
           - "_false"
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -40,30 +43,53 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
+          persist-credentials: false
           fetch-depth: 0
       - uses: ./.github/actions/set-matrix
         id: set-matrix
         with:
           AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
 
+  terraform-pr-validation:
+    needs: [set-matrix]
+    if: github.event_name == 'pull_request' && needs.set-matrix.outputs.matrix != '["_empty"]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        directory: ${{ fromJson(needs.set-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-terraform
+        with:
+          backend: "false"
+          working-directory: ./terraform/envs/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
+      - uses: ./.github/actions/terraform-validate
+        with:
+          working-directory: ./terraform/envs/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
+
   terraform-aws-portfolio:
     needs: [set-matrix]
-    if: ${{ vars.TERRAFORM_EXECUTION_ENABLED == 'true' && needs.set-matrix.outputs.matrix != '["_empty"]' }}
+    if: ${{ vars.TERRAFORM_EXECUTION_ENABLED == 'true' && needs.set-matrix.outputs.matrix != '["_empty"]' && github.ref == 'refs/heads/main' && contains(fromJSON('["push", "schedule", "workflow_dispatch"]'), github.event_name) }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write # For aws-actions/configure-aws-credentials
       contents: read # For aws-actions/configure-aws-credentials
       deployments: write # For bobheadxi/deployments
-      pull-requests: write # For bobheadxi/deployments
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         directory: ${{ fromJson(needs.set-matrix.outputs.matrix )}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/aws-credential
         with:
           oidc-iam-role: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.OIDC_IAM_ROLE }}
@@ -74,13 +100,12 @@ jobs:
           AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
           AWS_ENV_NAME: ${{ env.AWS_ENV_NAME }}
           CHECK_DIFF: ${{ env.CHECK_DIFF }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           working-directory: ./terraform/envs/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
 
       - name: Start Deployment
         if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.CHECK_DIFF == '_false' && env.TF_PLAN_STATUS == 'has-diff'
-        uses: bobheadxi/deployments@v1
+        uses: bobheadxi/deployments@648679e8e4915b27893bd7dbc35cb504dc915bc8 # v1.5.0
         id: deployment
         with:
           step: start
@@ -95,7 +120,7 @@ jobs:
 
       - name: Finish Deployment
         if: always() && steps.deployment.outputs.deployment_id != ''
-        uses: bobheadxi/deployments@v1
+        uses: bobheadxi/deployments@648679e8e4915b27893bd7dbc35cb504dc915bc8 # v1.5.0
         with:
           step: finish
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -103,27 +128,10 @@ jobs:
           env: ${{ steps.deployment.outputs.env }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
 
-  delete-pr-comments:
-    needs: [terraform-aws-portfolio]
-    if: contains(fromJSON('["pull_request"]'), github.event_name)
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v4
-      - name: Check and delete comments
-        run: |
-          chmod +x ./.github/scripts/delete_pr_comments.sh
-          ./.github/scripts/delete_pr_comments.sh \
-            "tqer39" \
-            "terraform-aws" \
-            "${{ env.AWS_ENV_NAME }}" \
-            "${{ github.event.pull_request.number }}" \
-            "${{ secrets.GITHUB_TOKEN }}"
-
   workflow-result-terraform-aws-portfolio:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [set-matrix, terraform-aws-portfolio]
+    needs: [set-matrix, terraform-pr-validation, terraform-aws-portfolio]
     if: always()
     steps:
       - name: Failure

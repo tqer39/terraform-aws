@@ -5,6 +5,9 @@ on:
   pull_request:
     types: [opened, ready_for_review]
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -18,7 +21,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Auto Assign
-        uses: kentaro-m/auto-assign-action@v2.0.0
+        uses: kentaro-m/auto-assign-action@f4648c0a9fdb753479e9e75fc251f507ce17bb7e # v2.0.0
         if: ${{ github.event.pull_request.assignee == null && join(github.event.pull_request.assignees) == '' }}
         with:
           configuration-path: .github/auto_assign.yml
