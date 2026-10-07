@@ -63,7 +63,7 @@ def select_matrix(environment, event_name, event):
     else:
         raise ValueError(f'Unsupported event: {event_name}')
     selected = [name for name in pipelines if any(
-        affects_root(path, f'terraform/environments/{environment}/{name}')
+        affects_root(path, f'terraform/envs/{environment}/{name}')
         for path in changed
     )]
     return selected or ['_empty']
