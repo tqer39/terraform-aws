@@ -47,10 +47,15 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential curl file git
 
+      - name: Set up mise
+        uses: jdx/mise-action@v4
+        with:
+          install: false
+
       - name: Set up repository
         env:
           SETUP_PROFILE: ${{ needs.setup-profile.outputs.profile }}
-        run: bash setup-repository.sh
+        run: mise run install
 
       - name: Verify aws-vault installation
         run: aws-vault --version
@@ -70,10 +75,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up mise
+        uses: jdx/mise-action@v4
+        with:
+          install: false
+
       - name: Set up repository
         env:
           SETUP_PROFILE: ${{ needs.setup-profile.outputs.profile }}
-        run: bash setup-repository.sh
+        run: mise run install
 
       - name: Verify aws-vault installation
         run: aws-vault --version

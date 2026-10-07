@@ -10,7 +10,7 @@ lefthook.yml
 cspell.json
 Brewfile
 LICENSE
-Makefile
+mise.toml
 node_modules/
 renovate.json
 tmp/

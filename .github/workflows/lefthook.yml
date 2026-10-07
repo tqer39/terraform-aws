@@ -34,7 +34,7 @@ jobs:
 
       - uses: ./.github/actions/setup-node
 
-      - name: Test Terraform workflow change detection
+      - name: Test repository tasks and Terraform workflow change detection
         run: mise run test
 
       - name: Run Lefthook checks
