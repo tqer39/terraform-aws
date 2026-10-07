@@ -7,7 +7,7 @@ locals {
 }
 
 module "create-users" {
-  source = "../../../usecases/create_users"
+  source = "../../../modules/create_users"
 
   users = local.users
 }

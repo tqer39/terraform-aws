@@ -5,7 +5,7 @@
  */
 
 module "s3_bucket" {
-  source = "../../modules/s3/bucket"
+  source = "../s3/bucket"
 
   aws_s3_bucket = {
     bucket = var.bucket_name

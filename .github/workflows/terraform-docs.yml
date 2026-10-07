@@ -33,8 +33,6 @@ jobs:
         include:
           - name: modules
             directory: modules
-          - name: usecases
-            directory: usecases
 
     steps:
       - name: Checkout source code

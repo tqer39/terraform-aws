@@ -35,7 +35,7 @@ locals {
 }
 
 module "organizations" {
-  source = "../../../usecases/organizations"
+  source = "../../../modules/organizations"
 
   accounts             = local.accounts
   owner                = local.owner
