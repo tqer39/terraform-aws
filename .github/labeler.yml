@@ -42,16 +42,16 @@ rules:
       - "CODEOWNERS"
   - matchers:
       - ".github/workflows/_terraform-aws-management.yml"
-      - "terraform/environments/management/**"
+      - "terraform/envs/management/**"
     labels:
       - "management"
   - matchers:
       - ".github/workflows/_terraform-aws-sandbox.yml"
-      - "terraform/environments/sandbox/**"
+      - "terraform/envs/sandbox/**"
     labels:
       - "sandbox"
   - matchers:
       - ".github/workflows/_terraform-aws-portfolio.yml"
-      - "terraform/environments/portfolio/**"
+      - "terraform/envs/portfolio/**"
     labels:
       - "portfolio"

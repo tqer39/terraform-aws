@@ -22,7 +22,7 @@ description: terraform-aws の共通開発ルール
 ## リポジトリ構成と Terraform
 
 - AWS リソースを Terraform で管理するリポジトリです。
-- `terraform/environments/` に環境ごとの構成、`terraform/modules/` に共通部品と用途別のモジュールがあります。
+- `terraform/envs/` に環境ごとの構成、`terraform/modules/` に共通部品と用途別のモジュールがあります。
 - 対象ディレクトリの Terraform・provider バージョンと `.terraform.lock.hcl` を確認し、無関係な更新を避けてください。
 - GitHub Flow を使用し、`main` へのマージで GitHub Actions の `terraform apply` が実行されます。
 - ローカルからのデプロイは原則禁止です。明示的な依頼なしに `terraform apply`、`destroy`、state の変更を実行しないでください。

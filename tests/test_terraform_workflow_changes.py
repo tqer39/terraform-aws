@@ -24,7 +24,7 @@ class WorkflowChangesTest(unittest.TestCase):
         self.git('config', 'user.email', 'test@example.com')
         self.git('config', 'user.name', 'Test')
         self.write('.github/workflows/deploy_pipeline/management', 'base\nbase_apne1\n')
-        self.write('terraform/environments/management/base/main.tf', '# root\n')
+        self.write('terraform/envs/management/base/main.tf', '# root\n')
         self.write('terraform/modules/shared/main.tf', '# shared\n')
         self.base = self.commit()
 
@@ -60,7 +60,7 @@ class WorkflowChangesTest(unittest.TestCase):
         return json.loads(output.read_text().removeprefix('matrix='))
 
     def test_root_change_selects_only_affected_root(self):
-        self.write('terraform/environments/management/base/main.tf')
+        self.write('terraform/envs/management/base/main.tf')
         self.commit()
         self.assertEqual(self.select(), ['base'])
 
@@ -76,12 +76,12 @@ class WorkflowChangesTest(unittest.TestCase):
 
     def test_documentation_push_selects_nothing(self):
         self.write('docs/plan.md')
-        self.write('terraform/environments/management/base/README.md')
+        self.write('terraform/envs/management/base/README.md')
         self.commit()
         self.assertEqual(self.select(), ['_empty'])
 
     def test_unrelated_root_and_workflow_select_nothing(self):
-        self.write('terraform/environments/portfolio/base/main.tf')
+        self.write('terraform/envs/portfolio/base/main.tf')
         self.write('.github/workflows/pre-commit.yml')
         self.commit()
         self.assertEqual(self.select(), ['_empty'])
@@ -96,16 +96,24 @@ class WorkflowChangesTest(unittest.TestCase):
                          ['base', 'base_apne1'])
 
     def test_push_includes_all_commits_in_range(self):
-        self.write('terraform/environments/management/base/.terraform.lock.hcl')
+        self.write('terraform/envs/management/base/.terraform.lock.hcl')
         self.commit()
         self.write('docs/last-commit.md')
         self.commit()
         self.assertEqual(self.select(), ['base'])
 
     def test_renamed_file_marks_old_root(self):
-        self.git('mv', 'terraform/environments/management/base/main.tf', 'moved.tf')
+        self.git('mv', 'terraform/envs/management/base/main.tf', 'moved.tf')
         self.commit()
         self.assertEqual(self.select(), ['base'])
+
+    def test_renamed_file_between_roots_selects_both(self):
+        self.write('terraform/envs/management/base_apne1/.gitkeep', '')
+        self.base = self.commit()
+        self.git('mv', 'terraform/envs/management/base/main.tf',
+                 'terraform/envs/management/base_apne1/main.tf')
+        self.commit()
+        self.assertEqual(self.select(), ['base', 'base_apne1'])
 
     def test_invalid_pipeline_list_fails(self):
         self.write('.github/workflows/deploy_pipeline/management', '../outside\n')
@@ -131,30 +139,30 @@ class WorkflowChangesTest(unittest.TestCase):
         self.write('docs/feature.md')
         head = self.commit()
         self.git('checkout', '-qb', 'base-advance', self.base)
-        self.write('terraform/environments/management/base/main.tf')
+        self.write('terraform/envs/management/base/main.tf')
         advanced = self.commit()
         self.assertEqual(self.select('pull_request', {'pull_request': {
             'base': {'sha': advanced}, 'head': {'sha': head}}}), ['_empty'])
         self.assertEqual(self.git('rev-parse', 'HEAD'), advanced)
 
     def test_paths_with_spaces_and_root_prefix_collision(self):
-        self.assertTrue(MATRIX.affects_root('terraform/environments/management/base/file name.tf',
-                                          'terraform/environments/management/base'))
-        self.assertFalse(MATRIX.affects_root('terraform/environments/management/base_apne1/main.tf',
-                                           'terraform/environments/management/base'))
+        self.assertTrue(MATRIX.affects_root('terraform/envs/management/base/file name.tf',
+                                          'terraform/envs/management/base'))
+        self.assertFalse(MATRIX.affects_root('terraform/envs/management/base_apne1/main.tf',
+                                           'terraform/envs/management/base'))
 
     def test_change_detector_and_shared_usecases_are_inputs(self):
         for path in ('.github/scripts/terraform_matrix.py',
                      '.github/scripts/check_for_changes_in_terraform_files.sh',
                      'terraform/usecases/example/main.tf'):
-            self.assertTrue(MATRIX.affects_root(path, 'terraform/environments/management/base'))
+            self.assertTrue(MATRIX.affects_root(path, 'terraform/envs/management/base'))
 
     def test_wrapper_distinguishes_changed_unchanged_and_failure(self):
         wrapper = REPO / '.github/scripts/check_for_changes_in_terraform_files.sh'
-        self.write('terraform/environments/management/base/main.tf')
+        self.write('terraform/envs/management/base/main.tf')
         head = self.commit()
         for base, end, expected in ((self.base, head, 0), (head, head, 1), ('missing', head, 2)):
-            result = subprocess.run(['bash', str(wrapper), 'terraform/environments/management/base',
+            result = subprocess.run(['bash', str(wrapper), 'terraform/envs/management/base',
                                      base, end], cwd=self.root, capture_output=True)
             self.assertEqual(result.returncode, expected, result.stderr)
 

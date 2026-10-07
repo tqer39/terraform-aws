@@ -44,7 +44,7 @@ state・認証・組織管理、DNS・配信、監査ログ、必要性が未確
 
 新設と撤去を安全に段階実行できるよう、既存 CI の変更検出と適用条件を修復する。
 
-- 変更検出は実際の `terraform/environments/` を参照する。
+- 変更検出は実際の `terraform/envs/` を参照する。
 - PR は base と head の共通祖先から、push は before と after の差分から対象を選ぶ。
   checkout は fetch-depth 0 で履歴を取得し、検出処理ではブランチを切り替えない。
 - 共有 modules / usecases の変更は、推移的な依存の見落としを避け、全登録ルートを plan 対象にする。
