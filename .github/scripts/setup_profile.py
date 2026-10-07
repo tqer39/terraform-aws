@@ -11,7 +11,6 @@ from terraform_matrix import changed_files, git
 SETUP_FILES = {
     'setup-repository.sh',
     'mise.toml',
-    'Makefile',
     '.terraform-version',
     '.github/workflows/setup-repository-test.yml',
     '.github/scripts/setup_profile.py',

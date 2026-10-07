@@ -1,6 +1,7 @@
-"""Exercise rule and skill generation in an isolated repository."""
+"""Exercise rule generation and skill references in an isolated repository."""
 
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import tempfile
@@ -54,19 +55,30 @@ class RulesyncTest(unittest.TestCase):
         self.assertEqual(before, {path: (self.root / path).read_bytes()
                                   for path in before})
 
-    def test_skill_origin_changes_are_embedded_in_every_tool(self):
-        origin = self.root / '.rulesync/skills/update-gitignore/SKILL.md'
-        marker = 'Regression fixture: updated skill procedure.'
-        origin.write_text(origin.read_text() + '\n' + marker + '\n')
+    def test_every_skill_resolves_the_same_canonical_procedure(self):
         self.assert_success(self.generate())
-        body = origin.read_text().split('---', 2)[2].strip()
+        origin = self.root / 'docs/rules/update-gitignore.md'
         for relative in SKILL_OUTPUTS:
             with self.subTest(skill=relative):
-                generated = (self.root / relative).read_text()
-                self.assertEqual(generated.split('---', 2)[2].strip(), body)
-                self.assertNotIn('docs/rules/', generated)
+                skill = self.root / relative
+                links = re.findall(r'\]\(([^)]+)\)', skill.read_text())
+                self.assertEqual(len(links), 1)
+                self.assertEqual((skill.parent / links[0]).resolve(), origin)
+                self.assertTrue(origin.is_file())
+                self.assertNotIn('https://www.toptal.com/', skill.read_text())
+        # Skill-only procedures must not be emitted as unconditional rules.
         for relative in RULE_OUTPUTS:
-            self.assertNotIn(marker, (self.root / relative).read_text())
+            self.assertNotIn('https://www.toptal.com/',
+                             (self.root / relative).read_text())
+
+    def test_claude_uses_shared_rules_without_regenerating_claude_md(self):
+        for _ in range(2):
+            self.assert_success(self.generate())
+            self.assertTrue((self.root / 'AGENTS.md').is_file())
+            self.assertFalse((self.root / 'CLAUDE.md').exists())
+            self.assertTrue(
+                (self.root / '.claude/skills/update-gitignore/SKILL.md').is_file()
+            )
         self.assert_success(self.generate(check=True))
 
     def test_claude_uses_shared_rules_without_regenerating_claude_md(self):

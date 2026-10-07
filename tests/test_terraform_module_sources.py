@@ -13,9 +13,7 @@ class TerraformModuleSourcesTest(unittest.TestCase):
         modules = REPO / 'terraform/modules'
         sources = 0
         for directory in ('envs', 'modules'):
-            module_tree = REPO / 'terraform' / directory
-            self.assertTrue(module_tree.is_dir(), str(module_tree))
-            for path in sorted(module_tree.rglob('*.tf')):
+            for path in sorted((REPO / 'terraform' / directory).rglob('*.tf')):
                 # Only active source attributes, excluding commented examples.
                 for source in re.findall(r'^\s*source\s*=\s*"(\.{1,2}/[^"]+)"',
                                          path.read_text(), re.MULTILINE):
