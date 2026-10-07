@@ -29,5 +29,5 @@
 
 - ドキュメントは日本語で記述し、ADR は `docs/adr/README.md`、計画書は `docs/plans/README.md` の規約に従ってください。
 - Python の回帰テストは `python3 -m unittest discover -s tests -p 'test_*.py'` で実行してください。
-- lint は `.pre-commit-config.yaml` に従い、`pre-commit run --all-files` で検証してください。
+- lint は `lefthook.yml` に従い、`mise run lint` で検証してください。
 - 共通ルールの変更後は生成元と生成ファイルを一緒にコミットし、`npm run rules:check` で同期状態を検証してください。

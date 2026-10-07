@@ -1,0 +1,51 @@
+# https://lefthook.dev/configuration/
+pre-commit:
+  # Use the same checks locally and in CI without modifying files.
+  parallel: false
+  exclude:
+    - "**/USAGE.md"
+  commands:
+    check-added-large-files:
+      # Generated dependency metadata exceeds the 512 KiB source-file limit.
+      exclude: package-lock.json
+      run: mise exec -- uv run --locked --script scripts/lint/check.py check-added-large-files {staged_files}
+    check-json:
+      run: mise exec -- uv run --locked --script scripts/lint/check.py check-json {staged_files}
+    check-yaml:
+      run: mise exec -- uv run --locked --script scripts/lint/check.py check-yaml {staged_files}
+    detect-aws-credentials:
+      run: mise exec -- uv run --locked --script scripts/lint/check.py detect-aws-credentials {staged_files}
+    detect-private-key:
+      run: mise exec -- uv run --locked --script scripts/lint/check.py detect-private-key {staged_files}
+    end-of-file-fixer:
+      run: mise exec -- uv run --locked --script scripts/lint/check.py end-of-file-fixer --check {staged_files}
+    mixed-line-ending:
+      run: mise exec -- uv run --locked --script scripts/lint/check.py mixed-line-ending --check {staged_files}
+    trailing-whitespace:
+      run: mise exec -- uv run --locked --script scripts/lint/check.py trailing-whitespace --check {staged_files}
+    yamllint:
+      glob: "*.{yml,yaml}"
+      run: mise exec -- uv tool run --from yamllint==1.35.1 yamllint {staged_files}
+    cspell:
+      run: mise exec -- npx --no-install cspell lint --no-progress --no-must-find-files {staged_files}
+    markdownlint:
+      glob: "*.{md,markdown}"
+      run: mise exec -- npx --no-install markdownlint {staged_files}
+    textlint:
+      glob: "*.{txt,md,mdown,markdown}"
+      run: mise exec -- npx --no-install textlint {staged_files}
+    shellcheck:
+      glob: "*.sh"
+      run: mise exec -- shellcheck {staged_files}
+    prettier:
+      glob: "*.{yml,yaml}"
+      run: mise exec -- npx --no-install prettier --check {staged_files}
+    actionlint:
+      glob: ".github/workflows/*.{yml,yaml}"
+      run: mise exec -- actionlint {staged_files}
+    renovate-config-validator:
+      glob: "renovate.{json,json5}"
+      run: mise exec -- npx --no-install renovate-config-validator {staged_files}
+    terraform-fmt:
+      glob: "*.{tf,tfvars}"
+      run: mise exec -- terraform fmt -check -diff {staged_files}

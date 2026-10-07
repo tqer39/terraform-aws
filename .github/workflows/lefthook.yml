@@ -1,5 +1,5 @@
 ---
-name: pre-commit
+name: Lefthook
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
       - name: Check generated AI rules
         run: npm run rules:check
 
-  pre-commit:
+  lefthook:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -29,31 +29,26 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Get current Terraform version
-        run: echo "TERRAFORM_VERSION=$(cat .terraform-version)" >> "$GITHUB_ENV"
+      - name: Set up mise
+        uses: jdx/mise-action@v4
 
-      - name: Setup Terraform for regression tests
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: ${{ env.TERRAFORM_VERSION }}
-          terraform_wrapper: false
+      - uses: ./.github/actions/setup-node
 
       - name: Test Terraform workflow change detection
-        run: python3 -m unittest discover -s tests -p 'test_*.py'
+        run: mise run test
 
-      - uses: pre-commit/action@v3.0.1
-        with:
-          extra_args: -a --show-diff-on-failure
+      - name: Run Lefthook checks
+        run: mise run lint
 
   workflow-result:
-    needs: [pre-commit, rulesync]
+    needs: [lefthook, rulesync]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Require successful checks
         env:
-          CHECK_RESULT: ${{ needs.pre-commit.result }}
+          CHECK_RESULT: ${{ needs.lefthook.result }}
           RULESYNC_RESULT: ${{ needs.rulesync.result }}
         run: |
           test "$CHECK_RESULT" = success

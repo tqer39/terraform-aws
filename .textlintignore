@@ -2,7 +2,7 @@
 .git/
 .github/
 .gitignore
-.pre-commit-config.yaml
+lefthook.yml
 .terraformignore
 .textlintcache
 .vscode/

@@ -1,0 +1,15 @@
+[tools]
+node = "24"
+lefthook = "2.1.14"
+uv = "0.12.15"
+actionlint = "1.7.1"
+shellcheck = "0.10.0"
+terraform = "1.8.1"
+
+[tasks.lint]
+description = "Run Lefthook checks"
+run = "lefthook run pre-commit --all-files --no-auto-install --fail-on-changes"
+
+[tasks.test]
+description = "Run repository regression tests"
+run = "python3 -m unittest discover -s tests -p 'test_*.py'"

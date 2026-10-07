@@ -72,3 +72,7 @@ rulesync
 codexcli
 claudecode
 mdc
+lefthook
+tfvars
+worktree
+Rulesets
