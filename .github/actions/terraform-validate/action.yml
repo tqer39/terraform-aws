@@ -4,9 +4,6 @@ name: Terraform Validate
 description: Terraform Validate
 
 inputs:
-  github-token:
-    description: サードパーティの Action を実行するための権限を付与
-    required: true
   working-directory:
     description: Terraform CLI 実行時のパス
     required: true
@@ -19,16 +16,11 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
 
-    - uses: actions/cache@v4
-      name: Cache plugin dir
-      with:
-        path: ~/.tflint.d/plugins
-        key: ${{ runner.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
-
     - name: Setup TFLint
-      uses: terraform-linters/setup-tflint@v4
+      uses: terraform-linters/setup-tflint@90f302c255ef959cbfb4bd10581afecdb7ece3e6 # v4.1.1
       with:
-        tflint_version: latest
+        tflint_version: v0.55.1
+        checksums: 53379f38bc1e86c18885bfc85dc5fe2cd1f59729ae9a2afa16905189c1d67aa9
 
     - name: Show version
       run: tflint --version
@@ -42,5 +34,7 @@ runs:
       shell: bash
 
     - name: Run TFLint
-      run: tflint --chdir=${{ inputs.working-directory }} --module
+      run: tflint --chdir="$TF_WORKING_DIRECTORY" --call-module-type=all
+      env:
+        TF_WORKING_DIRECTORY: ${{ inputs.working-directory }}
       shell: bash

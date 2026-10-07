@@ -7,12 +7,19 @@ on:
     - cron: "0 22 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 concurrency:
   group: terraform-aws-sandbox-difference-check
   cancel-in-progress: true
 
 jobs:
   terraform-difference-check:
+    permissions:
+      contents: read
+      id-token: write
+      deployments: write
     name: Terraform sandbox
     uses: ./.github/workflows/_terraform-aws-sandbox.yml
     with:

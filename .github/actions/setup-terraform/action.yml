@@ -7,16 +7,20 @@ inputs:
   working-directory:
     description: Terraform CLI 実行時のパス
     required: true
+  backend:
+    description: backend を初期化するかどうか
+    required: false
+    default: "true"
 
 runs:
   using: composite
   steps:
     - name: Get current Terraform version
-      run: echo "TERRAFORM_VERSION=$(cat .terraform-version)" >> $GITHUB_ENV
+      run: echo "TERRAFORM_VERSION=$(cat .terraform-version)" >> "$GITHUB_ENV"
       shell: bash
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
+      uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
       with:
         terraform_version: ${{ env.TERRAFORM_VERSION }}
 
@@ -26,6 +30,8 @@ runs:
       shell: bash
 
     - name: Terraform Init
-      run: terraform init -input=false -lockfile=readonly
+      run: terraform init -backend="$TF_BACKEND" -input=false -lockfile=readonly
+      env:
+        TF_BACKEND: ${{ inputs.backend }}
       working-directory: ${{ inputs.working-directory }}
       shell: bash

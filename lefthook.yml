@@ -43,6 +43,10 @@ pre-commit:
     actionlint:
       glob: ".github/workflows/*.{yml,yaml}"
       run: mise exec -- actionlint {staged_files}
+    pinact:
+      glob: ".github/**/*.{yml,yaml}"
+      # Container digests are covered by test_actions_security.py.
+      run: mise exec -- pinact run --fix=false --no-api --exclude '^docker://' {staged_files}
     renovate-config-validator:
       glob: "renovate.{json,json5}"
       run: mise exec -- npx --no-install renovate-config-validator {staged_files}
