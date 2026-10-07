@@ -61,7 +61,7 @@ class SetupProfileTest(unittest.TestCase):
         self.assertEqual(self.select(), 'cli')
 
     def test_setup_dependencies_use_full(self):
-        for name in ('setup-repository.sh', 'mise.toml', 'Makefile', '.terraform-version',
+        for name in ('setup-repository.sh', 'mise.toml', '.terraform-version',
                      '.github/workflows/setup-repository-test.yml',
                      '.github/scripts/setup_profile.py',
                      '.github/scripts/terraform_matrix.py',

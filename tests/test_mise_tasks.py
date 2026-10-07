@@ -2,7 +2,6 @@
 
 import os
 from pathlib import Path
-import re
 import shutil
 import subprocess
 import tempfile
@@ -18,10 +17,9 @@ class MiseTasksTest(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        # Exercise task definitions without downloading development tools.
+        # Exercise task dispatch independently of installed tool versions.
         config = (REPO / 'mise.toml').read_text()
-        config = re.sub(r'(?ms)^\[tools\]\n.*?(?=^\[|\Z)', '', config)
-        (self.root / 'mise.toml').write_text(config)
+        (self.root / 'mise.toml').write_text(config[config.index('[tasks.install]'):])
         # Keep all mise state isolated, including trust and global configuration.
         self.env = dict(os.environ)
         for key in list(self.env):
@@ -41,6 +39,8 @@ class MiseTasksTest(unittest.TestCase):
         bash.write_text('#!/bin/sh\nprintf "%s\\n" "$PWD" "$@" > "$TASK_LOG"\n'
                         'exit "${TASK_EXIT_CODE:-0}"\n')
         bash.chmod(0o755)
+        shutil.copyfile(bash, self.bin / 'lefthook')
+        (self.bin / 'lefthook').chmod(0o755)
         self.log = self.root / 'task.log'
         self.env['TASK_LOG'] = str(self.log)
 
@@ -63,15 +63,14 @@ class MiseTasksTest(unittest.TestCase):
                     self.assertEqual(self.log.read_text().splitlines(),
                                      [str(self.root.resolve()), script])
 
-    def test_install_preserves_setup_profile(self):
-        (self.bin / 'bash').write_text(
-            '#!/bin/sh\nprintf "%s\\n" "$SETUP_PROFILE" > "$TASK_LOG"\n')
-        for profile in ('cli', 'full'):
-            with self.subTest(profile=profile):
-                self.env['SETUP_PROFILE'] = profile
-                result = self.run_task('install')
-                self.assertEqual(result.returncode, 0, result.stderr)
-                self.assertEqual(self.log.read_text().strip(), profile)
+    def test_lint_dispatch_and_failure(self):
+        for code in (0, 23):
+            with self.subTest(code=code):
+                result = self.run_task('lint', exit_code=code)
+                self.assertEqual(result.returncode, code, result.stderr)
+                self.assertEqual(self.log.read_text().splitlines(),
+                                 [str(self.root.resolve()), 'run', 'pre-commit',
+                                  '--all-files', '--no-auto-install', '--fail-on-changes'])
 
     def test_script_failure_is_reported(self):
         for task in ('install', 'update'):

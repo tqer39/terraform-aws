@@ -77,9 +77,12 @@ npm run rules:check
 Claude Code v2.1.277 以降は、ルートの `CLAUDE.md` を置かずに `AGENTS.md` を使用します。
 共通ルールの生成対象は Codex、GitHub Copilot、Cursor とし、Claude Code のスキル生成は維持します。
 ルールを変更するときは `docs/rules/overview.md` を編集し、再生成してください。
-スキルの適用条件と手順は `.rulesync/skills/<スキル名>/SKILL.md` を原本として編集し、同じコマンドで再生成します。
+スキルの詳細な手順は `docs/rules/<スキル名>.md` に置きます。
+`.rulesync/skills/<スキル名>/SKILL.md` には適用条件と原本への参照を記述し、同じコマンドで再生成します。
+各ツールのスキルは実行前に原本を読み、手順を複製しません。
+スキル専用の原本は YAML メタデータに `targets: []` を指定し、ルールの生成対象から除外します。
 `update-gitignore` は Toptal の最新テンプレートから `.gitignore` の生成ブロックを更新するスキルです。
-手順の原本は [.gitignore の更新スキル](.rulesync/skills/update-gitignore/SKILL.md) です。
+手順の原本は [.gitignore の更新手順](docs/rules/update-gitignore.md) です。
 生成先は Codex の `.agents/skills/`、Claude Code の `.claude/skills/`、
 GitHub Copilot の `.github/skills/`、Cursor の `.cursor/skills/` です。
 生成元・設定・生成ファイルを一緒にコミットします。生成ファイルは直接編集しません。
@@ -100,20 +103,10 @@ mise run install
 
 `mise run install` は `setup-repository.sh` を実行します。
 `mise install` は mise 自体のツールインストール用コマンドです。
+`mise bootstrap` でも `mise.toml` のツールをインストールできます。
 セットアップは同じシェルプロセスで最後まで実行し、GitHub Actions では Homebrew の PATH を後続ステップへ引き継ぎます。
-
-```bash
-# Update repository tools
-mise run update
-
-# Run checks (complete the Lefthook setup below first)
-mise run lint
-
-# Run regression tests (Python 3, Git, and Terraform are required)
-mise run test
-```
-
 既存の Homebrew は再利用し、未導入の場合のみインストールします。
+
 Rancher Desktop が不要な場合は、CLI ツールのみセットアップできます。
 
 ```bash
@@ -124,6 +117,17 @@ SETUP_PROFILE=cli mise run install
 セットアップ CI は通常の変更では `cli` を使用し、セットアップスクリプト・タスク・
 Terraform バージョン・関連するワークフローやテストの変更では `full` を使用します。
 GitHub Actions の `Test Setup Repository Script` を手動実行すると、両 OS の全構成を検証できます。
+
+```bash
+# Update repository tools
+mise run update
+
+# Lefthook で全ファイルを検証
+mise run lint
+
+# Run regression tests (Python 3 and Git are required)
+mise run test
+```
 
 ### Homebrew
 
@@ -229,17 +233,11 @@ mise exec -- pinact run --check
 
 ```bash
 # 検証ツールと Git フックをセットアップ
-mise trust
 mise install
 mise exec -- npm ci
 mise exec -- lefthook install
-
-# 全ファイルを検証
-mise run lint
-mise run test
 ```
 
-検証には [mise](https://mise.jdx.dev/installing-mise.html) を使用します。
 既存の pre-commit フックは `mise exec -- lefthook install` で置き換えます。
 `mise run lint` は全ファイル、コミット時はステージ済みファイルを検証します。
 安全チェックの Python 依存は uv が初回実行時に取得します。
@@ -318,7 +316,6 @@ aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev
 
 ```txt
 .github/workflows/terraform-aws-<環境名>.yml
-.github/labeler.yml
 terraform/envs/<環境名>/base/main.tf
 terraform/envs/<環境名>/base/provider.tf
 terraform/envs/<環境名>/base/terraform.tf
