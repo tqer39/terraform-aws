@@ -1,3 +1,38 @@
+// cspell:ignore Behaviour
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json"
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": [
+    "通常更新は公開から最低7日待ち、公開日時が不明な更新はDashboardで保留する。",
+    "待機期間は直接依存の更新候補に適用される。推移的依存やタグの改ざんを完全には防げない。",
+    "脆弱性修正と既存参照のSHA固定は待機を省略するが、自動マージせず手動レビューを前提とする。"
+  ],
+  "dependencyDashboard": true,
+  "automerge": false,
+  "platformAutomerge": false,
+  "ignoreScripts": true,
+  "minimumReleaseAge": "7 days",
+  "minimumReleaseAgeBehaviour": "timestamp-required",
+  "internalChecksFilter": "strict",
+  "prCreation": "immediate",
+  // OSV連携は実験的機能。対応する直接依存の既知の悪意ある更新も検出する。
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "automerge": false,
+    "minimumReleaseAge": null,
+    "prCreation": "immediate"
+  },
+  "packageRules": [
+    {
+      "description": "GitHub ActionsをタグやブランチではなくコミットSHAに固定する。",
+      "matchManagers": ["github-actions"],
+      "pinDigests": true
+    },
+    {
+      "description": "既存参照を固定する初回のSHA固定PRは待機させない。以降のdigest更新には通常の待機期間を適用する。",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["pinDigest"],
+      "minimumReleaseAge": null
+    }
+  ]
 }

@@ -206,6 +206,26 @@ sudo dpkg -i session-manager-plugin.deb
 rm -rf session-manager-plugin.deb
 ```
 
+### GitHub Actions の SHA 固定
+
+`pinact` は `mise.toml` でバージョンを固定して管理します。
+リポジトリのルートでセットアップし、ローカルで Actions を SHA に固定できます。
+
+```bash
+mise trust
+mise bootstrap
+mise exec -- pinact --version
+
+# ワークフローと composite action の参照を SHA に固定
+mise exec -- pinact run
+
+# ファイルを書き換えずに固定状態を確認
+mise exec -- pinact run --check
+```
+
+ツールのインストールだけを実行する場合は `mise bootstrap --only tools` を使用します。
+`pinact run` の変更後は差分を確認してコミットしてください。
+
 ### Lefthook
 
 ```bash
