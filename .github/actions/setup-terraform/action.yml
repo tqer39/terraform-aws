@@ -18,7 +18,7 @@ runs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
       with:
-        terraform_version: env.TERRAFORM_VERSION
+        terraform_version: ${{ env.TERRAFORM_VERSION }}
 
     - name: Terraform Format
       run: terraform fmt -check -recursive -diff
@@ -26,6 +26,6 @@ runs:
       shell: bash
 
     - name: Terraform Init
-      run: terraform init -upgrade
+      run: terraform init -input=false -lockfile=readonly
       working-directory: ${{ inputs.working-directory }}
       shell: bash

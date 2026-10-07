@@ -29,6 +29,15 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
+      - name: Get current Terraform version
+        run: echo "TERRAFORM_VERSION=$(cat .terraform-version)" >> "$GITHUB_ENV"
+
+      - name: Setup Terraform for regression tests
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+
       - name: Test Terraform workflow change detection
         run: python3 -m unittest discover -s tests -p 'test_*.py'
 
