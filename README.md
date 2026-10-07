@@ -6,7 +6,7 @@ AWS のリソースを Terraform で構成する。
 
 | Name | Environment | Result |
 | :--- | :--- | :--- |
-| Linterなどによる検証 | pre-commit | ![pre-commit](https://github.com/tqer39/terraform-aws/actions/workflows/pre-commit.yml/badge.svg) |
+| Linterなどによる検証 | Lefthook | ![Lefthook](https://github.com/tqer39/terraform-aws/actions/workflows/lefthook.yml/badge.svg) |
 | AWS 検証環境 | Sandbox | ![Terraform - sandbox](https://github.com/tqer39/terraform-aws/actions/workflows/_terraform-aws-sandbox.yml/badge.svg) |
 | AWS ポートフォリオ | Management | ![Terraform - management](https://github.com/tqer39/terraform-aws/actions/workflows/_terraform-aws-portfolio.yml/badge.svg) |
 | AWS 全体管理 | Management | ![Terraform - management](https://github.com/tqer39/terraform-aws/actions/workflows/_terraform-aws-management.yml/badge.svg) |
@@ -179,12 +179,26 @@ sudo dpkg -i session-manager-plugin.deb
 rm -rf session-manager-plugin.deb
 ```
 
-### pre-commit
+### Lefthook
 
 ```bash
-# setup
-pre-commit install --install-hooks
+# 検証ツールと Git フックをセットアップ
+mise trust
+mise install
+mise exec -- npm ci
+mise exec -- lefthook install
+
+# 全ファイルを検証
+mise run lint
+mise run test
 ```
+
+検証には [mise](https://mise.jdx.dev/installing-mise.html) を使用します。
+既存の pre-commit フックは `mise exec -- lefthook install` で置き換えます。
+`mise run lint` は全ファイル、コミット時はステージ済みファイルを検証します。
+安全チェックの Python 依存は uv が初回実行時に取得します。
+pre-commit の CLI は不要です。安全チェックは pre-commit-hooks を直接呼び出します。
+検証はファイルを自動修正しません。512 KiB のサイズ制限は生成物 `package-lock.json` を除いて適用します。
 
 ### ローカルから Terraform CLI を実行する方法
 

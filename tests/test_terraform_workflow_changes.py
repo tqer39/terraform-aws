@@ -91,7 +91,7 @@ class WorkflowChangesTest(unittest.TestCase):
 
     def test_unrelated_root_and_workflow_select_nothing(self):
         self.write('terraform/envs/portfolio/base/main.tf')
-        self.write('.github/workflows/pre-commit.yml')
+        self.write('.github/workflows/lefthook.yml')
         self.commit()
         self.assertEqual(self.select(), ['_empty'])
 
