@@ -4,25 +4,42 @@
 # This script is used to setup the repository for the first time.
 #
 
-# Install Homebrew
-if [ "$(uname)" == 'Darwin' ]; then
-  # macOS
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-elif [ "$(uname -s)" == 'Linux' ]; then
-  # Linux
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+case "${SETUP_PROFILE:-full}" in
+  full|cli) ;;
+  *)
+    echo "SETUP_PROFILE must be full or cli" >&2
+    exit 2
+    ;;
+esac
+
+# Reuse Homebrew, including runner installations not yet on PATH.
+find_homebrew() {
+  if command -v brew &> /dev/null; then
+    return 0
+  fi
+  for brew_prefix in /home/linuxbrew/.linuxbrew /opt/homebrew /usr/local; do
+    if [ -x "$brew_prefix/bin/brew" ]; then
+      export PATH="$brew_prefix/bin:$PATH"
+      return 0
+    fi
+  done
+  return 1
+}
+
+# Install Homebrew only when it is unavailable.
+if ! find_homebrew; then
+  if [ "$(uname)" == 'Darwin' ] || [ "$(uname -s)" == 'Linux' ]; then
+    homebrew_installer=$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh) || exit 1
+    /bin/bash -c "$homebrew_installer" || exit 1
+  fi
+  find_homebrew || exit 1
 fi
 
-# Add Homebrew to PATH
-if [ -d "/home/linuxbrew/.linuxbrew/bin" ]; then
-  # shellcheck disable=SC2016 # Expand PATH when the shell starts.
-  echo 'export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"' >> ~/.bashrc
-  export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"
-elif [ -d "/opt/homebrew/bin" ]; then
-  # shellcheck disable=SC2016 # Expand PATH when the shell starts.
-  echo 'export PATH="/opt/homebrew/bin:$PATH"' >> ~/.bashrc
-  export PATH="/opt/homebrew/bin:$PATH"
-fi
+# Add the selected Homebrew installation to PATH.
+brew_prefix=$(brew --prefix) || exit 1
+# shellcheck disable=SC2016 # Expand PATH when the shell starts.
+printf 'export PATH=%q/bin:%q/sbin:$PATH\n' "$brew_prefix" "$brew_prefix" >> ~/.bashrc
+export PATH="$brew_prefix/bin:$brew_prefix/sbin:$PATH"
 
 # Install git if not available
 if ! command -v git &> /dev/null; then
@@ -58,7 +75,7 @@ if command -v tfenv &> /dev/null; then
 fi
 
 # Install Rancher Desktop
-if ! command -v rancher-desktop &> /dev/null; then
+if [ "${SETUP_PROFILE:-full}" = full ] && ! command -v rancher-desktop &> /dev/null; then
   if [ "$(uname)" == 'Darwin' ]; then
     brew install --cask rancher
   elif [ "$(uname -s)" == 'Linux' ]; then

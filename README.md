@@ -81,6 +81,24 @@ CI の `rulesync` ジョブで同期漏れを検出します。
 
 ## Setup
 
+### Repository setup
+
+```bash
+bash setup-repository.sh
+```
+
+既存の Homebrew は再利用し、未導入の場合のみインストールします。
+Rancher Desktop が不要な場合は、CLI ツールのみセットアップできます。
+
+```bash
+SETUP_PROFILE=cli bash setup-repository.sh
+```
+
+省略時の `SETUP_PROFILE=full` は Rancher Desktop を含む全構成をセットアップします。
+セットアップ CI は通常の変更では `cli` を使用し、セットアップスクリプト・タスク・
+Terraform バージョン・関連するワークフローやテストの変更では `full` を使用します。
+GitHub Actions の `Test Setup Repository Script` を手動実行すると、両 OS の全構成を検証できます。
+
 ### Homebrew
 
 ```bash
