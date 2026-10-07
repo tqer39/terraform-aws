@@ -68,3 +68,7 @@ unversioned
 usecases
 vercel
 linuxbrew
+rulesync
+codexcli
+claudecode
+mdc
