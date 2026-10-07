@@ -5,7 +5,7 @@ description: terraform-aws の共通開発ルール
 
 # terraform-aws の開発ルール
 
-このファイルは rulesync で生成されます。変更は `.rulesync/rules/overview.md` に加え、
+このファイルは rulesync で生成されます。変更は `docs/rules/overview.md` に加え、
 `npm run rules:generate` で全ツール向けに再生成してください。
 
 ## 基本方針
@@ -29,6 +29,13 @@ description: terraform-aws の共通開発ルール
 - GitHub Actions の AWS 認証には OIDC を使用します。認証情報や Terraform state をコミットしないでください。
 - 変更した Terraform は `terraform fmt -check` と、初期化済みの対象ディレクトリで `terraform validate` を検証してください。
 - 認証情報や backend が必要で検証できない場合は、その制約を報告してください。
+
+## ルールとスキルの管理
+
+- LLM の共通ルールとスキルの手順の原本は `docs/rules/` に置いてください。
+- 各ツールのルールとスキルは rulesync で生成し、生成ファイルを直接編集しないでください。
+- スキルの生成元 `.rulesync/skills/<スキル名>/SKILL.md` には、適用条件と `docs/rules/` の原本への参照を記述してください。
+- スキルを実行するときは、参照先の原本を読んで従ってください。詳細な手順はスキルに複製しないでください。
 
 ## ドキュメントと検証
 

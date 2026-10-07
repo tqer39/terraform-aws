@@ -76,3 +76,5 @@ lefthook
 tfvars
 worktree
 Rulesets
+Toptal
+visualstudiocode

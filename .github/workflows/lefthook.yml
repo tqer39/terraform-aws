@@ -18,6 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-node
+      - name: Test rule generation and skill references
+        run: python3 -m unittest discover -s tests -p 'test_rulesync.py'
       - name: Check generated AI rules
         run: npm run rules:check
 

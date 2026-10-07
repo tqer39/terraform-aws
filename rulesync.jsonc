@@ -1,5 +1,17 @@
 {
   "$schema": "https://github.com/dyoshikawa/rulesync/releases/download/v27.0.0/config-schema.json",
-  "targets": ["codexcli", "claudecode", "copilot", "cursor"],
-  "features": ["rules"]
+  "targets": [
+    "codexcli",
+    "claudecode",
+    "copilot",
+    "cursor"
+  ],
+  "features": [
+    "rules",
+    "skills"
+  ],
+  "inputRoots": [
+    "docs",
+    ".rulesync"
+  ]
 }
