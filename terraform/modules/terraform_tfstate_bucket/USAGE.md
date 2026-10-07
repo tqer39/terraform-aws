@@ -7,7 +7,7 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_s3_bucket"></a> [s3\_bucket](#module\_s3\_bucket) | ../../modules/s3/bucket | n/a |
+| <a name="module_s3_bucket"></a> [s3\_bucket](#module\_s3\_bucket) | ../s3/bucket | n/a |
 
 ## Inputs
 

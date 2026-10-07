@@ -28,7 +28,7 @@ def affects_root(path, root):
     # instead of attempting to parse HCL or silently missing a dependency.
     return (
         path.startswith(root.rstrip('/') + '/')
-        or path.startswith(('terraform/modules/', 'terraform/usecases/', '.github/actions/'))
+        or path.startswith(('terraform/modules/', '.github/actions/'))
         or path in ('.github/scripts/terraform_matrix.py',
                     '.github/scripts/check_for_changes_in_terraform_files.sh')
         or path.startswith('.github/workflows/deploy_pipeline/')

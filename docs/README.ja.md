@@ -31,6 +31,12 @@ gitGraph
 3. `main` ブランチにマージされると GitHub Actions で `terraform apply` されインフラが更新されます。
    - **マージのタイミングがデプロイに相当します。**
 
+## Terraform の構成
+
+- `terraform/envs/`: 環境ごとのルート構成。
+- `terraform/modules/`: 共通部品と用途別のモジュール。
+  ドメイン、証明書、デプロイ用ロールなどもこのディレクトリで管理します。
+
 ## module 化しないリソース
 
 | リソース | 理由 |

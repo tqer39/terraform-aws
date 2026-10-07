@@ -88,7 +88,7 @@ class TerraformLockfileTest(unittest.TestCase):
 
 class TerraformRootLockfileTest(unittest.TestCase):
     def test_every_environment_has_a_lockfile(self):
-        roots = sorted((REPO / 'terraform/environments').glob('*/*/terraform.tf'))
+        roots = sorted((REPO / 'terraform/envs').glob('*/*/terraform.tf'))
         self.assertTrue(roots)
         for config in roots:
             with self.subTest(root=str(config.parent.relative_to(REPO))):

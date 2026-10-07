@@ -74,6 +74,15 @@ class WorkflowChangesTest(unittest.TestCase):
         self.commit()
         self.assertEqual(self.select(), ['base', 'base_apne1'])
 
+    def test_moved_usecases_select_all_consumers(self):
+        self.write('terraform/usecases/domain/main.tf', '# domain\n')
+        self.base = self.commit()
+        (self.root / 'terraform/modules/domain').mkdir(parents=True)
+        self.git('mv', 'terraform/usecases/domain/main.tf',
+                 'terraform/modules/domain/main.tf')
+        self.commit()
+        self.assertEqual(self.select(), ['base', 'base_apne1'])
+
     def test_documentation_push_selects_nothing(self):
         self.write('docs/plan.md')
         self.write('terraform/envs/management/base/README.md')
@@ -151,10 +160,10 @@ class WorkflowChangesTest(unittest.TestCase):
         self.assertFalse(MATRIX.affects_root('terraform/envs/management/base_apne1/main.tf',
                                            'terraform/envs/management/base'))
 
-    def test_change_detector_and_shared_usecases_are_inputs(self):
+    def test_change_detector_and_shared_modules_are_inputs(self):
         for path in ('.github/scripts/terraform_matrix.py',
                      '.github/scripts/check_for_changes_in_terraform_files.sh',
-                     'terraform/usecases/example/main.tf'):
+                     'terraform/modules/deploy_role/example/main.tf'):
             self.assertTrue(MATRIX.affects_root(path, 'terraform/envs/management/base'))
 
     def test_wrapper_distinguishes_changed_unchanged_and_failure(self):

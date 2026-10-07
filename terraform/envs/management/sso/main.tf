@@ -9,5 +9,5 @@
 # }
 
 module "sso" {
-  source = "../../../usecases/sso"
+  source = "../../../modules/sso"
 }
