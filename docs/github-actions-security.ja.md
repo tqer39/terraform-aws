@@ -2,7 +2,7 @@
 
 外部 Action は完全なコミット SHA、コンテナは SHA256 ダイジェストに固定します。
 更新は Renovate の PR を手動レビューします。
-公開から 7 日の待機や更新の自動固定は、別の [Renovate 対策 PR](https://github.com/tqer39/terraform-aws/pull/905) で扱います。
+公開から 7 日の待機や更新の自動固定は、[Renovate 対策 PR](https://github.com/tqer39/terraform-aws/pull/905) で導入済みです。
 固定値の更新時は、上流リポジトリのタグとコミットの対応、内部の Action やダウンロードも確認してください。
 
 ## 実行権限と信頼境界
@@ -55,9 +55,8 @@ PR の plan コメントを廃止したため、投稿用の tfcmt は実行し�
 AWS の IAM 信頼ポリシー、GitHub のブランチ保護、レビュー必須設定は実環境でも確認してください。
 management のデプロイロールは現在のルート構成で無効化されており、Secrets Manager 用のロール定義もこのリポジトリでは確認できません。
 これらの既存ロールにも subject と audience の制限を別途反映する必要があります。
-portfolio と sandbox のルート全体の validate は、既存の `aws_iam_role_policy_attachments_exclusive` が
-固定中の AWS provider 5.46.0 に未対応のため失敗します。信頼ポリシー単体の validate は成功しています。
-信頼ポリシーを反映する前に、この既存の互換性問題も解消してください。
+IAM の排他的なポリシー接続を使用する環境は、対応する AWS provider 5.72.0 に固定しています。
+`mise run terraform-validate` で、全環境の初期化と validate を AWS 認証なしで実行できます。
 特に `.github/` の変更にはレビューを要求し、GitHub 側で Action の SHA 固定を必須にする設定も推奨します。
 
 根拠は [GitHub の安全な利用のリファレンス](https://docs.github.com/en/actions/reference/security/secure-use) を参照してください。
