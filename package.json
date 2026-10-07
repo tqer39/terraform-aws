@@ -1,0 +1,14 @@
+{
+  "name": "terraform-aws",
+  "private": true,
+  "scripts": {
+    "rules:generate": "rulesync generate",
+    "rules:check": "rulesync generate --check"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "rulesync": "27.0.0"
+  }
+}

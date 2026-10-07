@@ -49,6 +49,30 @@ gitGraph
 
 包括的なコーディング規約として EditorConfig を使用しているため、[公式ページの Download a Plugin](https://editorconfig.org/#download) のエディタ・IDE を使用している場合は、プラグインを追加してください。
 
+## AI 開発ツールの共通ルール
+
+Codex、Claude Code、GitHub Copilot、Cursor のルールは
+[共通の生成元](.rulesync/rules/overview.md) と [rulesync 設定](rulesync.jsonc) で管理します。
+Node.js 24 と npm を使用します。macOS・Linux・Windows で同じ npm コマンドを実行できます。
+
+```bash
+npm ci
+npm run rules:generate
+npm run rules:check
+```
+
+| ツール | 生成ファイル |
+| :--- | :--- |
+| Codex | `AGENTS.md` |
+| Claude Code | `CLAUDE.md` |
+| GitHub Copilot | `.github/copilot-instructions.md` |
+| Cursor | `.cursor/rules/overview.mdc` |
+
+ルールを変更するときは `.rulesync/rules/overview.md` を編集し、再生成してください。
+生成元・設定・生成ファイルを一緒にコミットします。生成ファイルは直接編集しません。
+CI の `rulesync` ジョブで同期漏れを検出します。
+個人用の上書き設定 `rulesync.local.jsonc` は Git の管理対象外です。
+
 ## Setup
 
 ### Homebrew

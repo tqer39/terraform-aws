@@ -12,6 +12,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  rulesync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node
+      - name: Check generated AI rules
+        run: npm run rules:check
+
   pre-commit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -28,7 +37,7 @@ jobs:
           extra_args: -a --show-diff-on-failure
 
   workflow-result:
-    needs: [pre-commit]
+    needs: [pre-commit, rulesync]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -36,4 +45,7 @@ jobs:
       - name: Require successful checks
         env:
           CHECK_RESULT: ${{ needs.pre-commit.result }}
-        run: test "$CHECK_RESULT" = success
+          RULESYNC_RESULT: ${{ needs.rulesync.result }}
+        run: |
+          test "$CHECK_RESULT" = success
+          test "$RULESYNC_RESULT" = success
