@@ -70,10 +70,12 @@ npm run rules:check
 | ツール | 生成ファイル |
 | :--- | :--- |
 | Codex | `AGENTS.md` |
-| Claude Code | `CLAUDE.md` |
+| Claude Code | `AGENTS.md`（Codex と共用） |
 | GitHub Copilot | `.github/copilot-instructions.md` |
 | Cursor | `.cursor/rules/overview.mdc` |
 
+Claude Code v2.1.277 以降は、ルートの `CLAUDE.md` を置かずに `AGENTS.md` を使用します。
+共通ルールの生成対象は Codex、GitHub Copilot、Cursor とし、Claude Code のスキル生成は維持します。
 ルールを変更するときは `docs/rules/overview.md` を編集し、再生成してください。
 スキルの適用条件と手順は `.rulesync/skills/<スキル名>/SKILL.md` を原本として編集し、同じコマンドで再生成します。
 `update-gitignore` は Toptal の最新テンプレートから `.gitignore` の生成ブロックを更新するスキルです。
