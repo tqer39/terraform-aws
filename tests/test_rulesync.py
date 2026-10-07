@@ -9,7 +9,7 @@ import unittest
 REPO = Path(__file__).resolve().parents[1]
 CLI = REPO / 'node_modules/rulesync/dist/cli/index.js'
 RULE_OUTPUTS = (
-    'AGENTS.md', 'CLAUDE.md', '.github/copilot-instructions.md',
+    'AGENTS.md', '.github/copilot-instructions.md',
     '.cursor/rules/overview.mdc',
 )
 SKILL_OUTPUTS = tuple(
@@ -67,6 +67,16 @@ class RulesyncTest(unittest.TestCase):
                 self.assertNotIn('docs/rules/', generated)
         for relative in RULE_OUTPUTS:
             self.assertNotIn(marker, (self.root / relative).read_text())
+        self.assert_success(self.generate(check=True))
+
+    def test_claude_uses_shared_rules_without_regenerating_claude_md(self):
+        for _ in range(2):
+            self.assert_success(self.generate())
+            self.assertTrue((self.root / 'AGENTS.md').is_file())
+            self.assertFalse((self.root / 'CLAUDE.md').exists())
+            self.assertTrue(
+                (self.root / '.claude/skills/update-gitignore/SKILL.md').is_file()
+            )
         self.assert_success(self.generate(check=True))
 
     def test_check_detects_origin_and_generated_skill_drift(self):

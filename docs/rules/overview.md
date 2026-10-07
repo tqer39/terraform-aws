@@ -1,6 +1,6 @@
 ---
 root: true
-targets: ["*"]
+targets: ["codexcli", "copilot", "cursor"]
 description: "terraform-aws の共通開発ルール"
 cursor:
   alwaysApply: true
