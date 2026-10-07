@@ -7,16 +7,38 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
+  setup-profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      profile: ${{ steps.profile.outputs.profile }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Select setup profile
+        id: profile
+        run: python3 .github/scripts/setup_profile.py
+
   test-setup-repository-linux:
+    needs: [setup-profile]
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
     steps:
+      - name: Require successful profile selection
+        env:
+          PROFILE_RESULT: ${{ needs.setup-profile.result }}
+        run: test "$PROFILE_RESULT" = success
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -25,26 +47,33 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential curl file git
 
-      - name: Run setup-repository.sh
-        run: |
-          chmod +x ./setup-repository.sh
-          ./setup-repository.sh
+      - name: Set up repository
+        env:
+          SETUP_PROFILE: ${{ needs.setup-profile.outputs.profile }}
+        run: bash setup-repository.sh
 
       - name: Verify aws-vault installation
         run: aws-vault --version
 
   test-setup-repository-macos:
+    needs: [setup-profile]
+    if: ${{ !cancelled() }}
     runs-on: macos-latest
     timeout-minutes: 30
 
     steps:
+      - name: Require successful profile selection
+        env:
+          PROFILE_RESULT: ${{ needs.setup-profile.result }}
+        run: test "$PROFILE_RESULT" = success
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run setup-repository.sh
-        run: |
-          chmod +x ./setup-repository.sh
-          ./setup-repository.sh
+      - name: Set up repository
+        env:
+          SETUP_PROFILE: ${{ needs.setup-profile.outputs.profile }}
+        run: bash setup-repository.sh
 
       - name: Verify aws-vault installation
         run: aws-vault --version
