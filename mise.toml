@@ -6,6 +6,14 @@ actionlint = "1.7.1"
 shellcheck = "0.10.0"
 terraform = "1.8.1"
 
+[tasks.install]
+description = "Set up the repository"
+run = "bash setup-repository.sh"
+
+[tasks.update]
+description = "Update repository tools"
+run = "bash update-repository.sh"
+
 [tasks.lint]
 description = "Run Lefthook checks"
 run = "lefthook run pre-commit --all-files --no-auto-install --fail-on-changes"

@@ -89,17 +89,36 @@ CI の `rulesync` ジョブで同期漏れを検出します。
 
 ## Setup
 
-### Repository setup
+### Repository tasks
+
+タスクの実行には [mise](https://mise.jdx.dev/installing-mise.html) と Bash が必要です。
+macOS / Linux では mise をインストールし、リポジトリのルートで次のコマンドを実行します。
 
 ```bash
-bash setup-repository.sh
+mise trust
+mise run install
+```
+
+`mise run install` は `setup-repository.sh` を実行します。
+`mise install` は mise 自体のツールインストール用コマンドです。
+セットアップは同じシェルプロセスで最後まで実行し、GitHub Actions では Homebrew の PATH を後続ステップへ引き継ぎます。
+
+```bash
+# Update repository tools
+mise run update
+
+# Run checks (complete the Lefthook setup below first)
+mise run lint
+
+# Run regression tests (Python 3, Git, and Terraform are required)
+mise run test
 ```
 
 既存の Homebrew は再利用し、未導入の場合のみインストールします。
 Rancher Desktop が不要な場合は、CLI ツールのみセットアップできます。
 
 ```bash
-SETUP_PROFILE=cli bash setup-repository.sh
+SETUP_PROFILE=cli mise run install
 ```
 
 省略時の `SETUP_PROFILE=full` は Rancher Desktop を含む全構成をセットアップします。
@@ -212,7 +231,7 @@ pre-commit の CLI は不要です。安全チェックは pre-commit-hooks を�
 
 #### AWS Profile の設定
 
-これは Makefile の aws-vault で使用されます。
+これは下記の `aws-vault exec` コマンドで使用されます。
 下記の内容を `~/.aws/config` に設定します。
 
 ```bash

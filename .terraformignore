@@ -10,6 +10,6 @@ lefthook.yml
 Brewfile
 docker-compose.yml
 LICENSE
-Makefile
+mise.toml
 **.md
 renovate.json
