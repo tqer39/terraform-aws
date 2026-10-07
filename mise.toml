@@ -3,6 +3,7 @@ node = "24.21.0"
 lefthook = "2.1.14"
 uv = "0.12.15"
 actionlint = "1.7.1"
+pinact = "5.0.0"
 shellcheck = "0.10.0"
 terraform = "1.8.1"
 
@@ -20,4 +21,4 @@ run = "lefthook run pre-commit --all-files --no-auto-install --fail-on-changes"
 
 [tasks.test]
 description = "Run repository regression tests"
-run = "python3 -m unittest discover -s tests -p 'test_*.py'"
+run = ["python3 -m unittest discover -s tests -p 'test_*.py'", "npm run test:renovate"]
