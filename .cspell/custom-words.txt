@@ -79,3 +79,4 @@ Rulesets
 Toptal
 visualstudiocode
 pinact
+graphviz
