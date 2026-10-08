@@ -26,4 +26,5 @@
 
 ## 計画一覧
 
+- [AWS provider v6 への移行計画](2026-10-09-aws-provider-v6-upgrade.ja.md)
 - [Control Tower の段階導入と既存環境の撤去計画](2026-10-03-control-tower-adoption.ja.md)
