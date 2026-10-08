@@ -80,3 +80,5 @@ Toptal
 visualstudiocode
 pinact
 graphviz
+smol
+katex
