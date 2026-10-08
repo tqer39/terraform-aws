@@ -1,4 +1,5 @@
 """Exercise parsers and math rendering after security dependency overrides."""
+# cspell:ignore micromark mathHtml
 
 from pathlib import Path
 import shutil
@@ -22,6 +23,20 @@ class DependencyToolsTest(unittest.TestCase):
                     config.write_text(content)
                     markdown = root / 'example.md'
                     valid = '# Example\n\n$$\nx^2 + y^2 = z^2\n$$\n'
+                    # Exercise the renderer that depends on the overridden KaTeX.
+                    renderer = (
+                        "import {micromark} from 'micromark';"
+                        "import {math, mathHtml} from 'micromark-extension-math';"
+                        "import {readFileSync} from 'node:fs';"
+                        "process.stdout.write(micromark(readFileSync(process.argv[1], 'utf8'),"
+                        "{extensions:[math()], htmlExtensions:[mathHtml()]}));")
+                    markdown.write_text(valid)
+                    rendered = subprocess.run(
+                        [shutil.which('node'), '--input-type=module', '-e', renderer, str(markdown)],
+                        cwd=REPO, capture_output=True, text=True, timeout=30)
+                    self.assertEqual(rendered.returncode, 0, rendered.stderr)
+                    self.assertIn('class="katex"', rendered.stdout)
+                    self.assertIn('<math', rendered.stdout)
                     for text, accepted in ((valid, True), (valid + '\n### Skipped level\n', False)):
                         markdown.write_text(text)
                         result = subprocess.run(
