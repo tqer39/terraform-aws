@@ -9,17 +9,26 @@
   "engines": {
     "node": "^24.11.0"
   },
+  "overrides": {
+    "markdownlint-cli": {
+      "js-yaml": "5.4.3",
+      "smol-toml": "1.9.0"
+    },
+    "micromark-extension-math": {
+      "katex": "0.18.2"
+    }
+  },
   "devDependencies": {
-    "cspell": "8.8.2",
-    "markdownlint-cli": "0.41.0",
-    "prettier": "3.1.0",
-    "renovate": "44.132.2",
+    "cspell": "10.3.6",
+    "markdownlint-cli": "0.49.1",
+    "prettier": "3.9.9",
+    "renovate": "44.148.2",
     "rulesync": "27.0.0",
-    "textlint": "12.2.1",
+    "textlint": "15.8.0",
     "textlint-filter-rule-allowlist": "4.0.0",
-    "textlint-filter-rule-comments": "1.2.2",
-    "textlint-rule-ja-no-space-between-full-width": "2.2.0",
+    "textlint-filter-rule-comments": "1.3.0",
+    "textlint-rule-ja-no-space-between-full-width": "3.0.3",
     "textlint-rule-no-dropping-the-ra": "3.0.0",
-    "textlint-rule-terminology": "3.0.1"
+    "textlint-rule-terminology": "5.2.16"
   }
 }
