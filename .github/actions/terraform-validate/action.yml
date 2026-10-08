@@ -17,10 +17,15 @@ runs:
       shell: bash
 
     - name: Setup TFLint
-      uses: terraform-linters/setup-tflint@90f302c255ef959cbfb4bd10581afecdb7ece3e6 # v4.1.1
+      uses: terraform-linters/setup-tflint@6ffdbaa3be476b3431f7275c26966ef32ff60337 # v6.3.2
       with:
-        tflint_version: v0.55.1
-        checksums: 53379f38bc1e86c18885bfc85dc5fe2cd1f59729ae9a2afa16905189c1d67aa9
+        tflint_version: v0.64.0
+        checksums: |
+          cca9d13e2e1d7a2c627af60ff899a3c9b74212899416aeb96ec764d2ef954537
+          560da89aacf59389d4eb029730dd5b109b7288096c32f2726a0d9e783a5ea8eb
+          0f3a9fd17526014646a2dfc3f9122f7b4161abe3d6b0f0f03f9014483ddf4d19
+          2496e9cb3d24992d553b45e7c87a0fdc9449ca975233876247a9bfeda857e6c0
+          fb42fb859d844b156a8ea9d3363078c4d8b85ca78782e60876b08c9b8e59f303
 
     - name: Show version
       run: tflint --version

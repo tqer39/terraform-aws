@@ -26,13 +26,21 @@
     {
       "description": "GitHub ActionsをタグやブランチではなくコミットSHAに固定する。",
       "matchManagers": ["github-actions"],
+      "matchDepTypes": ["action", "workflow", "docker", "container", "service"],
       "pinDigests": true
     },
     {
       "description": "既存参照を固定する初回のSHA固定PRは待機させない。以降のdigest更新には通常の待機期間を適用する。",
       "matchManagers": ["github-actions"],
+      "matchDepTypes": ["action", "workflow", "docker", "container", "service"],
       "matchUpdateTypes": ["pinDigest"],
       "minimumReleaseAge": null
+    },
+    {
+      "description": "Actionsのwithで指定するCLIのバージョンはSHAに置き換えず、semverと配布物checksumで固定する。",
+      "matchManagers": ["github-actions"],
+      "matchDepTypes": ["uses-with"],
+      "pinDigests": false
     }
   ]
 }
