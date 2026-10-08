@@ -95,6 +95,35 @@ class TerraformLockfileTest(unittest.TestCase):
 
 
 class TerraformRootLockfileTest(unittest.TestCase):
+    def test_pinned_provider_versions_and_constraints_match_lock_files(self):
+        roots = sorted((REPO / 'terraform/envs').glob('*/*/terraform.tf'))
+        self.assertTrue(roots)
+        for config in roots:
+            lockfile = (config.parent / '.terraform.lock.hcl').read_text()
+            requirements = re.findall(
+                r'source\s*=\s*"([^"]+)"\s+version\s*=\s*"([^"]+)"',
+                config.read_text())
+            for source, version in requirements:
+                if not re.fullmatch(r'\d+\.\d+\.\d+', version):
+                    continue
+                with self.subTest(root=str(config.parent.relative_to(REPO)),
+                                  provider=source):
+                    address = source if source.count('/') == 2 else f'registry.terraform.io/{source}'
+                    block = re.search(
+                        rf'provider "{re.escape(address)}" \{{([^}}]+)\}}',
+                        lockfile)
+                    self.assertIsNotNone(block)
+                    locked = re.search(r'\bversion\s*=\s*"([^"]+)"', block.group(1))
+                    self.assertIsNotNone(locked)
+                    self.assertEqual(locked.group(1), version)
+                    constraints = re.search(
+                        r'\bconstraints\s*=\s*"([^"]+)"', block.group(1))
+                    self.assertIsNotNone(constraints, 'Pinned provider constraint is missing')
+                    self.assertIn(version, [
+                        item.strip().removeprefix('= ').strip()
+                        for item in constraints.group(1).split(',')
+                    ])
+
     def test_every_environment_has_a_lockfile(self):
         roots = sorted((REPO / 'terraform/envs').glob('*/*/terraform.tf'))
         self.assertTrue(roots)
