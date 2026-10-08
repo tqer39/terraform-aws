@@ -1,6 +1,6 @@
 [tools]
 node = "24.21.0"
-lefthook = "2.1.15"
+lefthook = "2.1.16"
 uv = "0.12.21"
 actionlint = "1.7.12"
 pinact = "5.0.0"
