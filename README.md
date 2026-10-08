@@ -44,7 +44,7 @@ GitHub Actions の `Terraform Graph` を手動実行し、対象環境を選択�
 `dependency-graph.svg` をブラウザで表示できます。DOT ファイルも同梱し、保存期間は 7 日です。
 ワークフローは `terraform/envs/<環境名>/*/terraform.tf` から対象を選びます。
 
-Terraform 1.12.2 標準の簡略化されたグラフを Graphviz で SVG に変換します。
+Terraform 標準の簡略化されたグラフを Graphviz で SVG に変換します。
 構成内のリソース・データソースの依存関係を示し、実際の AWS 構成や apply の差分は示しません。
 Terraform 構成を一時コピーし、backend を空の local backend に置き換えるため、
 AWS 認証や既存 state は不要です。元の構成・state・lockfile は変更しません。

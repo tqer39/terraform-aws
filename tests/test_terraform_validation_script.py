@@ -1,6 +1,7 @@
 """Check the local CI-equivalent validation boundary and failure propagation."""
 
 import os
+import re
 from pathlib import Path
 import subprocess
 import tempfile
@@ -10,6 +11,17 @@ REPO = Path(__file__).resolve().parents[1]
 
 
 class TerraformValidationScriptTest(unittest.TestCase):
+    def test_local_and_ci_use_the_required_terraform_version(self):
+        version = (REPO / '.terraform-version').read_text().strip()
+        config = (REPO / 'mise.toml').read_text()
+        self.assertEqual(re.search(r'^terraform = "([^"]+)"', config, re.M)[1], version)
+        for path in (REPO / 'terraform/envs').glob('*/*/terraform.tf'):
+            required = re.search(r'required_version\s*=\s*"([^"]+)"', path.read_text())[1]
+            self.assertEqual(required, version, str(path))
+        graph = (REPO / '.github/workflows/terraform-graph.yml').read_text()
+        self.assertIn('cat .terraform-version', graph)
+        self.assertIn('terraform_version: ${{ env.TERRAFORM_VERSION }}', graph)
+
     def run_validation(self, fail=False):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
