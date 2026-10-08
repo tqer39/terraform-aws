@@ -1,0 +1,25 @@
+{
+  "name": "terraform-aws",
+  "private": true,
+  "scripts": {
+    "rules:generate": "rulesync generate",
+    "rules:check": "rulesync generate --check",
+    "test:renovate": "node --test tests/renovate_config.test.cjs"
+  },
+  "engines": {
+    "node": "^24.11.0"
+  },
+  "devDependencies": {
+    "cspell": "8.8.2",
+    "markdownlint-cli": "0.41.0",
+    "prettier": "3.1.0",
+    "renovate": "44.132.2",
+    "rulesync": "27.0.0",
+    "textlint": "12.2.1",
+    "textlint-filter-rule-allowlist": "4.0.0",
+    "textlint-filter-rule-comments": "1.2.2",
+    "textlint-rule-ja-no-space-between-full-width": "2.2.0",
+    "textlint-rule-no-dropping-the-ra": "3.0.0",
+    "textlint-rule-terminology": "3.0.1"
+  }
+}

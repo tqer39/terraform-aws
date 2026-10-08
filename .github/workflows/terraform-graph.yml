@@ -1,0 +1,91 @@
+---
+name: Terraform Graph
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 依存関係を可視化する環境
+        required: true
+        type: choice
+        default: portfolio
+        options:
+          - management
+          - portfolio
+          - sandbox
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.environment }}
+  cancel-in-progress: true
+
+jobs:
+  set-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.roots.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - name: Select Terraform roots
+        id: roots
+        env:
+          TF_ENVIRONMENT: ${{ inputs.environment }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          # cspell:ignore pathlib
+          from pathlib import Path
+
+          environment = os.environ['TF_ENVIRONMENT']
+          if environment not in ('management', 'portfolio', 'sandbox'):
+              raise ValueError('Unsupported environment')
+          roots = sorted(Path('terraform/envs', environment).glob('*/terraform.tf'))
+          if not roots:
+              raise ValueError('No Terraform roots found')
+          matrix = {'include': [
+              {'directory': str(root.parent), 'artifact': '-'.join(root.parent.parts[2:])}
+              for root in roots
+          ]}
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('matrix=' + json.dumps(matrix, separators=(',', ':')) + '\n')
+          PY
+
+  graph:
+    needs: set-matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.set-matrix.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - name: Get current Terraform version
+        run: echo "TERRAFORM_VERSION=$(cat .terraform-version)" >> "$GITHUB_ENV"
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+      - name: Install Graphviz
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends graphviz
+      - name: Generate dependency graph
+        env:
+          TF_ROOT: ${{ matrix.directory }}
+        run: python3 scripts/terraform-graph.py "$TF_ROOT" "$RUNNER_TEMP/terraform-graph"
+      - name: Save dependency graph
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: terraform-graph-${{ matrix.artifact }}
+          path: ${{ runner.temp }}/terraform-graph/dependency-graph.*
+          if-no-files-found: error
+          retention-days: 7

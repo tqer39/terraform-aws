@@ -3,13 +3,13 @@
 .github/
 .gitignore
 .mergify.yml
-.pre-commit-config.yaml
+lefthook.yml
 .textlintcache
 .vscode/
 .yamllint.yml
 Brewfile
 docker-compose.yml
 LICENSE
-Makefile
+mise.toml
 **.md
 renovate.json

@@ -7,44 +7,95 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
+  setup-profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      profile: ${{ steps.profile.outputs.profile }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Select setup profile
+        id: profile
+        run: python3 .github/scripts/setup_profile.py
+
   test-setup-repository-linux:
+    needs: [setup-profile]
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
     steps:
+      - name: Require successful profile selection
+        env:
+          PROFILE_RESULT: ${{ needs.setup-profile.result }}
+        run: test "$PROFILE_RESULT" = success
+
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up Homebrew
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential curl file git
 
-      - name: Run setup-repository.sh
-        run: |
-          chmod +x ./setup-repository.sh
-          ./setup-repository.sh
+      - name: Set up mise
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+        with:
+          version: 2026.9.9
+          sha256: bd481434a65ede6b2ec6162b88f129e5c6b94cf9de808b8ee7c6f027b13b4589
+          install: false
+
+      - name: Set up repository
+        env:
+          SETUP_PROFILE: ${{ needs.setup-profile.outputs.profile }}
+        run: mise run install
 
       - name: Verify aws-vault installation
         run: aws-vault --version
 
   test-setup-repository-macos:
+    needs: [setup-profile]
+    if: ${{ !cancelled() }}
     runs-on: macos-latest
     timeout-minutes: 30
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Require successful profile selection
+        env:
+          PROFILE_RESULT: ${{ needs.setup-profile.result }}
+        run: test "$PROFILE_RESULT" = success
 
-      - name: Run setup-repository.sh
-        run: |
-          chmod +x ./setup-repository.sh
-          ./setup-repository.sh
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up mise
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+        with:
+          version: 2026.9.9
+          sha256: 1998d23853aac289cef2a7858cab86b082f603c98b0bc792245f01301312f4cb
+          install: false
+
+      - name: Set up repository
+        env:
+          SETUP_PROFILE: ${{ needs.setup-profile.outputs.profile }}
+        run: mise run install
 
       - name: Verify aws-vault installation
         run: aws-vault --version

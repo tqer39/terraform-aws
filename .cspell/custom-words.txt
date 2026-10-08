@@ -67,3 +67,16 @@ tqer
 unversioned
 usecases
 vercel
+linuxbrew
+rulesync
+codexcli
+claudecode
+mdc
+lefthook
+tfvars
+worktree
+Rulesets
+Toptal
+visualstudiocode
+pinact
+graphviz

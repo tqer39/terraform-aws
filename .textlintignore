@@ -2,7 +2,7 @@
 .git/
 .github/
 .gitignore
-.pre-commit-config.yaml
+lefthook.yml
 .terraformignore
 .textlintcache
 .vscode/
@@ -10,7 +10,7 @@
 cspell.json
 Brewfile
 LICENSE
-Makefile
+mise.toml
 node_modules/
 renovate.json
 tmp/

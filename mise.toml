@@ -1,0 +1,28 @@
+[tools]
+node = "24.21.0"
+lefthook = "2.1.16"
+uv = "0.12.21"
+actionlint = "1.7.12"
+pinact = "5.0.0"
+shellcheck = "0.10.0"
+terraform = "1.16.4"
+
+[tasks.install]
+description = "Set up the repository"
+run = "bash setup-repository.sh"
+
+[tasks.update]
+description = "Update repository tools"
+run = "bash update-repository.sh"
+
+[tasks.lint]
+description = "Run Lefthook checks"
+run = "lefthook run pre-commit --all-files --no-auto-install --fail-on-changes"
+
+[tasks.test]
+description = "Run repository regression tests"
+run = ["python3 -m unittest discover -s tests -p 'test_*.py'", "npm run test:renovate"]
+
+[tasks.terraform-validate]
+description = "Validate all Terraform environments without AWS authentication"
+run = 'PATH="$(mise where terraform):$PATH" bash scripts/validate-terraform.sh'

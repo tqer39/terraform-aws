@@ -14,9 +14,6 @@ inputs:
     description: 差分チェックを行うかどうか
     required: true
     default: "_false"
-  github-token:
-    description: サードパーティの Action を実行するための権限を付与するための認証用トークン
-    required: true
   SLACK_WEBHOOK:
     description: Slack の Webhook URL
     required: true
@@ -35,11 +32,7 @@ runs:
     - name: Terraform Validate
       uses: ./.github/actions/terraform-validate
       with:
-        github-token: ${{ inputs.github-token }}
         working-directory: ${{ inputs.working-directory }}
-
-    - name: Setup tfcmt
-      uses: itkq/actions-tfcmt/setup@main
 
     - name: Terraform Plan
       continue-on-error: true
@@ -48,8 +41,8 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       shell: bash
 
-    - name: tfcmt
-      if: steps.terraform-plan.outputs.exitcode != '1'
+    - name: Set Terraform Plan status
+      if: always()
       run: |
         case "$TF_PLAN_EXIT_CODE" in
           0) TF_PLAN_STATUS="no-changes" ;;
@@ -58,13 +51,9 @@ runs:
           *) TF_PLAN_STATUS="unknown-error" ;;
         esac
 
-        TARGET=$(echo ${{ inputs.working-directory }} | sed -e 's|^.*terraform/environments/||' | cut -c 1-36)
-        tfcmt --var target:$TARGET plan -patch -- cat tf_plan.txt
-
         echo "TF_PLAN_STATUS=$TF_PLAN_STATUS"
-        echo "TF_PLAN_STATUS=$TF_PLAN_STATUS" >> $GITHUB_ENV
+        echo "TF_PLAN_STATUS=$TF_PLAN_STATUS" >> "$GITHUB_ENV"
       env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
         TF_PLAN_EXIT_CODE: ${{ steps.terraform-plan.outputs.exitcode }}
       working-directory: ${{ inputs.working-directory }}
       shell: bash
@@ -79,17 +68,10 @@ runs:
       run: echo "ERROR_MSG=difference check CIがエラー終了しました" >> "$GITHUB_ENV"
       shell: bash
 
-    # - name: DEBUG
-    #   run: |
-    #     echo "exitcode: ${{ steps.terraform-plan.outputs.exitcode }}"
-    #     echo "TF_PLAN_STATUS: ${{ env.TF_PLAN_STATUS }}"
-    #     echo "CHECK_DIFF: ${{ inputs.CHECK_DIFF }}"
-    #   shell: bash
-
     - name: Slack Notification (failure)
       continue-on-error: true
       if: steps.terraform-plan.outputs.exitcode == '1' || (env.TF_PLAN_STATUS == 'has-diff' && inputs.CHECK_DIFF == '_true')
-      uses: rtCamp/action-slack-notify@v2
+      uses: rtCamp/action-slack-notify@33ca3be66c6f378fe1610fd1d5258632dbed5e58 # v2.4.0
       env:
         SLACK_CHANNEL: "#ntf_gh_private-lab"
         SLACK_COLOR: danger
@@ -99,3 +81,8 @@ runs:
         SLACK_USERNAME: github-bot
         SLACK_ICON_EMOJI: ":x:"
         SLACK_WEBHOOK: ${{ inputs.SLACK_WEBHOOK }}
+
+    - name: Require successful Terraform Plan
+      if: always()
+      run: test "$TF_PLAN_STATUS" = no-changes || test "$TF_PLAN_STATUS" = has-diff
+      shell: bash

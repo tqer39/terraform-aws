@@ -6,7 +6,7 @@ AWS のリソースを Terraform で構成する。
 
 | Name | Environment | Result |
 | :--- | :--- | :--- |
-| Linterなどによる検証 | pre-commit | ![pre-commit](https://github.com/tqer39/terraform-aws/actions/workflows/pre-commit.yml/badge.svg) |
+| Linterなどによる検証 | Lefthook | ![Lefthook](https://github.com/tqer39/terraform-aws/actions/workflows/lefthook.yml/badge.svg) |
 | AWS 検証環境 | Sandbox | ![Terraform - sandbox](https://github.com/tqer39/terraform-aws/actions/workflows/_terraform-aws-sandbox.yml/badge.svg) |
 | AWS ポートフォリオ | Management | ![Terraform - management](https://github.com/tqer39/terraform-aws/actions/workflows/_terraform-aws-portfolio.yml/badge.svg) |
 | AWS 全体管理 | Management | ![Terraform - management](https://github.com/tqer39/terraform-aws/actions/workflows/_terraform-aws-management.yml/badge.svg) |
@@ -31,6 +31,36 @@ gitGraph
 3. `main` ブランチにマージされると GitHub Actions で `terraform apply` でインフラが更新されます。
    - **マージのタイミングがデプロイに相当します。**
 
+## Terraform の構成
+
+- `terraform/envs/`: 環境ごとのルート構成。
+- `terraform/modules/`: 共通部品と用途別のモジュール。
+  ドメイン、証明書、デプロイ用ロールなどもこのディレクトリで管理します。
+
+### 依存関係の可視化
+
+GitHub Actions の `Terraform Graph` を手動実行し、対象環境を選択します。
+各ルートの `terraform-graph-<環境名>-<ルート名>` artifact をダウンロードすると、
+`dependency-graph.svg` をブラウザで表示できます。DOT ファイルも同梱し、保存期間は 7 日です。
+ワークフローは `terraform/envs/<環境名>/*/terraform.tf` から対象を選びます。
+
+Terraform 標準の簡略化されたグラフを Graphviz で SVG に変換します。
+構成内のリソース・データソースの依存関係を示し、実際の AWS 構成や apply の差分は示しません。
+Terraform 構成を一時コピーし、backend を空の local backend に置き換えるため、
+AWS 認証や既存 state は不要です。元の構成・state・lockfile は変更しません。
+lockfile は読み取り専用で扱います。デプロイ用ワークフローとは独立しています。
+
+ローカル実行には、通常のセットアップに加えて Graphviz の `dot` コマンドが必要です。
+macOS は `brew install graphviz`、Ubuntu は `sudo apt-get install graphviz`、
+Windows は [Graphviz 公式配布](https://graphviz.org/download/)からインストールして PATH に追加します。
+生成スクリプトは Python 3 で実行します。
+Graphviz は任意の可視化用ツールのため、通常のセットアップには追加していません。
+CI は Ubuntu のパッケージを使用するため、Graphviz の更新で SVG の配置が変わる場合があります。
+
+```bash
+PATH="$(mise where terraform):$PATH" python3 scripts/terraform-graph.py terraform/envs/portfolio/base_apne1 /tmp/terraform-graph
+```
+
 ## module 化しないリソース
 
 | リソース | 理由 |
@@ -49,7 +79,79 @@ gitGraph
 
 包括的なコーディング規約として EditorConfig を使用しているため、[公式ページの Download a Plugin](https://editorconfig.org/#download) のエディタ・IDE を使用している場合は、プラグインを追加してください。
 
+## AI 開発ツールの共通ルール
+
+Codex、Claude Code、GitHub Copilot、Cursor のルールとスキルは
+[共通ルール](docs/rules/overview.md)、[スキルの生成元](.rulesync/skills/)、[rulesync 設定](rulesync.jsonc) で管理します。
+Node.js 24 と npm を使用します。macOS・Linux・Windows で同じ npm コマンドを実行できます。
+
+```bash
+npm ci
+npm run rules:generate
+npm run rules:check
+```
+
+| ツール | 生成ファイル |
+| :--- | :--- |
+| Codex | `AGENTS.md` |
+| Claude Code | `AGENTS.md`（Codex と共用） |
+| GitHub Copilot | `.github/copilot-instructions.md` |
+| Cursor | `.cursor/rules/overview.mdc` |
+
+Claude Code v2.1.277 以降は、ルートの `CLAUDE.md` を置かずに `AGENTS.md` を使用します。
+共通ルールの生成対象は Codex、GitHub Copilot、Cursor とし、Claude Code のスキル生成は維持します。
+ルールを変更するときは `docs/rules/overview.md` を編集し、再生成してください。
+スキルの詳細な手順は `docs/rules/<スキル名>.md` に置きます。
+`.rulesync/skills/<スキル名>/SKILL.md` には適用条件と原本への参照を記述し、同じコマンドで再生成します。
+各ツールのスキルは実行前に原本を読み、手順を複製しません。
+スキル専用の原本は YAML メタデータに `targets: []` を指定し、ルールの生成対象から除外します。
+`update-gitignore` は Toptal の最新テンプレートから `.gitignore` の生成ブロックを更新するスキルです。
+手順の原本は [.gitignore の更新手順](docs/rules/update-gitignore.md) です。
+生成先は Codex の `.agents/skills/`、Claude Code の `.claude/skills/`、
+GitHub Copilot の `.github/skills/`、Cursor の `.cursor/skills/` です。
+生成元・設定・生成ファイルを一緒にコミットします。生成ファイルは直接編集しません。
+CI の `rulesync` ジョブで同期漏れを検出します。
+個人用の上書き設定 `rulesync.local.jsonc` は Git の管理対象外です。
+
 ## Setup
+
+### Repository tasks
+
+タスクの実行には [mise](https://mise.jdx.dev/installing-mise.html) と Bash が必要です。
+macOS / Linux では mise をインストールし、リポジトリのルートで次のコマンドを実行します。
+
+```bash
+mise trust
+mise run install
+```
+
+`mise run install` は `setup-repository.sh` を実行します。
+`mise install` は mise 自体のツールインストール用コマンドです。
+`mise bootstrap` でも `mise.toml` のツールをインストールできます。
+セットアップは同じシェルプロセスで最後まで実行し、GitHub Actions では Homebrew の PATH を後続ステップへ引き継ぎます。
+既存の Homebrew は再利用し、未導入の場合のみインストールします。
+
+Rancher Desktop が不要な場合は、CLI ツールのみセットアップできます。
+
+```bash
+SETUP_PROFILE=cli mise run install
+```
+
+省略時の `SETUP_PROFILE=full` は Rancher Desktop を含む全構成をセットアップします。
+セットアップ CI は通常の変更では `cli` を使用し、セットアップスクリプト・タスク・
+Terraform バージョン・関連するワークフローやテストの変更では `full` を使用します。
+GitHub Actions の `Test Setup Repository Script` を手動実行すると、両 OS の全構成を検証できます。
+
+```bash
+# Update repository tools
+mise run update
+
+# Lefthook で全ファイルを検証
+mise run lint
+
+# Run regression tests (Python 3 and Git are required)
+mise run test
+```
 
 ### Homebrew
 
@@ -131,18 +233,46 @@ sudo dpkg -i session-manager-plugin.deb
 rm -rf session-manager-plugin.deb
 ```
 
-### pre-commit
+### GitHub Actions の SHA 固定
+
+`pinact` は `mise.toml` でバージョンを固定して管理します。
+リポジトリのルートでセットアップし、ローカルで Actions を SHA に固定できます。
 
 ```bash
-# setup
-pre-commit install --install-hooks
+mise trust
+mise bootstrap
+mise exec -- pinact --version
+
+# ワークフローと composite action の参照を SHA に固定
+mise exec -- pinact run
+
+# ファイルを書き換えずに固定状態を確認
+mise exec -- pinact run --check
 ```
+
+ツールのインストールだけを実行する場合は `mise bootstrap --only tools` を使用します。
+`pinact run` の変更後は差分を確認してコミットしてください。
+
+### Lefthook
+
+```bash
+# 検証ツールと Git フックをセットアップ
+mise install
+mise exec -- npm ci
+mise exec -- lefthook install
+```
+
+既存の pre-commit フックは `mise exec -- lefthook install` で置き換えます。
+`mise run lint` は全ファイル、コミット時はステージ済みファイルを検証します。
+安全チェックの Python 依存は uv が初回実行時に取得します。
+pre-commit の CLI は不要です。安全チェックは pre-commit-hooks を直接呼び出します。
+検証はファイルを自動修正しません。512 KiB のサイズ制限は生成物 `package-lock.json` を除いて適用します。
 
 ### ローカルから Terraform CLI を実行する方法
 
 #### AWS Profile の設定
 
-これは Makefile の aws-vault で使用されます。
+これは下記の `aws-vault exec` コマンドで使用されます。
 下記の内容を `~/.aws/config` に設定します。
 
 ```bash
@@ -177,21 +307,21 @@ aws-vault exec "${AWS CLI (SSO) の profile}" -- terraform -chdir="${実行先�
 
 ```bash
 # Example:
-aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/environments/dev/base_apne1 init
+aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 init
 ```
 
 #### terraform validate
 
 ```bash
 # Example:
-aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/environments/dev/base_apne1 validate
+aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 validate
 ```
 
 #### terraform plan
 
 ```bash
 # Example:
-aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/environments/dev/base_apne1 plan
+aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 plan
 ```
 
 #### terraform apply
@@ -200,7 +330,7 @@ aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/environm
 
 ```bash
 # Example:
-aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/environments/dev/base_apne1 apply -auto-approve
+aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 apply -auto-approve
 ```
 
 ## 新しい環境の作成方法
@@ -210,12 +340,11 @@ aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/environm
 
 ```txt
 .github/workflows/terraform-aws-<環境名>.yml
-.github/labeler.yml
-terraform/environments/<環境名>/base/main.tf
-terraform/environments/<環境名>/base/provider.tf
-terraform/environments/<環境名>/base/terraform.tf
-terraform/environments/<環境名>/base/shared-locals.tf
-terraform/environments/<環境名>/shared/locals.tf
+terraform/envs/<環境名>/base/main.tf
+terraform/envs/<環境名>/base/provider.tf
+terraform/envs/<環境名>/base/terraform.tf
+terraform/envs/<環境名>/base/shared-locals.tf
+terraform/envs/<環境名>/shared/locals.tf
 ```
 
 ```zsh
@@ -224,13 +353,13 @@ export AWS_ACCESS_KEY_ID="XXXXXXXXXX"
 export AWS_SECRET_ACCESS_KEY="XXXXXXXXXX"
 export AWS_SESSION_TOKEN="XXXXXXXXXX"
 
-terraform -chdir=terraform/environments/<環境名>/base init
+terraform -chdir=terraform/envs/<環境名>/base init
 ```
 
 手動で作成した s3 バケットを import。
 
 ```zsh
-$TF_PATH="terraform/environments/<環境名>/base"
+$TF_PATH="terraform/envs/<環境名>/base"
 terraform -chdir="$TF_PATH" import module.terraform-backend.module.s3-bucket.aws_s3_bucket.this <バケット名>
 terraform -chdir="$TF_PATH" import module.terraform-backend.module.s3-bucket.aws_s3_bucket_acl.this <バケット名>
 terraform -chdir="$TF_PATH" import module.terraform-backend.module.s3-bucket.aws_s3_bucket_public_access_block.this <バケット名>
@@ -240,7 +369,7 @@ terraform -chdir="$TF_PATH" import module.terraform-backend.module.s3-bucket.aws
 OIDC 関連のリソースの新規作成と s3 バケットのパラメータ更新を行います。
 
 ```zsh
-$TF_PATH="terraform/environments/<環境名>/base"
+$TF_PATH="terraform/envs/<環境名>/base"
 terraform -chdir="$TF_PATH" fmt
 terraform -chdir="$TF_PATH" validate
 terraform -chdir="$TF_PATH" plan

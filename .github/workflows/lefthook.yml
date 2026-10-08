@@ -1,0 +1,65 @@
+---
+name: Lefthook
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rulesync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-node
+      - name: Test rule generation and skill references
+        run: python3 -m unittest discover -s tests -p 'test_rulesync.py'
+      - name: Check generated AI rules
+        run: npm run rules:check
+
+  lefthook:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Set up mise
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+        with:
+          version: 2026.9.9
+          sha256: bd481434a65ede6b2ec6162b88f129e5c6b94cf9de808b8ee7c6f027b13b4589
+
+      - uses: ./.github/actions/setup-node
+
+      - name: Test repository tasks and Terraform workflow change detection
+        run: mise run test
+
+      - name: Run Lefthook checks
+        run: mise run lint
+
+  workflow-result:
+    needs: [lefthook, rulesync]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require successful checks
+        env:
+          CHECK_RESULT: ${{ needs.lefthook.result }}
+          RULESYNC_RESULT: ${{ needs.rulesync.result }}
+        run: |
+          test "$CHECK_RESULT" = success
+          test "$RULESYNC_RESULT" = success
