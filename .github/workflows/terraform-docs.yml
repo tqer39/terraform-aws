@@ -42,7 +42,7 @@ jobs:
 
       # The upstream action references a mutable container tag, so pin the image directly.
       - name: Check generated terraform docs
-        uses: docker://quay.io/terraform-docs/gh-actions@sha256:dc6d26571aa486ff195851a75ba6be55b5c3b99078581405e0b8190c0b331c35 # 1.3.0
+        uses: docker://quay.io/terraform-docs/gh-actions@sha256:b3af46b47a0758f81c989706210ce632a64f00d0a150dca8270465f7f62b8031 # 1.4.1
         env:
           INPUT_FIND_DIR: "./terraform/${{ matrix.directory }}"
           INPUT_ATLANTIS_FILE: disabled

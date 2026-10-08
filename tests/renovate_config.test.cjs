@@ -24,10 +24,14 @@ const modules = Promise.all([
   load('modules/versioning/semver/index.js'),
 ]);
 
-async function dependency(manager, updateType, security = false) {
+async function dependency(manager, updateType, security = false, details = {}) {
   const [defaults, utils, rules] = await modules;
   let result = utils.mergeChildConfig(defaults.getConfig(), config);
-  result = await rules.applyPackageRules({ ...result, manager, updateType });
+  result = await rules.applyPackageRules({
+    ...result, manager, updateType,
+    depType: manager === 'github-actions' ? 'action' : undefined,
+    ...details,
+  });
   if (security) result = utils.mergeChildConfig(result, result.vulnerabilityAlerts);
   return result;
 }
@@ -98,5 +102,26 @@ test('脆弱性修正は即時提案するが自動マージもスクリプト�
       assert.equal(age.checkMinimumReleaseAge(policy, new Date().toISOString()).isPending, false);
       assert.equal(policy.prCreation, 'immediate');
     }
+  }
+});
+
+test('TFLintのCLIバージョンをSHAに置き換えず、Actionとコンテナは固定する', async () => {
+  const { GlobalConfig } = await load('config/global.js');
+  GlobalConfig.set({ localDir: join(__dirname, '..') });
+  const extraction = await load('modules/manager/github-actions/extract.js');
+  const fixture = 'name: Test\non: push\njobs:\n  test:\n    runs-on: ubuntu-latest\n' +
+    '    steps:\n      - uses: terraform-linters/setup-tflint@v6.3.2\n' +
+    '        with:\n          tflint_version: v0.55.1\n';
+  const result = await extraction.extractPackageFile(fixture, '.github/workflows/test.yml');
+  const tool = result.deps.find((dep) => dep.depName === 'tflint');
+  assert.equal(tool.depType, 'uses-with');
+  const toolPolicy = await dependency('github-actions', 'pinDigest', false, tool);
+  assert.equal(toolPolicy.pinDigests, false);
+  assert.equal(toolPolicy.minimumReleaseAge, '7 days');
+  const [, , , age] = await modules;
+  assert.equal(age.checkMinimumReleaseAge(toolPolicy, new Date().toISOString()).isPending, true);
+  for (const depType of ['action', 'workflow', 'docker', 'container', 'service']) {
+    const policy = await dependency('github-actions', 'pinDigest', false, { depType });
+    assert.equal(policy.pinDigests, true);
   }
 });
