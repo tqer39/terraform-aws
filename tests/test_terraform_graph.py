@@ -133,7 +133,9 @@ class TerraformGraphTest(unittest.TestCase):
             root = repo / 'terraform/envs/portfolio/example'
             root.mkdir(parents=True)
             (root / 'terraform.tf').write_text(
-                'terraform {\n  required_version = "1.12.2"\n  backend "s3" {}\n}\n'
+                'terraform {\n  required_version = "' +
+                (REPO / '.terraform-version').read_text().strip() +
+                '"\n  backend "s3" {}\n}\n'
                 'resource "terraform_data" "first" { input = "example" }\n'
                 'resource "terraform_data" "second" { input = terraform_data.first.output }\n')
             # Invalid state would fail if accidentally copied or loaded.
