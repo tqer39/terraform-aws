@@ -14,7 +14,8 @@ Renovate の更新は Critical 修正を含むため、通常の公開後 7 日�
 
 markdownlint-cli が古い範囲に固定している js-yaml を 5.4.3、
 smol-toml を 1.9.0 に更新した。
-micromark-extension-math が使う KaTeX を 0.18.2 に更新した。
+micromark-extension-math が使う KaTeX を 0.19.0 に更新した。
+公開後 7 日を経過しており、strict モードの変更を公式リリースで確認した。
 上流の制約を越えるため、YAML・TOML 設定の読み込み、数式を含む Markdown の検証と
 違反検出を回帰テストで確認する。上流が修正版を採用したら override を解除する。
 
