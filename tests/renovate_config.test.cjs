@@ -48,6 +48,34 @@ test('新規リリースと公開日時不明の通常更新を保留する', as
   }
 });
 
+test('Terraform本体の3種類の参照をまとめ、AWS providerは別に更新する', async () => {
+  const { GlobalConfig } = await load('config/global.js');
+  GlobalConfig.set({ localDir: join(__dirname, '..') });
+  const refs = [
+    ['mise', 'mise.toml'],
+    ['terraform-version', '.terraform-version'],
+    ['terraform', 'terraform/envs/management/base/terraform.tf'],
+  ];
+  for (const [manager, file] of refs) {
+    const extraction = await load(`modules/manager/${manager}/extract.js`);
+    const result = await extraction.extractPackageFile(
+      readFileSync(join(__dirname, '..', file), 'utf8'), file, {},
+    );
+    const terraform = result.deps.find((dep) =>
+      (dep.packageName || dep.depName) === 'hashicorp/terraform');
+    assert.ok(terraform, file);
+    const policy = await dependency(manager, 'patch', false, terraform);
+    assert.equal(policy.groupName, 'Terraform runtime', file);
+    assert.equal(policy.groupSlug, 'terraform-runtime', file);
+    assert.equal(policy.minimumReleaseAge, '7 days', file);
+    if (manager === 'terraform') {
+      const aws = result.deps.find((dep) => dep.depName === 'aws');
+      assert.notEqual((await dependency(manager, 'minor', false, aws)).groupName,
+        'Terraform runtime');
+    }
+  }
+});
+
 test('最新候補が新しすぎるときは待機を終えた版を選ぶ', async () => {
   const [, , , , checks, versioning] = await modules;
   const policy = await dependency('npm', 'patch');
