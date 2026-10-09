@@ -1,7 +1,7 @@
 [tools]
 node = "24.21.0"
 lefthook = "2.1.16"
-uv = "0.12.21"
+uv = "0.12.22"
 actionlint = "1.7.12"
 pinact = "5.0.0"
 shellcheck = "0.11.0"
