@@ -24,6 +24,13 @@
   },
   "packageRules": [
     {
+      "description": "Terraform本体のmise・versionファイル・全環境の制約を同じPRで更新する。",
+      "matchManagers": ["mise", "terraform", "terraform-version"],
+      "matchDepNames": ["terraform", "hashicorp/terraform"],
+      "groupName": "Terraform runtime",
+      "groupSlug": "terraform-runtime"
+    },
+    {
       "description": "GitHub ActionsをタグやブランチではなくコミットSHAに固定する。",
       "matchManagers": ["github-actions"],
       "matchDepTypes": ["action", "workflow", "docker", "container", "service"],
