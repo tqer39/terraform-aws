@@ -26,7 +26,7 @@
     "markdownlint-cli": "0.49.1",
     "prettier": "3.9.9",
     "renovate": "44.148.2",
-    "rulesync": "27.0.0",
+    "rulesync": "29.0.0",
     "textlint": "15.8.0",
     "textlint-filter-rule-allowlist": "4.0.0",
     "textlint-filter-rule-comments": "1.3.0",
