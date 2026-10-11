@@ -37,6 +37,21 @@ gitGraph
 - `terraform/modules/`: 共通部品と用途別のモジュール。
   ドメイン、証明書、デプロイ用ロールなどもこのディレクトリで管理します。
 
+### State のロック
+
+全環境の S3 backend で `use_lockfile = true` を設定し、同じ state への同時書き込みを防ぎます。
+ロックには state のキーに `.tflock` を付けた S3 オブジェクトを使用します。
+実行ロールには、このオブジェクトへの `s3:GetObject`、`s3:PutObject`、
+`s3:DeleteObject` 権限が必要です。
+portfolio と sandbox の実行ロールは既存の `s3:*` 権限で対応しています。
+management の IAM ポリシーはこのリポジトリの管理対象外のため、利用前に権限を確認してください。
+詳細は [S3 backend の公式ドキュメント](https://developer.hashicorp.com/terraform/language/backend/s3)を参照してください。
+
+すでに初期化した作業ディレクトリでは、対象環境の AWS 認証を用意して
+`terraform init -reconfigure -lockfile=readonly` を実行します。
+state の保存先は変わらないため、state の移行は不要です。
+GitHub Actions はチェックアウト後に `terraform init` を実行するため、新しい設定を読み込みます。
+
 ### 依存関係の可視化
 
 GitHub Actions の `Terraform Graph` を手動実行し、対象環境を選択します。
