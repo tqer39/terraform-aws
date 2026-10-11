@@ -1,0 +1,216 @@
+// cspell:disable
+// https://github.com/tqer39/renovate-config/tree/ae849c2e2008a4165f86c99bfa175c3add9f2688
+// 継承後のポリシーをネットワークなしで検証する共通プリセットのスナップショット。
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests",
+  ],
+  timezone: "Asia/Tokyo",
+  schedule: ["after 0:00 before 6:00 every weekend"],
+  automerge: true,
+  automergeSchedule: ["after 0:00 before 6:00 every weekday"],
+  automergeStrategy: "squash",
+  automergeType: "pr",
+  platformAutomerge: true,
+  prHourlyLimit: 0,
+  separateMajorMinor: true,
+  separateMultipleMajor: true,
+  dependencyDashboard: true,
+  labels: ["renovate"],
+  // Supply chain hardening: リリース即攻撃（xz-utils / npm worm 等）を14日間ソークで減速
+  minimumReleaseAge: "14 days",
+  // 公開日時が不明な更新は保留し、待機期間中はブランチも作成しない
+  minimumReleaseAgeBehaviour: "timestamp-required",
+  internalChecksFilter: "strict",
+  // OSV.dev を検知ソースに追加（GitHub Advisory 単一ソース依存の緩和）
+  osvVulnerabilityAlerts: true,
+  // ロックファイル更新時のパッケージスクリプトと Composer プラグインを無効化
+  ignoreScripts: true,
+  ignorePlugins: true,
+  major: {
+    addLabels: ["major"],
+    // メジャー更新は目視レビュー必須（悪意のあるメジャー リリース対策）
+    automerge: false,
+  },
+  minor: {
+    addLabels: ["minor"],
+  },
+  patch: {
+    addLabels: ["patch"],
+  },
+  vulnerabilityAlerts: {
+    automerge: true,
+    labels: ["security"],
+    // セキュリティ修正は 14日ソークを上書きして即適用（防御破綻防止）
+    minimumReleaseAge: null,
+    // 週末スケジュール制約を解除（緊急性優先）
+    schedule: ["at any time"],
+  },
+  packageRules: [
+    {
+      addLabels: ["github-actions"],
+      matchManagers: ["github-actions"],
+      matchUpdateTypes: ["minor", "patch"],
+    },
+    {
+      addLabels: ["github-actions"],
+      matchUpdateTypes: ["major"],
+      matchPackageNames: [
+        "actions/cache",
+        "actions/checkout",
+        "actions/labeler",
+        "actions/setup-node",
+        "actions/setup-python",
+        "actions/upload-pages-artifact@v1",
+        "aws-actions/amazon-ecr-login",
+        "aws-actions/aws-secretsmanager-get-secrets",
+        "aws-actions/configure-aws-credentials",
+        "danger/danger-js",
+        "DataDog/synthetics-ci-github-action",
+        "docker/build-push-action",
+        "docker/setup-buildx-action",
+        "docker/setup-qemu-action",
+        "hashicorp/setup-terraform",
+        "kentaro-m/auto-assign-action",
+        "pnpm/action-setup",
+        "terraform-linters/setup-tflint",
+      ],
+    },
+    {
+      groupName: "GitHub Page Actions",
+      addLabels: ["github-actions", "GitHub Pages"],
+      matchUpdateTypes: ["major"],
+      matchPackageNames: ["actions/configure-pages", "actions/deploy-pages"],
+    },
+    {
+      addLabels: ["Node.js"],
+      groupName: "Node.js",
+      matchPackageNames: ["node", "@types/node"],
+      matchUpdateTypes: ["minor", "patch"],
+    },
+    {
+      addLabels: ["Node.js"],
+      allowedVersions: "<24.0.0",
+      matchCurrentVersion: "<24.0.0",
+      major: {
+        automerge: false,
+      },
+      matchManagers: ["nodenv"],
+      rangeStrategy: "replace",
+    },
+    {
+      addLabels: ["Node.js"],
+      matchUpdateTypes: ["minor", "patch"],
+      matchManagers: ["npm"],
+      matchPackageNames: [
+        "amazon-cognito-identity-js",
+        "dayjs",
+        "cspell",
+        "dotenv",
+        "husky",
+        "launchdarkly-js-client-sdk",
+        "lint-staged",
+        "pnpm",
+        "retry-cli",
+        "source-map-support",
+        "ts-node",
+      ],
+    },
+    {
+      addLabels: ["Node.js"],
+      groupName: "AWS CDK and cdk-nag",
+      groupSlug: "aws-cdk",
+      matchSourceUrls: [
+        "https://github.com/aws/aws-cdk",
+        "https://github.com/aws/constructs",
+        "https://github.com/cdklabs/cdk-nag",
+        "https://github.com/DataDog/datadog-cdk-constructs",
+      ],
+      matchUpdateTypes: ["minor", "patch"],
+    },
+    {
+      addLabels: ["pyenv"],
+      allowedVersions: "<3.10",
+      major: {
+        automerge: false,
+      },
+      matchManagers: ["pyenv"],
+      minor: {
+        automerge: false,
+      },
+    },
+    {
+      addLabels: ["Python"],
+      matchUpdateTypes: ["minor", "patch"],
+      matchPackageNames: [
+        "aws-lambda-powertools",
+        "aws-xray-sdk",
+        "awsebcli",
+        "mypy",
+        "openai",
+        "typing-extensions",
+      ],
+    },
+    {
+      addLabels: ["python", "Package tools"],
+      groupName: "Python package tools (pip, Poetry, uv)",
+      groupSlug: "python-package-tools",
+      matchPackageNames: ["pip", "poetry", "python-poetry/poetry", "uv"],
+    },
+    {
+      addLabels: ["python"],
+      groupName: "setuptools",
+      groupSlug: "python-setuptools",
+      matchPackageNames: ["types-setuptools", "setuptools"],
+    },
+    {
+      addLabels: ["python"],
+      groupName: "python-dateutil",
+      groupSlug: "python-dateutil",
+      matchPackageNames: ["python-dateutil", "types-python-dateutil"],
+    },
+    {
+      addLabels: ["python", "testing-tools"],
+      groupName: "Python testing tools",
+      groupSlug: "python-testing-tools",
+      matchUpdateTypes: ["minor", "patch"],
+      matchPackageNames: [
+        "coverage",
+        "factory-boy",
+        "freezegun",
+        "moto",
+        "pytest-cov",
+        "pytest-env",
+        "pytest-snapshot",
+        "pytest",
+        "types-freezegun",
+      ],
+    },
+    {
+      // 依存置換（renameなど）は自動マージ禁止：悪意ある replacement 攻撃対策
+      matchUpdateTypes: ["replacement"],
+      automerge: false,
+      addLabels: ["replacement"],
+    },
+    {
+      // 初回 SHA 固定は日時不明でも PR を作り、固定先を手動レビューする
+      matchUpdateTypes: ["pinDigest"],
+      minimumReleaseAge: null,
+      automerge: false,
+      prBodyNotes: [
+        "Initial digest pinning bypasses minimumReleaseAge. Verify the pinned commit or image digest and package provenance before merging.",
+      ],
+    },
+    {
+      // これらの更新は公開日時の検査対象外。手動レビューで依存の変更を確認する
+      matchUpdateTypes: ["pin", "replacement", "lockFileMaintenance", "lockfileUpdate", "rollback", "bump"],
+      minimumReleaseAge: null,
+      automerge: false,
+      prBodyNotes: [
+        "This update does not enforce minimumReleaseAge. Review changed dependencies, release dates, and package provenance before merging.",
+      ],
+    },
+  ],
+}

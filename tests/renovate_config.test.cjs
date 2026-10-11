@@ -1,7 +1,7 @@
 // 実行: node --test tests/renovate_config.test.cjs
 // 別のインストールを使う場合はRENOVATE_PACKAGE_DIRでRenovateのディレクトリを指定する。
 // Renovate本体で設定を解決し、独自のルール評価や日付判定を再実装しない。
-// cspell:ignore datasource
+// cspell:ignore datasource Behaviour
 const assert = require('node:assert/strict');
 const { readFileSync } = require('node:fs');
 const { createRequire } = require('node:module');
@@ -23,10 +23,25 @@ const modules = Promise.all([
   load('workers/repository/process/lookup/filter-checks.js'),
   load('modules/versioning/semver/index.js'),
 ]);
+const resolvedConfig = (async () => {
+  const cache = await load('util/cache/memory/index.js');
+  const { buildCacheKey } = await load('util/cache/package/key.js');
+  const presets = await load('config/presets/index.js');
+  cache.init();
+  for (const [preset, file] of [
+    ['github>tqer39/renovate-config', 'default.json'],
+    ['github>tqer39/renovate-config:renovate.json5', 'renovate.json5'],
+  ]) {
+    cache.set(buildCacheKey('preset', preset), renovateRequire('json5').parse(
+      readFileSync(join(__dirname, 'fixtures', 'renovate-config', file), 'utf8'),
+    ));
+  }
+  return (await presets.resolveConfigPresets(config)).config;
+})();
 
 async function dependency(manager, updateType, security = false, details = {}) {
   const [defaults, utils, rules] = await modules;
-  let result = utils.mergeChildConfig(defaults.getConfig(), config);
+  let result = utils.mergeChildConfig(defaults.getConfig(), await resolvedConfig);
   result = await rules.applyPackageRules({
     ...result, manager, updateType,
     depType: manager === 'github-actions' ? 'action' : undefined,
@@ -35,6 +50,24 @@ async function dependency(manager, updateType, security = false, details = {}) {
   if (security) result = utils.mergeChildConfig(result, result.vulnerabilityAlerts);
   return result;
 }
+
+test('共通プリセットを継承しても随時更新とリポジトリの安全方針を保つ', async () => {
+  assert.deepEqual(config.extends, ['github>tqer39/renovate-config']);
+  const policy = await dependency('npm', 'patch');
+  assert.equal(policy.dependencyDashboard, true);
+  assert.equal(policy.osvVulnerabilityAlerts, true);
+  assert.deepEqual(policy.schedule, ['at any time']);
+  assert.equal(policy.minimumReleaseAge, '7 days');
+  assert.equal(policy.minimumReleaseAgeBehaviour, 'timestamp-required');
+  assert.equal(policy.internalChecksFilter, 'strict');
+  for (const updateType of ['pin', 'replacement', 'lockFileMaintenance', 'lockfileUpdate', 'rollback', 'bump']) {
+    const update = await dependency('npm', updateType);
+    assert.equal(update.minimumReleaseAge, '7 days', updateType);
+    assert.equal(update.automerge, false, updateType);
+    assert.ok(!(update.prBodyNotes || []).some((note) =>
+      note.includes('does not enforce minimumReleaseAge')), updateType);
+  }
+});
 
 test('新規リリースと公開日時不明の通常更新を保留する', async () => {
   const [, , , age] = await modules;

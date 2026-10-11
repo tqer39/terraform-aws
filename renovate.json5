@@ -1,25 +1,21 @@
 // cspell:ignore Behaviour
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>tqer39/renovate-config"],
   "description": [
     "通常更新は公開から最低7日待ち、公開日時が不明な更新はDashboardで保留する。",
     "待機期間は直接依存の更新候補に適用される。推移的依存やタグの改ざんを完全には防げない。",
     "脆弱性修正と既存参照のSHA固定は待機を省略するが、自動マージせず手動レビューを前提とする。"
   ],
-  "dependencyDashboard": true,
+  // 共通プリセットの週末制限を上書きし、従来どおり随時更新する。
+  "schedule": ["at any time"],
   "automerge": false,
   "platformAutomerge": false,
-  "ignoreScripts": true,
   "minimumReleaseAge": "7 days",
-  "minimumReleaseAgeBehaviour": "timestamp-required",
-  "internalChecksFilter": "strict",
   "prCreation": "immediate",
-  // OSV連携は実験的機能。対応する直接依存の既知の悪意ある更新も検出する。
-  "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "enabled": true,
     "automerge": false,
-    "minimumReleaseAge": null,
     "prCreation": "immediate"
   },
   "packageRules": [
@@ -31,10 +27,17 @@
       "groupSlug": "terraform-runtime"
     },
     {
-      "description": "GitHub ActionsをタグやブランチではなくコミットSHAに固定する。",
+      "description": "共通プリセットのAction・workflow固定に加え、コンテナもdigestに固定する。",
       "matchManagers": ["github-actions"],
-      "matchDepTypes": ["action", "workflow", "docker", "container", "service"],
+      "matchDepTypes": ["docker", "container", "service"],
       "pinDigests": true
+    },
+    {
+      "description": "共通プリセットの待機免除を上書きし、Actionsの初回固定と脆弱性修正以外は従来の待機を保つ。",
+      "matchUpdateTypes": ["pinDigest", "pin", "replacement", "lockFileMaintenance", "lockfileUpdate", "rollback", "bump"],
+      "minimumReleaseAge": "7 days",
+      // 共通設定の「待機を免除する」というPR注記も解除する。
+      "prBodyNotes": null
     },
     {
       "description": "既存参照を固定する初回のSHA固定PRは待機させない。以降のdigest更新には通常の待機期間を適用する。",
