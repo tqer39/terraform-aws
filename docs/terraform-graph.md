@@ -1,6 +1,6 @@
 # Terraform の依存関係の可視化
 
-[README](../README.md) / [Terraform の運用](terraform-operations.ja.md)
+[README](../README.md) / [Terraform の運用](terraform-operations.md)
 
 ## GitHub Actions で生成する
 

@@ -45,7 +45,9 @@ cursor:
 
 ## ドキュメントと検証
 
-- ドキュメントは日本語で記述し、ADR は `docs/adr/README.md`、計画書は `docs/plans/README.md` の規約に従ってください。
+- Markdown の本文は日本語で記述し、ファイル名の拡張子は `.md` とします。
+  言語を表す接尾辞は付けません。コード、識別子、製品名は元の表記を使用できます。
+- ADR は `docs/adr/README.md`、計画書は `docs/plans/README.md` の規約に従ってください。
 - Python の回帰テストは `python3 -m unittest discover -s tests -p 'test_*.py'` で実行してください。
 - lint は `lefthook.yml` に従い、`mise run lint` で検証してください。
 - 共通ルールの変更後は生成元と生成ファイルを一緒にコミットし、`npm run rules:check` で同期状態を検証してください。

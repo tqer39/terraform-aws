@@ -1,6 +1,6 @@
 # 開発手順
 
-[README](../README.md) / [Terraform の運用](terraform-operations.ja.md)
+[README](../README.md) / [Terraform の運用](terraform-operations.md)
 
 ## セットアップ
 
@@ -37,7 +37,7 @@ mise run terraform-validate
 - 512 KiB のサイズ制限は生成物 `package-lock.json` を除いて適用します。
 - `mise run test` は Python の回帰テストと Renovate 設定の Node.js テストを実行します。
 - `mise run terraform-validate` は backend 接続と AWS 認証なしで fmt・init・validate を実行します。
-  provider のダウンロードにはネットワーク接続が必要です。詳細は [Terraform の運用](terraform-operations.ja.md)を参照してください。
+  provider のダウンロードにはネットワーク接続が必要です。詳細は [Terraform の運用](terraform-operations.md)を参照してください。
 
 ## エディタとツールの更新
 
@@ -63,7 +63,7 @@ mise exec -- pinact run --fix=false --no-api --exclude '^docker://'
 ```
 
 変更後は差分を確認してコミットしてください。
-コンテナのダイジェスト固定などの詳細は [GitHub Actions のサプライチェーン対策](github-actions-security.ja.md)を参照してください。
+コンテナのダイジェスト固定などの詳細は [GitHub Actions のサプライチェーン対策](github-actions-security.md)を参照してください。
 
 ## AI 開発ツールの共通ルール
 

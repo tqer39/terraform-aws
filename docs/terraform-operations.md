@@ -1,6 +1,6 @@
 # Terraform の運用
 
-[README](../README.md) / [開発手順](development.ja.md) / [デプロイフロー](deploy_flow/README.md)
+[README](../README.md) / [開発手順](development.md) / [デプロイフロー](deploy_flow/README.md)
 
 ## 構成とモジュール化
 
@@ -16,7 +16,7 @@
 | `aws_route53_record` | レコードの種類が多く、汎用モジュールの作成・維持にかかるコストが大きい |
 
 モジュールの入出力は各ディレクトリの `USAGE.md` を参照してください。
-生成方法は [GitHub Actions のサプライチェーン対策](github-actions-security.ja.md#pr-での生成処理)に記載しています。
+生成方法は [GitHub Actions のサプライチェーン対策](github-actions-security.md#pr-での生成処理)に記載しています。
 
 ## State のロック
 
@@ -35,7 +35,7 @@ GitHub Actions はチェックアウト後に `terraform init` を実行する�
 
 ## AWS 認証なしの検証
 
-[開発用セットアップ](development.ja.md#セットアップ)後、リポジトリのルートで実行します。
+[開発用セットアップ](development.md#セットアップ)後、リポジトリのルートで実行します。
 
 ```bash
 mise run terraform-validate
@@ -102,4 +102,4 @@ import・destroy・state の変更も通常の検証には含めません。必�
 | aws-vault | SSO profile を使ったローカル AWS 認証 | [公式手順](https://github.com/ByteNess/aws-vault#installing) |
 | Session Manager plugin | AWS Systems Manager のセッション接続 | [AWS 公式手順](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html) |
 | Rancher Desktop | ローカルのコンテナ環境 | [公式の OS 別手順](https://docs.rancherdesktop.io/getting-started/installation/) |
-| Graphviz | Terraform の依存関係の可視化 | [グラフ生成手順](terraform-graph.ja.md#ローカルで生成する) |
+| Graphviz | Terraform の依存関係の可視化 | [グラフ生成手順](terraform-graph.md#ローカルで生成する) |

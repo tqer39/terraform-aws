@@ -1,6 +1,6 @@
 # デプロイフロー
 
-[README](../../README.md) / [Terraform の運用](../terraform-operations.ja.md)
+[README](../../README.md) / [Terraform の運用](../terraform-operations.md)
 
 ## 変更の流れ
 
@@ -30,7 +30,7 @@ AWS 認証を使うジョブには、リポジトリ変数 `TERRAFORM_EXECUTION_
 4. 実行ログとデプロイ結果を確認します。
 
 GitHub Actions は OIDC を使用します。ローカルからのデプロイは原則禁止です。
-権限と認証の詳細は [GitHub Actions のサプライチェーン対策](../github-actions-security.ja.md)を参照してください。
+権限と認証の詳細は [GitHub Actions のサプライチェーン対策](../github-actions-security.md)を参照してください。
 実際のリポジトリ変数、AWS 側の信頼ポリシー、ロールの権限は実行前に確認します。
 
 ## ブランチ運用の図

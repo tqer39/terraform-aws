@@ -2,8 +2,8 @@
 
 - 状態: 一次棚卸し済み、管理境界・撤去判断の確認を継続
 - 調査期間: 2026-10-03〜2026-10-04
-- 対象計画: [Control Tower の段階導入と既存環境の撤去計画](../plans/2026-10-03-control-tower-adoption.ja.md)
-- 方針: [既存 Organizations を維持して Control Tower を段階導入する ADR](../adr/2026-10-03-adopt-control-tower-in-existing-organization.ja.md)
+- 対象計画: [Control Tower の段階導入と既存環境の撤去計画](../plans/2026-10-03-control-tower-adoption.md)
+- 方針: [既存 Organizations を維持して Control Tower を段階導入する ADR](../adr/2026-10-03-adopt-control-tower-in-existing-organization.md)
 
 ## 公開記録の範囲
 
