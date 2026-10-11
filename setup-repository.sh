@@ -46,33 +46,8 @@ if ! command -v git &> /dev/null; then
   brew install git
 fi
 
-# Install anyenv
-if ! command -v anyenv &> /dev/null; then
-  git clone https://github.com/anyenv/anyenv ~/.anyenv
-  export PATH="$HOME/.anyenv/bin:$PATH"
-  eval "$(anyenv init -)"
-  mkdir -p "$(anyenv root)/plugins"
-  git clone https://github.com/znz/anyenv-update.git "$(anyenv root)/plugins/anyenv-update"
-
-  # shellcheck disable=SC2016 # Initialize anyenv when the shell starts.
-  echo 'eval "$(anyenv init -)"' >> ~/.bashrc
-  # Continue setup in this process; exec would skip the remaining installers.
-fi
-
-# Install tfenv using anyenv
-if command -v anyenv &> /dev/null; then
-  if [ ! -d "$(anyenv root)/envs/tfenv" ]; then
-    anyenv install tfenv
-  fi
-fi
-
-# Install Terraform CLI using tfenv and .terraform-version
-if command -v tfenv &> /dev/null; then
-  if [ -f ".terraform-version" ]; then
-    tfenv install
-    tfenv use
-  fi
-fi
+# Install the versions pinned in this repository, including Node.js and Terraform.
+mise -C "$(dirname "$0")" install || exit $?
 
 # Install Rancher Desktop
 if [ "${SETUP_PROFILE:-full}" = full ] && ! command -v rancher-desktop &> /dev/null; then

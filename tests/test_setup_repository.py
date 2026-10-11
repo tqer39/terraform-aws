@@ -24,14 +24,11 @@ class SetupRepositoryTest(unittest.TestCase):
                         SETUP_TEST_LOG=str(self.log),
                         SETUP_PROFILE='full',
                         GITHUB_PATH=str(self.github_path))
-        (self.root / '.anyenv/envs/tfenv').mkdir(parents=True)
-        for name in ('git', 'tfenv', 'rancher-desktop',
+        for name in ('git', 'mise', 'rancher-desktop',
                      'session-manager-plugin', 'aws-vault'):
             self.stub(name)
         self.stub('brew', 'if [ "$1" = --prefix ]; then\n'
                   '  printf "%s\\n" "$SETUP_TEST_ROOT/brew"\nfi\n')
-        self.stub('anyenv', 'if [ "$1" = root ]; then\n'
-                  '  printf "%s\\n" "$SETUP_TEST_ROOT/.anyenv"\nfi\n')
         # Reject unexpected downloads and privileged operations.
         for name in ('curl', 'sudo'):
             self.stub(name, 'exit 97\n')
@@ -123,6 +120,33 @@ class SetupRepositoryTest(unittest.TestCase):
                 result = self.run_setup()
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertIn(installer, self.log.read_text())
+                self.log.unlink()
+
+    def test_setup_uses_pinned_mise_tools_without_legacy_managers(self):
+        result = self.run_setup()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        commands = self.log.read_text()
+        self.assertIn(f'mise -C {REPO} install', commands)
+        self.assertNotIn('anyenv', commands)
+        self.assertNotIn('tfenv', commands)
+
+    def test_mise_failure_stops_setup(self):
+        self.stub('mise', 'exit 23\n')
+        result = self.run_setup()
+        self.assertEqual(result.returncode, 23, result.stderr)
+        self.assertNotIn('rancher', self.log.read_text())
+        self.assertFalse(self.github_path.exists())
+
+    def test_update_installs_pins_without_selecting_latest(self):
+        for code in (0, 23):
+            with self.subTest(code=code):
+                self.stub('mise', f'exit {code}\n')
+                result = subprocess.run(
+                    ['/bin/bash', str(REPO / 'update-repository.sh')],
+                    cwd=self.root, env=self.env, capture_output=True, text=True, timeout=10)
+                self.assertEqual(result.returncode, code, result.stderr)
+                self.assertEqual(self.log.read_text().splitlines(),
+                                 [f'mise -C {REPO} install'])
                 self.log.unlink()
 
     def test_invalid_profile_fails_before_any_installation(self):

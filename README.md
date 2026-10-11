@@ -125,8 +125,8 @@ mise trust
 mise run install
 ```
 
-`mise run install` は `setup-repository.sh` を実行します。
-`mise install` は mise 自体のツールインストール用コマンドです。
+`mise run install` は `setup-repository.sh` を実行し、mise のツールと関連するソフトウェアをセットアップします。
+`mise install` は `mise.toml` に指定したツールをインストールします。
 `mise bootstrap` でも `mise.toml` のツールをインストールできます。
 セットアップは同じシェルプロセスで最後まで実行し、GitHub Actions では Homebrew の PATH を後続ステップへ引き継ぎます。
 既存の Homebrew は再利用し、未導入の場合のみインストールします。
@@ -143,7 +143,7 @@ Terraform バージョン・関連するワークフローやテストの変更�
 GitHub Actions の `Test Setup Repository Script` を手動実行すると、両 OS の全構成を検証できます。
 
 ```bash
-# Update repository tools
+# mise.toml の更新後に指定バージョンをインストール
 mise run update
 
 # Lefthook で全ファイルを検証
@@ -163,47 +163,16 @@ mise run test
 brew bundle
 ```
 
-### anyenv
+### Node.js と Terraform
 
-#### zsh
-
-```bash
-anyenv init
-anyenv install --init
-echo 'eval "$(anyenv init -)"' >> ~/.zshrc
-exec $SHELL -l
-mkdir -p "$(anyenv root)/plugins"
-git clone https://github.com/znz/anyenv-update.git "$(anyenv root)/plugins/anyenv-update"
-```
-
-#### fish
+Node.js と Terraform のバージョンは `mise.toml` で管理します。
+ローカルと GitHub Actions の両方で mise を使用します。
+Terraform 各環境の `required_version` は互換性の制約として維持し、Renovate で mise と一緒に更新します。
 
 ```bash
-anyenv init - fish | source
-anyenv install --init
-set -Ux fish_user_paths $HOME/.anyenv/bin $fish_user_paths
-echo 'set -x PATH ~/.anyenv/bin $PATH' >> ~/.config/fish/config.fish
-echo 'eval (anyenv init - | source)' >> ~/.config/fish/config.fish
-exec fish -l
-mkdir -p (anyenv root)/plugins
-git clone https://github.com/znz/anyenv-update.git (anyenv root)/plugins/anyenv-update
-which anyenv
-```
-
-### tfenv
-
-```bash
-anyenv install tfenv
-which tfenv
-```
-
-### Terraform
-
-```bash
-tfenv install
-which terraform
-terraform install
-terraform -version
+mise install node terraform
+mise exec -- node --version
+mise exec -- terraform version
 ```
 
 ### Rancher Desktop
@@ -288,8 +257,8 @@ output = json
 ### Terraform のセットアップ
 
 ```bash
-tfenv install
-terraform -v
+mise install terraform
+mise exec -- terraform -v
 ```
 
 コマンドのフォーマット
@@ -300,28 +269,28 @@ terraform -v
 
 ```bash
 # Format:
-aws-vault exec "${AWS CLI (SSO) の profile}" -- terraform -chdir="${実行先のパス}" "${Terraform コマンド}"
+mise exec -- aws-vault exec "${AWS CLI (SSO) の profile}" -- terraform -chdir="${実行先のパス}" "${Terraform コマンド}"
 ```
 
 #### terraform init（初期化）
 
 ```bash
 # Example:
-aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 init
+mise exec -- aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 init
 ```
 
 #### terraform validate
 
 ```bash
 # Example:
-aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 validate
+mise exec -- aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 validate
 ```
 
 #### terraform plan
 
 ```bash
 # Example:
-aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 plan
+mise exec -- aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 plan
 ```
 
 #### terraform apply
@@ -330,7 +299,7 @@ aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev
 
 ```bash
 # Example:
-aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 apply -auto-approve
+mise exec -- aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 apply -auto-approve
 ```
 
 ## 新しい環境の作成方法

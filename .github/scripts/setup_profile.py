@@ -10,8 +10,8 @@ from terraform_matrix import changed_files, git
 
 SETUP_FILES = {
     'setup-repository.sh',
+    'update-repository.sh',
     'mise.toml',
-    '.terraform-version',
     '.github/workflows/setup-repository-test.yml',
     '.github/scripts/setup_profile.py',
     '.github/scripts/terraform_matrix.py',
