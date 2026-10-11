@@ -44,9 +44,9 @@ mise run terraform-validate
 [.editorconfig](../.editorconfig) に従って編集します。
 必要に応じて [EditorConfig の対応プラグイン](https://editorconfig.org/#download)を導入してください。
 
-ツールのバージョンを変更するときは `mise.toml` と関連するバージョンファイルを更新し、
-`mise install` と検証を実行してください。Node.js は `.node-version`、
-Terraform は `.terraform-version` と同じバージョンにします。
+ツールのバージョンを変更するときは `mise.toml` を更新し、`mise install` と検証を実行してください。
+ローカルと GitHub Actions の両方で mise を使用します。
+Terraform 各環境の `required_version` は互換性の制約として維持し、Renovate で mise と一緒に更新します。
 対象ルートの provider 制約と `.terraform.lock.hcl` も確認し、無関係な更新を避けてください。
 
 ## GitHub Actions の SHA 固定

@@ -12,15 +12,22 @@ REPO = Path(__file__).resolve().parents[1]
 
 class TerraformValidationScriptTest(unittest.TestCase):
     def test_local_and_ci_use_the_required_terraform_version(self):
-        version = (REPO / '.terraform-version').read_text().strip()
-        config = (REPO / 'mise.toml').read_text()
-        self.assertEqual(re.search(r'^terraform = "([^"]+)"', config, re.M)[1], version)
+        version = re.search(r'^terraform = "([^"]+)"', (REPO / 'mise.toml').read_text(), re.M)[1]
         for path in (REPO / 'terraform/envs').glob('*/*/terraform.tf'):
             required = re.search(r'required_version\s*=\s*"([^"]+)"', path.read_text())[1]
             self.assertEqual(required, version, str(path))
-        graph = (REPO / '.github/workflows/terraform-graph.yml').read_text()
-        self.assertIn('cat .terraform-version', graph)
-        self.assertIn('terraform_version: ${{ env.TERRAFORM_VERSION }}', graph)
+        for name in ('.github/actions/setup-terraform/action.yml',
+                     '.github/workflows/terraform-graph.yml',
+                     '.github/workflows/terraform-renovate.yml'):
+            action = (REPO / name).read_text()
+            self.assertIn('uses: jdx/mise-action@', action)
+            self.assertIn('install_args: terraform', action)
+            self.assertNotIn('hashicorp/setup-terraform', action)
+        node = (REPO / '.github/actions/setup-node/action.yml').read_text()
+        self.assertIn('install_args: node', node)
+        self.assertNotIn('uses: actions/setup-node@', node)
+        for legacy in ('.node-version', '.terraform-version'):
+            self.assertFalse((REPO / legacy).exists())
 
     def run_validation(self, fail=False):
         with tempfile.TemporaryDirectory() as temp:

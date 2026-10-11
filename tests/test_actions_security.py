@@ -196,6 +196,30 @@ class ActionsSecurityTest(unittest.TestCase):
             self.assertEqual(json.loads(capture.read_text()), ['--chdir=' + malicious, '--call-module-type=all'])
             self.assertFalse((root / 'INJECTED').exists())
 
+    def test_plan_captures_real_cli_exit_code_without_a_wrapper(self):
+        text = (REPO / '.github/actions/terraform-plan/action.yml').read_text()
+        plan = text.split('    - name: Terraform Plan\n', 1)[1].split(
+            '    - name: Set Terraform Plan status', 1)[0]
+        script = plan.split('      run: |\n', 1)[1].split('      working-directory:', 1)[0]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            terraform = root / 'terraform'
+            terraform.write_text('#!/bin/sh\necho plan-output\nexit "$PLAN_EXIT_CODE"\n')
+            terraform.chmod(0o755)
+            output = root / 'output'
+            for code in (0, 1, 2, 127):
+                with self.subTest(code=code):
+                    output.write_text('')
+                    result = subprocess.run(['bash', '-e', '-c', script], cwd=root,
+                                            env=dict(os.environ, PATH=directory + os.pathsep
+                                                     + os.environ['PATH'],
+                                                     PLAN_EXIT_CODE=str(code),
+                                                     GITHUB_OUTPUT=str(output)),
+                                            capture_output=True, text=True)
+                    self.assertEqual(result.returncode, code, result.stderr)
+                    self.assertEqual(output.read_text().strip(), f'exitcode={code}')
+                    self.assertEqual((root / 'tf_plan.txt').read_text(), 'plan-output\n')
+
     def test_plan_failure_and_missing_exit_code_fail_closed(self):
         text = (REPO / '.github/actions/terraform-plan/action.yml').read_text()
         status = text.split('    - name: Set Terraform Plan status\n', 1)[1]

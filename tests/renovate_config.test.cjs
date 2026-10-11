@@ -48,12 +48,11 @@ test('新規リリースと公開日時不明の通常更新を保留する', as
   }
 });
 
-test('Terraform本体の3種類の参照をまとめ、AWS providerは別に更新する', async () => {
+test('Terraform本体のmiseと環境の制約をまとめ、AWS providerは別に更新する', async () => {
   const { GlobalConfig } = await load('config/global.js');
   GlobalConfig.set({ localDir: join(__dirname, '..') });
   const refs = [
     ['mise', 'mise.toml'],
-    ['terraform-version', '.terraform-version'],
     ['terraform', 'terraform/envs/management/base/terraform.tf'],
   ];
   for (const [manager, file] of refs) {

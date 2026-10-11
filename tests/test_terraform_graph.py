@@ -134,7 +134,7 @@ class TerraformGraphTest(unittest.TestCase):
             root.mkdir(parents=True)
             (root / 'terraform.tf').write_text(
                 'terraform {\n  required_version = "' +
-                (REPO / '.terraform-version').read_text().strip() +
+                re.search(r'^terraform = "([^"]+)"', (REPO / 'mise.toml').read_text(), re.M)[1] +
                 '"\n  backend "s3" {}\n}\n'
                 'resource "terraform_data" "first" { input = "example" }\n'
                 'resource "terraform_data" "second" { input = terraform_data.first.output }\n')

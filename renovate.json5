@@ -24,8 +24,8 @@
   },
   "packageRules": [
     {
-      "description": "Terraform本体のmise・versionファイル・全環境の制約を同じPRで更新する。",
-      "matchManagers": ["mise", "terraform", "terraform-version"],
+      "description": "Terraform本体のmise・全環境の制約を同じPRで更新する。",
+      "matchManagers": ["mise", "terraform"],
       "matchDepNames": ["terraform", "hashicorp/terraform"],
       "groupName": "Terraform runtime",
       "groupSlug": "terraform-runtime"
