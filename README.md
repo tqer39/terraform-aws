@@ -113,125 +113,52 @@ GitHub Copilot の `.github/skills/`、Cursor の `.cursor/skills/` です。
 CI の `rulesync` ジョブで同期漏れを検出します。
 個人用の上書き設定 `rulesync.local.jsonc` は Git の管理対象外です。
 
-## Setup
+## セットアップ
 
-### Repository tasks
+### リポジトリのセットアップ
 
-タスクの実行には [mise](https://mise.jdx.dev/installing-mise.html) と Bash が必要です。
-macOS / Linux では mise をインストールし、リポジトリのルートで次のコマンドを実行します。
+Git と [mise](https://mise.jdx.dev/installing-mise.html) を事前にインストールし、
+リポジトリのルートで次のコマンドを実行します。
 
 ```bash
 mise trust
-mise run install
+mise install
+mise run setup
 ```
 
-`mise run install` は `setup-repository.sh` を実行します。
-`mise install` は mise 自体のツールインストール用コマンドです。
-`mise bootstrap` でも `mise.toml` のツールをインストールできます。
-セットアップは同じシェルプロセスで最後まで実行し、GitHub Actions では Homebrew の PATH を後続ステップへ引き継ぎます。
-既存の Homebrew は再利用し、未導入の場合のみインストールします。
-
-Rancher Desktop が不要な場合は、CLI ツールのみセットアップできます。
+Terraform、Node.js、検証ツールのバージョンは `mise.toml` で管理します。
+`mise run setup` は lockfile に従って npm 依存をインストールし、Lefthook の Git フックを設定します。
+npm のライフサイクルスクリプトは実行しません。既存の pre-commit フックは置き換えます。
+Homebrew の導入やシェル設定は個人の環境で管理してください。anyenv と tfenv は不要です。
 
 ```bash
-SETUP_PROFILE=cli mise run install
-```
-
-省略時の `SETUP_PROFILE=full` は Rancher Desktop を含む全構成をセットアップします。
-セットアップ CI は通常の変更では `cli` を使用し、セットアップスクリプト・タスク・
-Terraform バージョン・関連するワークフローやテストの変更では `full` を使用します。
-GitHub Actions の `Test Setup Repository Script` を手動実行すると、両 OS の全構成を検証できます。
-
-```bash
-# Update repository tools
-mise run update
-
 # Lefthook で全ファイルを検証
 mise run lint
 
-# Run regression tests (Python 3 and Git are required)
+# 回帰テストを実行（Python 3 と Git が必要）
 mise run test
 ```
 
-### Homebrew
+CI の `Repository Setup` は macOS・Linux で同じセットアップタスクを実行し、
+Terraform、npm の検証ツール、Git フックが利用できることを確認します。
 
-```bash
-# install brew see: https://brew.sh/index_ja
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+ツールのバージョンを変更するときは `mise.toml` と関連するバージョンファイルを更新し、
+`mise install` と検証を実行してください。Node.js は `.node-version`、
+Terraform は `.terraform-version` と同じバージョンにします。
 
-# install software
-brew bundle
-```
+### 任意の追加ツール
 
-### anyenv
+AWS 接続やコンテナを使用する場合に、必要なツールを個人の環境へ導入します。
+リポジトリのセットアップや lint・回帰テストでは、これらのツールをインストールしません。
 
-#### zsh
+| ツール | 用途 | 導入方法 |
+| :--- | :--- | :--- |
+| aws-vault | 後述のローカル AWS 認証 | [公式のインストール手順](https://github.com/ByteNess/aws-vault#installing) |
+| Session Manager plugin | AWS Systems Manager のセッション接続 | [AWS 公式手順](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html) |
+| Rancher Desktop | ローカルのコンテナ環境 | [公式の OS 別手順](https://docs.rancherdesktop.io/getting-started/installation/) |
 
-```bash
-anyenv init
-anyenv install --init
-echo 'eval "$(anyenv init -)"' >> ~/.zshrc
-exec $SHELL -l
-mkdir -p "$(anyenv root)/plugins"
-git clone https://github.com/znz/anyenv-update.git "$(anyenv root)/plugins/anyenv-update"
-```
-
-#### fish
-
-```bash
-anyenv init - fish | source
-anyenv install --init
-set -Ux fish_user_paths $HOME/.anyenv/bin $fish_user_paths
-echo 'set -x PATH ~/.anyenv/bin $PATH' >> ~/.config/fish/config.fish
-echo 'eval (anyenv init - | source)' >> ~/.config/fish/config.fish
-exec fish -l
-mkdir -p (anyenv root)/plugins
-git clone https://github.com/znz/anyenv-update.git (anyenv root)/plugins/anyenv-update
-which anyenv
-```
-
-### tfenv
-
-```bash
-anyenv install tfenv
-which tfenv
-```
-
-### Terraform
-
-```bash
-tfenv install
-which terraform
-terraform install
-terraform -version
-```
-
-### Rancher Desktop
-
-#### Linux
-
-see [Rancher Desktop - Linux](https://docs.rancherdesktop.io/getting-started/installation/#linux)
-
-```bash
-curl -s https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/Release.key | gpg --dearmor | sudo dd status=none of=/usr/share/keyrings/isv-rancher-stable-archive-keyring.gpg
-echo 'deb [signed-by=/usr/share/keyrings/isv-rancher-stable-archive-keyring.gpg] https://download.opensuse.org/repositories/isv:/Rancher:/stable/deb/ ./' | sudo dd status=none of=/etc/apt/sources.list.d/isv-rancher-stable.list
-sudo apt update
-sudo apt install rancher-desktop
-```
-
-os reboot.
-
-### Session Manager Plugin
-
-see: [(オプション) AWS CLI 用の Session Manager プラグインをインストールする](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
-
-#### Linux (Debian | amd64)
-
-```bash
-curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
-sudo dpkg -i session-manager-plugin.deb
-rm -rf session-manager-plugin.deb
-```
+macOS で Homebrew を利用する場合も、上記の各公式手順に従って導入してください。
+Linux・Windows では、それぞれの OS と CPU に対応する手順を選択してください。
 
 ### GitHub Actions の SHA 固定
 
@@ -240,7 +167,7 @@ rm -rf session-manager-plugin.deb
 
 ```bash
 mise trust
-mise bootstrap
+mise install
 mise exec -- pinact --version
 
 # ワークフローと composite action の参照を SHA に固定
@@ -250,7 +177,7 @@ mise exec -- pinact run
 mise exec -- pinact run --check
 ```
 
-ツールのインストールだけを実行する場合は `mise bootstrap --only tools` を使用します。
+ツールのインストールだけを実行する場合は `mise install` を使用します。
 `pinact run` の変更後は差分を確認してコミットしてください。
 
 ### Lefthook
@@ -258,8 +185,7 @@ mise exec -- pinact run --check
 ```bash
 # 検証ツールと Git フックをセットアップ
 mise install
-mise exec -- npm ci
-mise exec -- lefthook install
+mise run setup
 ```
 
 既存の pre-commit フックは `mise exec -- lefthook install` で置き換えます。
@@ -288,8 +214,8 @@ output = json
 ### Terraform のセットアップ
 
 ```bash
-tfenv install
-terraform -v
+mise install
+mise exec -- terraform -v
 ```
 
 コマンドのフォーマット
