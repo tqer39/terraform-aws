@@ -42,7 +42,8 @@ jobs:
           version: 2026.9.9
           sha256: bd481434a65ede6b2ec6162b88f129e5c6b94cf9de808b8ee7c6f027b13b4589
 
-      - uses: ./.github/actions/setup-node
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
 
       - name: Test repository tasks and Terraform workflow change detection
         run: mise run test

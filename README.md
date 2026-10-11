@@ -142,9 +142,9 @@ mise run test
 CI の `Repository Setup` は macOS・Linux で同じセットアップタスクを実行し、
 Terraform、npm の検証ツール、Git フックが利用できることを確認します。
 
-ツールのバージョンを変更するときは `mise.toml` と関連するバージョンファイルを更新し、
-`mise install` と検証を実行してください。Node.js は `.node-version`、
-Terraform は `.terraform-version` と同じバージョンにします。
+ツールのバージョンを変更するときは `mise.toml` を更新し、`mise install` と検証を実行してください。
+ローカルと GitHub Actions の両方で mise を使用します。
+Terraform 各環境の `required_version` は互換性の制約として維持し、Renovate で mise と一緒に更新します。
 
 ### 任意の追加ツール
 
@@ -226,28 +226,28 @@ mise exec -- terraform -v
 
 ```bash
 # Format:
-aws-vault exec "${AWS CLI (SSO) の profile}" -- terraform -chdir="${実行先のパス}" "${Terraform コマンド}"
+mise exec -- aws-vault exec "${AWS CLI (SSO) の profile}" -- terraform -chdir="${実行先のパス}" "${Terraform コマンド}"
 ```
 
 #### terraform init（初期化）
 
 ```bash
 # Example:
-aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 init
+mise exec -- aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 init
 ```
 
 #### terraform validate
 
 ```bash
 # Example:
-aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 validate
+mise exec -- aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 validate
 ```
 
 #### terraform plan
 
 ```bash
 # Example:
-aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 plan
+mise exec -- aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 plan
 ```
 
 #### terraform apply
@@ -256,7 +256,7 @@ aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev
 
 ```bash
 # Example:
-aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 apply -auto-approve
+mise exec -- aws-vault exec terraform-aws-management -- terraform -chdir=./terraform/envs/dev/base_apne1 apply -auto-approve
 ```
 
 ## 新しい環境の作成方法

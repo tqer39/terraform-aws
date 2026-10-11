@@ -24,13 +24,12 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Get current Terraform version
-        run: echo "TERRAFORM_VERSION=$(cat .terraform-version)" >> "$GITHUB_ENV"
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+      - name: Set up Terraform with mise
+        uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
         with:
-          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          version: 2026.9.9
+          sha256: bd481434a65ede6b2ec6162b88f129e5c6b94cf9de808b8ee7c6f027b13b4589
+          install_args: terraform
 
       - name: Check platform checksums without pushing PR code
         env:
