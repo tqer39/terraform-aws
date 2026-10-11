@@ -15,9 +15,10 @@ terraform {
     }
   }
   backend "s3" {
-    bucket  = "terraform-tfstate-tqer39-072693953877-ap-northeast-1"
-    encrypt = true
-    key     = "terraform-aws/terraform/environments/portfolio/portfolio-terraform_vercel.tfstate"
-    region  = "ap-northeast-1"
+    use_lockfile = true
+    bucket       = "terraform-tfstate-tqer39-072693953877-ap-northeast-1"
+    encrypt      = true
+    key          = "terraform-aws/terraform/environments/portfolio/portfolio-terraform_vercel.tfstate"
+    region       = "ap-northeast-1"
   }
 }
