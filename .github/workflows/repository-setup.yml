@@ -23,9 +23,9 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            mise-sha256: bd481434a65ede6b2ec6162b88f129e5c6b94cf9de808b8ee7c6f027b13b4589
+            mise-sha256: 31e6859cf639ed4594906da3fcd0fe2055e9daddae75e9786dbe50b3fb3c0f4a
           - os: macos-latest
-            mise-sha256: 1998d23853aac289cef2a7858cab86b082f603c98b0bc792245f01301312f4cb
+            mise-sha256: d225d1c8ef2934a86be93692a19365fb1df1cd6958a0af7b85909514e0c608a7
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
@@ -36,7 +36,7 @@ jobs:
       - name: Set up mise tools
         uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
         with:
-          version: 2026.9.9
+          version: 2026.10.1
           sha256: ${{ matrix.mise-sha256 }}
 
       - name: Set up repository
