@@ -7,7 +7,7 @@ ADR は、将来も参照する設計上の決定とその根拠を記録する�
 ## 保存先と命名
 
 - 保存先: `docs/adr/`
-- ファイル名: `YYYY-MM-DD-<決定内容を表す英語名>.ja.md`
+- ファイル名: `YYYY-MM-DD-<決定内容を表す英語名>.md`
 - 連番は使用せず、同日の ADR は決定内容の名前で区別する。
 - 日付は作成日とし、更新や採用時にファイル名を変更しない。
 - 文書内に作成日、状態、決定済みの場合は決定日を記載する。
@@ -24,4 +24,4 @@ ADR は、将来も参照する設計上の決定とその根拠を記録する�
 
 ## ADR 一覧
 
-- [既存 Organizations を維持して Control Tower を段階導入する](2026-10-03-adopt-control-tower-in-existing-organization.ja.md)
+- [既存 Organizations を維持して Control Tower を段階導入する](2026-10-03-adopt-control-tower-in-existing-organization.md)

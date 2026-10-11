@@ -19,7 +19,9 @@
 - AWS リソースを Terraform で管理するリポジトリです。
 - `terraform/envs/` に環境ごとの構成、`terraform/modules/` に共通部品と用途別のモジュールがあります。
 - 対象ディレクトリの Terraform・provider バージョンと `.terraform.lock.hcl` を確認し、無関係な更新を避けてください。
-- GitHub Flow を使用し、`main` へのマージで GitHub Actions の `terraform apply` が実行されます。
+- GitHub Flow を使用します。現行 CI の apply は `main` での手動実行に限定され、
+  `TERRAFORM_EXECUTION_ENABLED=true`、`CHECK_DIFF=_false`、plan の差分が条件です。
+  詳細は `docs/deploy_flow/README.md`を参照してください。
 - ローカルからのデプロイは原則禁止です。明示的な依頼なしに `terraform apply`、`destroy`、state の変更を実行しないでください。
 - GitHub Actions の AWS 認証には OIDC を使用します。認証情報や Terraform state をコミットしないでください。
 - 変更した Terraform は `terraform fmt -check` と、初期化済みの対象ディレクトリで `terraform validate` を検証してください。
@@ -34,7 +36,9 @@
 
 ## ドキュメントと検証
 
-- ドキュメントは日本語で記述し、ADR は `docs/adr/README.md`、計画書は `docs/plans/README.md` の規約に従ってください。
+- Markdown の本文は日本語で記述し、ファイル名の拡張子は `.md` とします。
+  言語を表す接尾辞は付けません。コード、識別子、製品名は元の表記を使用できます。
+- ADR は `docs/adr/README.md`、計画書は `docs/plans/README.md` の規約に従ってください。
 - Python の回帰テストは `python3 -m unittest discover -s tests -p 'test_*.py'` で実行してください。
 - lint は `lefthook.yml` に従い、`mise run lint` で検証してください。
 - 共通ルールの変更後は生成元と生成ファイルを一緒にコミットし、`npm run rules:check` で同期状態を検証してください。

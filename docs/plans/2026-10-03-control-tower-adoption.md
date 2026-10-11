@@ -5,7 +5,7 @@
 - 合意日: 2026-10-03
 - 最終調査日: 2026-10-04
 
-決定の背景・代替案・採用理由は [ADR](../adr/2026-10-03-adopt-control-tower-in-existing-organization.ja.md) に記録する。
+決定の背景・代替案・採用理由は [ADR](../adr/2026-10-03-adopt-control-tower-in-existing-organization.md) に記録する。
 
 ## 合意した方針（2026-10-03）
 
@@ -22,7 +22,7 @@
 ## 現在地
 
 第 1 段階の認証と読み取り専用の一次棚卸しを実施した。新設・修復・撤去は未実施である。
-[公開用の調査記録](../investigations/2026-10-03-control-tower-phase1-inventory.ja.md)に進捗・判断基準・残課題を記録する。
+[公開用の調査記録](../investigations/2026-10-03-control-tower-phase1-inventory.md)に進捗・判断基準・残課題を記録する。
 
 - 再認証後、管理アカウントと組織内アカウントの実行主体を確認した。
 - 組織・認証・主要サービス・state・費用を読み取り調査し、主要な保持対象を具体化した。
