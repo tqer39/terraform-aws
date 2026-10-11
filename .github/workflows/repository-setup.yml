@@ -1,0 +1,52 @@
+name: Repository Setup
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            mise-sha256: bd481434a65ede6b2ec6162b88f129e5c6b94cf9de808b8ee7c6f027b13b4589
+          - os: macos-latest
+            mise-sha256: 1998d23853aac289cef2a7858cab86b082f603c98b0bc792245f01301312f4cb
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up mise tools
+        uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
+        with:
+          version: 2026.9.9
+          sha256: ${{ matrix.mise-sha256 }}
+
+      - name: Set up repository
+        run: mise run setup
+
+      - name: Verify repository setup
+        run: |
+          mise exec -- terraform version
+          mise exec -- npx --no-install prettier --version
+          test -x "$(git rev-parse --git-path hooks/pre-commit)"
+
+      - name: Test repository task behavior
+        run: python3 -m unittest discover -s tests -p 'test_mise_tasks.py'
