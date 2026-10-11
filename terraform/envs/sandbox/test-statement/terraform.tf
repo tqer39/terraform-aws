@@ -7,9 +7,10 @@ terraform {
     }
   }
   backend "s3" {
-    bucket  = "terraform-tfstate-tqer39-107662415716-ap-northeast-1"
-    encrypt = true
-    key     = "terraform-aws/terraform/environments/sandbox/sandbox-test-statement.tfstate"
-    region  = "ap-northeast-1"
+    use_lockfile = true
+    bucket       = "terraform-tfstate-tqer39-107662415716-ap-northeast-1"
+    encrypt      = true
+    key          = "terraform-aws/terraform/environments/sandbox/sandbox-test-statement.tfstate"
+    region       = "ap-northeast-1"
   }
 }

@@ -60,6 +60,7 @@ textlintcache
 tfcmt
 tfenv
 tflint
+tflock
 tfstate
 tolist
 toset
