@@ -8,6 +8,10 @@ on:
         description: "レビュー済みコミットの保存 plan を適用する"
         type: boolean
         default: false
+      allow_role_updates:
+        description: "Discord ロール2件の更新を許可する（ポリシー更新・削除・置換は禁止）"
+        type: boolean
+        default: false
       reviewed_commit:
         description: "apply 時はレビューした main の完全なコミット SHA"
         type: string
@@ -35,6 +39,7 @@ jobs:
     env:
       TF_IN_AUTOMATION: "true"
       BOOTSTRAP_APPLY: ${{ inputs.apply }}
+      ALLOW_ROLE_UPDATES: ${{ inputs.allow_role_updates }}
       REVIEWED_COMMIT: ${{ inputs.reviewed_commit }}
     defaults:
       run:
@@ -52,7 +57,7 @@ jobs:
         with:
           working-directory: terraform/envs/portfolio/terraform_github
       - run: terraform validate
-      - name: Plan initial Discord roles
+      - name: Plan Discord roles
         run: |
           status=0
           terraform plan -input=false -detailed-exitcode -json -out=discord-bootstrap.tfplan \
