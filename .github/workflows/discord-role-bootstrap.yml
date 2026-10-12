@@ -1,0 +1,75 @@
+---
+name: Bootstrap Discord OIDC Roles
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "レビュー済みコミットの保存 plan を適用する"
+        type: boolean
+        default: false
+      reviewed_commit:
+        description: "apply 時はレビューした main の完全なコミット SHA"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: discord-role-bootstrap-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  bootstrap:
+    if: >-
+      vars.TERRAFORM_EXECUTION_ENABLED == 'true' &&
+      github.ref == 'refs/heads/main' &&
+      github.actor == github.repository_owner &&
+      github.triggering_actor == github.repository_owner
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      TF_IN_AUTOMATION: "true"
+      BOOTSTRAP_APPLY: ${{ inputs.apply }}
+      REVIEWED_COMMIT: ${{ inputs.reviewed_commit }}
+    defaults:
+      run:
+        working-directory: terraform/envs/portfolio/terraform_github
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Verify manual request
+        run: python3 "$GITHUB_WORKSPACE/.github/scripts/discord_role_bootstrap.py" --check-request
+      - uses: ./.github/actions/aws-credential
+        with:
+          oidc-iam-role: arn:aws:iam::072693953877:role/portfolio-terraform-aws-deploy
+      - uses: ./.github/actions/setup-terraform
+        with:
+          working-directory: terraform/envs/portfolio/terraform_github
+      - run: terraform validate
+      - name: Plan initial Discord roles
+        run: |
+          status=0
+          terraform plan -input=false -detailed-exitcode -no-color -out=discord-bootstrap.tfplan \
+            -target=aws_iam_role.discord -target=aws_iam_role_policy.discord > bootstrap-plan.txt || status=$?
+          if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then
+            echo "::error::Discord role plan failed."
+            exit 1
+          fi
+      - name: Verify resource boundaries and summarize
+        id: review
+        # cspell:ignore pipefail
+        run: |
+          set -o pipefail
+          terraform show -json discord-bootstrap.tfplan | python3 "$GITHUB_WORKSPACE/.github/scripts/discord_role_bootstrap.py"
+      - name: Apply verified saved plan
+        if: inputs.apply && steps.review.outputs.has_changes == 'true'
+        run: terraform apply -input=false -no-color discord-bootstrap.tfplan
+      - name: Remove local plan files
+        if: always()
+        run: rm -f discord-bootstrap.tfplan bootstrap-plan.txt

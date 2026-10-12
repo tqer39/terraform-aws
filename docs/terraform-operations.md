@@ -103,3 +103,22 @@ import・destroy・state の変更も通常の検証には含めません。必�
 | Session Manager plugin | AWS Systems Manager のセッション接続 | [AWS 公式手順](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html) |
 | Rancher Desktop | ローカルのコンテナ環境 | [公式の OS 別手順](https://docs.rancherdesktop.io/getting-started/installation/) |
 | Graphviz | Terraform の依存関係の可視化 | [グラフ生成手順](terraform-graph.md#ローカルで生成する) |
+
+## Discord 用 OIDC ロールの初回作成
+
+`Bootstrap Discord OIDC Roles` を main から所有者が手動実行します。
+`TERRAFORM_EXECUTION_ENABLED=true` が必要です。通常の Portfolio 全体の適用とは別の手順です。
+
+1. `apply=false` で実行し、Summary に表示されたリソースをレビューします。
+2. 作成対象は Discord 用 plan/apply ロールとインラインポリシーの4件です。
+   既存デプロイロールを含む対象外の変更、更新・削除・置換があれば停止します。
+3. 適用する場合は `apply=true` と、レビューした main の完全なコミット SHA を
+   `reviewed_commit` に指定します。起動者・再実行者は所有者に限定し、コミットの一致を検証します。
+   同じジョブで作成・検証した保存 plan だけを apply します。
+4. 完了後、kazokubi の Discord plan を再実行します。
+
+初回作成は [Terraform の resource targeting](https://developer.hashicorp.com/terraform/cli/commands/plan#resource-targeting)
+を例外的に使用します。通常運用の更新には使いません。依存リソースが対象に追加されても、
+変更対象の検証で4件以外の操作を拒否します。既存リソースが変更なしなら再実行できます。
+保存 plan を artifact に保存せず、ジョブの最後に削除します。
+初回作成後も、通常の対象全体の plan による差分確認が必要です。
