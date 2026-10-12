@@ -2,12 +2,14 @@ locals {
   discord_state_key        = "kazokubi/infra/discord.tfstate"
   discord_workspace_prefix = "kazokubi/infra/discord-workspaces"
   discord_bucket_arn       = "arn:aws:s3:::${local.tfstate_bucket_name.apne1}"
+  # GitHub API の sub_claim_prefix と一致させる（immutable subject）。
+  discord_oidc_subject_prefix = "repo:${local.organization}@952015/kazokubi@1403774213"
   discord_roles = {
     plan = [
-      "repo:${local.organization}/kazokubi:pull_request",
-      "repo:${local.organization}/kazokubi:ref:refs/heads/main",
+      "${local.discord_oidc_subject_prefix}:pull_request",
+      "${local.discord_oidc_subject_prefix}:ref:refs/heads/main",
     ]
-    apply = ["repo:${local.organization}/kazokubi:ref:refs/heads/main"]
+    apply = ["${local.discord_oidc_subject_prefix}:ref:refs/heads/main"]
   }
 }
 

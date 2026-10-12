@@ -11,11 +11,11 @@ run "discord_roles_are_scoped" {
   command = plan
 
   assert {
-    condition     = jsondecode(aws_iam_role.discord["apply"].assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == ["repo:tqer39/kazokubi:ref:refs/heads/main"]
+    condition     = jsondecode(aws_iam_role.discord["apply"].assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == ["repo:tqer39@952015/kazokubi@1403774213:ref:refs/heads/main"]
     error_message = "apply は main だけを信頼する必要があります。"
   }
   assert {
-    condition     = jsondecode(aws_iam_role.discord["plan"].assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == ["repo:tqer39/kazokubi:pull_request", "repo:tqer39/kazokubi:ref:refs/heads/main"]
+    condition     = jsondecode(aws_iam_role.discord["plan"].assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == ["repo:tqer39@952015/kazokubi@1403774213:pull_request", "repo:tqer39@952015/kazokubi@1403774213:ref:refs/heads/main"]
     error_message = "plan は同一リポジトリの PR と main だけを信頼する必要があります。"
   }
   assert {

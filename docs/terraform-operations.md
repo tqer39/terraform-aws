@@ -118,7 +118,24 @@ import・destroy・state の変更も通常の検証には含めません。必�
 4. 完了後、kazokubi の Discord plan を再実行します。
 
 初回作成は [Terraform の resource targeting](https://developer.hashicorp.com/terraform/cli/commands/plan#resource-targeting)
-を例外的に使用します。通常運用の更新には使いません。依存リソースが対象に追加されても、
+を例外的に使用します。依存リソースが対象に追加されても、
 変更対象の検証で4件以外の操作を拒否します。既存リソースが変更なしなら再実行できます。
 保存 plan を artifact に保存せず、ジョブの最後に削除します。
 初回作成後も、通常の対象全体の plan による差分確認が必要です。
+
+### 作成済み Discord ロールの信頼条件を修復する
+
+kazokubi は ID を含む immutable OIDC subject を使用します。
+GitHub API の `repos/tqer39/kazokubi/actions/oidc/customization/sub` が返す
+`sub_claim_prefix` と、Terraform の `discord_oidc_subject_prefix` を一致させてください。
+仕様は [GitHub の immutable subject claims](https://docs.github.com/en/actions/reference/security/oidc#immutable-subject-claims)
+を参照してください。plan は同一リポジトリの PR と main、apply は main だけを信頼します。
+
+作成済みロールの修復には、同じワークフローで `allow_role_updates=true`、
+`apply=false` を指定して plan を取得します。この入力を指定した場合だけ、
+Discord ロール2件の更新を追加で許可します。更新属性の制限ではないため、
+Summary の対象・操作に加えて、実行コミットの Terraform 差分もレビューしてください。
+インラインポリシーの更新、対象外のリソース変更、削除・置換は引き続き拒否します。
+
+修復差分を承認した後、同じ入力に `apply=true` とレビューした main の完全な SHA を
+指定して適用します。通常運用は対象全体の plan を使用し、この手順は OIDC 認証の修復に限定します。

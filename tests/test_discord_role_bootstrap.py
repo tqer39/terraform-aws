@@ -31,7 +31,7 @@ class DiscordBootstrapTest(unittest.TestCase):
         BOOTSTRAP.check_request(dict(env, BOOTSTRAP_APPLY='true', REVIEWED_COMMIT='a' * 40))
         for key, value in [('GITHUB_REF', 'refs/heads/feature'), ('GITHUB_EVENT_NAME', 'push'),
                            ('GITHUB_ACTOR', 'another'), ('GITHUB_TRIGGERING_ACTOR', 'another'),
-                           ('GITHUB_REPOSITORY', 'tqer39/other'), ('BOOTSTRAP_APPLY', 'yes')]:
+                           ('GITHUB_REPOSITORY', 'tqer39/other'), ('BOOTSTRAP_APPLY', 'yes'), ('ALLOW_ROLE_UPDATES', 'yes')]:
             with self.subTest(key=key), self.assertRaises(ValueError):
                 BOOTSTRAP.check_request(dict(env, **{key: value}))
         for reviewed in ('', 'a' * 7, 'b' * 40):
@@ -53,6 +53,30 @@ class DiscordBootstrapTest(unittest.TestCase):
         for flag in ({'deferred_changes': [{'reason': 'unknown'}]}, {'errored': True}):
             with self.assertRaises(ValueError):
                 BOOTSTRAP.check_plan(flag)
+
+    def test_role_updates_require_opt_in_and_never_allow_policy_or_unrelated_changes(self):
+        events = ([{'type': 'version', 'ui': '1.2'}]
+                  + [{'type': 'planned_change', 'change': {
+                      'resource': {'addr': address}, 'action': 'update'}}
+                     for address in sorted(BOOTSTRAP.ROLE_RESOURCES)]
+                  + [{'type': 'change_summary', 'changes': {
+                      'add': 0, 'change': 2, 'remove': 0, 'operation': 'plan'}}])
+        stream = '\n'.join(json.dumps(event) for event in events)
+        with self.assertRaises(ValueError):
+            BOOTSTRAP.read_plan_events(io.StringIO(stream))
+        plan = BOOTSTRAP.read_plan_events(io.StringIO(stream), allow_role_updates=True)
+        self.assertEqual(len(BOOTSTRAP.check_plan(plan, allow_role_updates=True)), 2)
+        for address, actions in [('aws_iam_role_policy.discord["plan"]', ['update']),
+                                 ('module.deploy_role.aws_iam_role.this', ['update']),
+                                 ('aws_iam_role.discord["apply"]', ['delete']),
+                                 ('aws_iam_role.discord["plan"]', ['delete', 'create'])]:
+            with self.subTest(address=address, actions=actions), self.assertRaises(ValueError):
+                BOOTSTRAP.check_plan({'resource_changes': [
+                    {'address': address, 'change': {'actions': actions}}]}, allow_role_updates=True)
+        events[-1]['changes']['change'] = 1
+        with self.assertRaises(ValueError):
+            BOOTSTRAP.read_plan_events(io.StringIO(
+                '\n'.join(json.dumps(event) for event in events)), allow_role_updates=True)
 
     def events(self):
         return ([{'type': 'version', 'ui': '1.2'}]
