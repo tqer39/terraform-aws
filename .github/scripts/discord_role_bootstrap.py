@@ -41,11 +41,47 @@ def check_plan(plan):
     return changed
 
 
+def read_plan_events(stream):
+    resources = []
+    summary = None
+    version = False
+    addresses = set()
+    for line in stream:
+        event = json.loads(line)
+        kind = event.get('type')
+        if event.get('@level') == 'error' or 'defer' in str(kind):
+            raise ValueError('Plan stream contains an error or deferred change')
+        if kind == 'version':
+            if version or resources or summary or not event.get('ui', '').startswith('1.'):
+                raise ValueError('Unsupported or misplaced plan stream version')
+            version = True
+        elif kind == 'planned_change':
+            if not version or summary is not None:
+                raise ValueError('Plan changes must follow version and precede summary')
+            change = event['change']
+            address = change['resource']['addr']
+            if address in addresses or change.get('importing') or change.get('deferred'):
+                raise ValueError('Duplicate, imported or deferred plan change')
+            addresses.add(address)
+            resources.append({'address': address, 'change': {'actions': [change['action']]}})
+        elif kind == 'change_summary':
+            if not version or summary is not None:
+                raise ValueError('Missing version or repeated plan summary')
+            summary = event['changes']
+    plan = {'resource_changes': resources}
+    changed = check_plan(plan)
+    if (not version or summary is None or summary.get('operation') != 'plan'
+            or summary.get('add') != len(changed) or summary.get('change') != 0
+            or summary.get('remove') != 0):
+        raise ValueError('Plan summary is missing or inconsistent with allowed creations')
+    return plan
+
+
 def main():
     check_request(os.environ)
     if sys.argv[1:] == ['--check-request']:
         return
-    plan = json.load(sys.stdin)
+    plan = read_plan_events(sys.stdin)
     changed = check_plan(plan)
     with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as output:
         output.write(summarize(plan, 'Discord role bootstrap (initial creation only)'))

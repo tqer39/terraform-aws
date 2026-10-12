@@ -55,21 +55,18 @@ jobs:
       - name: Plan initial Discord roles
         run: |
           status=0
-          terraform plan -input=false -detailed-exitcode -no-color -out=discord-bootstrap.tfplan \
-            -target=aws_iam_role.discord -target=aws_iam_role_policy.discord > bootstrap-plan.txt || status=$?
+          terraform plan -input=false -detailed-exitcode -json -out=discord-bootstrap.tfplan \
+            -target=aws_iam_role.discord -target=aws_iam_role_policy.discord > bootstrap-plan.jsonl || status=$?
           if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then
             echo "::error::Discord role plan failed."
             exit 1
           fi
       - name: Verify resource boundaries and summarize
         id: review
-        # cspell:ignore pipefail
-        run: |
-          set -o pipefail
-          terraform show -json discord-bootstrap.tfplan | python3 "$GITHUB_WORKSPACE/.github/scripts/discord_role_bootstrap.py"
+        run: python3 "$GITHUB_WORKSPACE/.github/scripts/discord_role_bootstrap.py" < bootstrap-plan.jsonl
       - name: Apply verified saved plan
         if: inputs.apply && steps.review.outputs.has_changes == 'true'
         run: terraform apply -input=false -no-color discord-bootstrap.tfplan
       - name: Remove local plan files
         if: always()
-        run: rm -f discord-bootstrap.tfplan bootstrap-plan.txt
+        run: rm -f discord-bootstrap.tfplan bootstrap-plan.jsonl
