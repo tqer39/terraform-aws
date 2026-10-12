@@ -45,7 +45,7 @@ resource "aws_iam_role_policy" "discord" {
         Resource = [local.discord_bucket_arn]
         Condition = {
           StringEquals = {
-            "s3:prefix" = [local.discord_state_key, local.discord_workspace_prefix]
+            "s3:prefix" = [local.discord_state_key, "${local.discord_workspace_prefix}/"]
           }
         }
       },

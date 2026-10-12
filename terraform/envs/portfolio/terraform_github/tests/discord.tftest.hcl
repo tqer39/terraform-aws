@@ -23,6 +23,16 @@ run "discord_roles_are_scoped" {
     error_message = "OIDC audience は STS に限定してください。"
   }
   assert {
+    condition = alltrue([
+      for policy in aws_iam_role_policy.discord :
+      toset(jsondecode(policy.policy).Statement[0].Condition.StringEquals["s3:prefix"]) == toset([
+        "kazokubi/infra/discord.tfstate",
+        "kazokubi/infra/discord-workspaces/",
+      ])
+    ])
+    error_message = "両ロールで Terraform が送る末尾 / 付きの workspace prefix と専用 state だけを許可してください。"
+  }
+  assert {
     condition     = flatten([for statement in jsondecode(aws_iam_role_policy.discord["plan"].policy).Statement : statement.Action]) == ["s3:ListBucket", "s3:GetObject"]
     error_message = "plan ロールに書き込みを許可してはいけません。"
   }
