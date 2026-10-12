@@ -83,3 +83,5 @@ pinact
 graphviz
 smol
 katex
+
+kazokubi
