@@ -59,6 +59,14 @@ class WorkflowChangesTest(unittest.TestCase):
             return
         return json.loads(output.read_text().removeprefix('matrix='))
 
+    def test_manual_target_selects_one_existing_root(self):
+        event = {'inputs': {'TARGET_DIRECTORY': 'base'}}
+        self.assertEqual(self.select('workflow_dispatch', event), ['base'])
+        for target in ('missing', '../base', '', 'base; echo unsafe'):
+            self.select('workflow_dispatch', {'inputs': {'TARGET_DIRECTORY': target}}, expected_code=2)
+        self.assertEqual(self.select('workflow_dispatch', {'inputs': {'TARGET_DIRECTORY': '_all'}}),
+                         ['base', 'base_apne1'])
+
     def test_root_change_selects_only_affected_root(self):
         self.write('terraform/envs/management/base/main.tf')
         self.commit()

@@ -39,9 +39,24 @@ runs:
       id: terraform-plan
       run: |
         exit_code=0
-        terraform plan -detailed-exitcode -no-color > tf_plan.txt || exit_code=$?
+        terraform plan -detailed-exitcode -no-color -out=review.tfplan > tf_plan.txt || exit_code=$?
         echo "exitcode=$exit_code" >> "$GITHUB_OUTPUT"
         exit "$exit_code"
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+
+    - name: Summarize Terraform resource changes
+      if: steps.terraform-plan.outputs.exitcode == '0' || steps.terraform-plan.outputs.exitcode == '2'
+      # cspell:ignore pipefail
+      run: |
+        set -o pipefail
+        terraform show -json review.tfplan | python3 "$GITHUB_WORKSPACE/.github/scripts/terraform_plan_summary.py"
+      working-directory: ${{ inputs.working-directory }}
+      shell: bash
+
+    - name: Remove review plan
+      if: always()
+      run: rm -f review.tfplan tf_plan.txt
       working-directory: ${{ inputs.working-directory }}
       shell: bash
 

@@ -58,7 +58,14 @@ def select_matrix(environment, event_name, event):
             git('rev-parse', '--verify', f'{head}^{{commit}}')
             return pipelines
         changed = changed_files(base, head)
-    elif event_name in ('workflow_dispatch', 'schedule'):
+    elif event_name == 'workflow_dispatch':
+        target = event.get('inputs', {}).get('TARGET_DIRECTORY', '_all')
+        if target == '_all':
+            return pipelines
+        if target not in pipelines:
+            raise ValueError('Unknown Terraform target directory')
+        return [target]
+    elif event_name == 'schedule':
         return pipelines
     else:
         raise ValueError(f'Unsupported event: {event_name}')
