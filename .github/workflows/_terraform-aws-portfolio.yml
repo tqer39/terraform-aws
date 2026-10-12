@@ -73,6 +73,10 @@ jobs:
         with:
           working-directory: ./terraform/envs/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
 
+      - name: Test Discord role boundaries without AWS credentials
+        if: matrix.directory == 'terraform_github'
+        run: terraform -chdir=terraform/envs/portfolio/terraform_github test
+
   terraform-aws-portfolio:
     needs: [set-matrix]
     if: ${{ vars.TERRAFORM_EXECUTION_ENABLED == 'true' && needs.set-matrix.outputs.matrix != '["_empty"]' && github.ref == 'refs/heads/main' && contains(fromJSON('["push", "schedule", "workflow_dispatch"]'), github.event_name) }}
