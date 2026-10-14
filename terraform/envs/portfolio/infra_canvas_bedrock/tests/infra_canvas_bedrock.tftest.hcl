@@ -21,28 +21,16 @@ run "bedrock_access_is_scoped" {
     condition = toset(flatten([
       for statement in jsondecode(aws_iam_role_policy.infra_canvas_bedrock.policy).Statement : statement.Resource
       ])) == toset([
-      "arn:aws:bedrock:ap-northeast-1:072693953877:inference-profile/global.openai.gpt-5.6-luna",
-      "arn:aws:bedrock:ap-northeast-1:072693953877:project/default",
-      "arn:aws:bedrock:ap-northeast-1::foundation-model/openai.gpt-5.6-luna",
-      "arn:aws:bedrock:::foundation-model/openai.gpt-5.6-luna",
+      "arn:aws:bedrock:ap-northeast-1::foundation-model/amazon.nova-lite-v1:0",
     ])
-    error_message = "対象は東京の Luna プロファイル・default project と Luna モデルだけです。"
+    error_message = "対象は東京の Nova Lite モデルだけです。"
   }
   assert {
     condition = alltrue([
       for statement in jsondecode(aws_iam_role_policy.infra_canvas_bedrock.policy).Statement :
-      !strcontains(statement.Resource[0], "foundation-model/") ||
-      try(statement.Condition.StringEquals["bedrock:InferenceProfileArn"], "") == "arn:aws:bedrock:ap-northeast-1:072693953877:inference-profile/global.openai.gpt-5.6-luna"
+      statement.Condition.StringEquals["aws:RequestedRegion"] == "ap-northeast-1"
     ])
-    error_message = "モデルを直接呼ばせず、指定プロファイル経由に限定してください。"
-  }
-  assert {
-    condition = alltrue([
-      for statement in jsondecode(aws_iam_role_policy.infra_canvas_bedrock.policy).Statement :
-      statement.Condition.StringEquals["aws:RequestedRegion"] ==
-      (startswith(statement.Resource[0], "arn:aws:bedrock:::foundation-model/") ? "unspecified" : "ap-northeast-1")
-    ])
-    error_message = "接続先は東京、global の内部処理だけを unspecified に限定してください。"
+    error_message = "東京以外のリージョンでの呼び出しを許可してはいけません。"
   }
   assert {
     condition = (length(jsondecode(aws_iam_role.infra_canvas_bedrock.assume_role_policy).Statement) == 1 &&

@@ -1,6 +1,5 @@
 locals {
-  infra_canvas_model_id    = "openai.gpt-5.6-luna"
-  infra_canvas_profile_arn = "arn:aws:bedrock:${local.region.apne1}:${local.aws_account_id}:inference-profile/global.${local.infra_canvas_model_id}"
+  infra_canvas_model_id = "amazon.nova-lite-v1:0"
 }
 
 # ローカルの SSO 管理者セッションから引き受ける、推論専用のロール。
@@ -26,55 +25,19 @@ resource "aws_iam_role" "infra_canvas_bedrock" {
 }
 
 resource "aws_iam_role_policy" "infra_canvas_bedrock" {
-  name = "invoke-gpt-5-6-luna"
+  name = "invoke-selected-model"
   role = aws_iam_role.infra_canvas_bedrock.name
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [
-      {
-        Sid      = "InvokeSelectedProfile"
-        Effect   = "Allow"
-        Action   = ["bedrock:InvokeModel"]
-        Resource = [local.infra_canvas_profile_arn]
-        Condition = {
-          StringEquals = { "aws:RequestedRegion" = local.region.apne1 }
-        }
-      },
-      {
-        # OpenAI の bedrock-runtime 呼び出しには default project も必要。
-        Sid      = "InvokeDefaultProject"
-        Effect   = "Allow"
-        Action   = ["bedrock:InvokeModel"]
-        Resource = ["arn:aws:bedrock:${local.region.apne1}:${local.aws_account_id}:project/default"]
-        Condition = {
-          StringEquals = { "aws:RequestedRegion" = local.region.apne1 }
-        }
-      },
-      {
-        Sid      = "InvokeRegionalModelThroughProfile"
-        Effect   = "Allow"
-        Action   = ["bedrock:InvokeModel"]
-        Resource = ["arn:aws:bedrock:${local.region.apne1}::foundation-model/${local.infra_canvas_model_id}"]
-        Condition = {
-          StringEquals = {
-            "aws:RequestedRegion"         = local.region.apne1
-            "bedrock:InferenceProfileArn" = local.infra_canvas_profile_arn
-          }
-        }
-      },
-      {
-        Sid      = "InvokeGlobalModelThroughProfile"
-        Effect   = "Allow"
-        Action   = ["bedrock:InvokeModel"]
-        Resource = ["arn:aws:bedrock:::foundation-model/${local.infra_canvas_model_id}"]
-        Condition = {
-          StringEquals = {
-            "aws:RequestedRegion"         = "unspecified"
-            "bedrock:InferenceProfileArn" = local.infra_canvas_profile_arn
-          }
-        }
+    Statement = [{
+      Sid      = "InvokeTokyoNovaLite"
+      Effect   = "Allow"
+      Action   = ["bedrock:InvokeModel"]
+      Resource = ["arn:aws:bedrock:${local.region.apne1}::foundation-model/${local.infra_canvas_model_id}"]
+      Condition = {
+        StringEquals = { "aws:RequestedRegion" = local.region.apne1 }
       }
-    ]
+    }]
   })
 }
 
