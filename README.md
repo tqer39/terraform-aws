@@ -42,6 +42,7 @@ GitHub Actions は OIDC で AWS に認証します。認証情報と Terraform s
 | [共通モジュール](terraform/modules/) | 用途別の部品、ドメイン、証明書、デプロイ用ロール |
 | [開発手順](docs/development.md) | 検証、エディタ、ツール更新、AI 共通ルールの管理 |
 | [Terraform の運用](docs/terraform-operations.md) | ローカル検証・plan、環境追加、モジュール化の方針 |
+| [Infra Canvas の Bedrock 認証](docs/infra-canvas-bedrock.md) | ローカル推論専用ロール、AWS プロファイルと接続設定 |
 | [依存関係の可視化](docs/terraform-graph.md) | GitHub Actions とローカルでのグラフ生成 |
 | [GitHub Actions のサプライチェーン対策](docs/github-actions-security.md) | 認証・権限・依存の固定と生成処理 |
 | [共通開発ルール](docs/rules/overview.md) | 各 AI 開発ツール向けルールの原本 |
