@@ -15,13 +15,14 @@ on:
   workflow_dispatch:
     inputs:
       TARGET_DIRECTORY:
-        description: "実行対象（Discord ロールは terraform_github）"
+        description: "実行対象（専用ロールは用途別のルートを指定）"
         required: true
         type: choice
         default: "_all"
         options:
           - "_all"
           - "terraform_github"
+          - "infra_canvas_bedrock"
       CHECK_DIFF:
         description: "差分チェックフラグ"
         required: true
@@ -81,9 +82,11 @@ jobs:
         with:
           working-directory: ./terraform/envs/${{ env.AWS_ENV_NAME }}/${{ matrix.directory }}
 
-      - name: Test Discord role boundaries without AWS credentials
-        if: matrix.directory == 'terraform_github'
-        run: terraform -chdir=terraform/envs/portfolio/terraform_github test
+      - name: Test role boundaries without AWS credentials
+        if: matrix.directory == 'terraform_github' || matrix.directory == 'infra_canvas_bedrock'
+        env:
+          TERRAFORM_DIRECTORY: ${{ matrix.directory }}
+        run: terraform -chdir="terraform/envs/portfolio/${TERRAFORM_DIRECTORY}" test
 
   terraform-aws-portfolio:
     needs: [set-matrix]
