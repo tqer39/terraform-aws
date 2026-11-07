@@ -34,7 +34,7 @@ jobs:
           persist-credentials: false
 
       - name: Set up mise tools
-        uses: jdx/mise-action@2d8d4cafcbd33be2ea37d2b6f5ad595363d1f1ca # v5.1.1
+        uses: jdx/mise-action@6612f0ef07ed2a736cd1e00a94a065522dd41195 # v5.2.5
         with:
           version: 2026.10.1
           sha256: ${{ matrix.mise-sha256 }}
