@@ -1,0 +1,18 @@
+
+# dev-standards: deterministic checkout
+*.go text eol=lf
+go.mod text eol=lf
+go.sum text eol=lf
+/.editorconfig text eol=lf
+/mise.toml text eol=lf
+/.gitattributes text eol=lf
+/AGENTS.md text eol=lf
+/.codex/hooks.json text eol=lf
+/.github/workflows/dev-standards.yml text eol=lf
+/.github/workflows/dev-standards-version-lag.yml text eol=lf
+/.gitignore -text whitespace=-blank-at-eol
+/.standards/** text eol=lf
+/.standards/gitignore.local -text whitespace=-blank-at-eol
+/.standards/vendor/gitignore/*.txt -text whitespace=-blank-at-eol
+/docs/decisions/0001-language.md text eol=lf
+/.rulesync/rules/dev-standards.md text eol=lf

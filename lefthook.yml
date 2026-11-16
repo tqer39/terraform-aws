@@ -18,10 +18,25 @@ pre-commit:
     detect-private-key:
       run: mise exec -- uv run --locked --script scripts/lint/check.py detect-private-key {staged_files}
     end-of-file-fixer:
+      # 採用元のバイト列は dev-standards のハッシュ照合で検証する。
+      exclude:
+        - .gitignore
+        - .standards/gitignore.local
+        - .standards/vendor/gitignore/*.txt
       run: mise exec -- uv run --locked --script scripts/lint/check.py end-of-file-fixer --check {staged_files}
     mixed-line-ending:
+      # 採用元のバイト列は dev-standards のハッシュ照合で検証する。
+      exclude:
+        - .gitignore
+        - .standards/gitignore.local
+        - .standards/vendor/gitignore/*.txt
       run: mise exec -- uv run --locked --script scripts/lint/check.py mixed-line-ending --check {staged_files}
     trailing-whitespace:
+      # 採用元のバイト列は dev-standards のハッシュ照合で検証する。
+      exclude:
+        - .gitignore
+        - .standards/gitignore.local
+        - .standards/vendor/gitignore/*.txt
       run: mise exec -- uv run --locked --script scripts/lint/check.py trailing-whitespace --check {staged_files}
     yamllint:
       glob: "*.{yml,yaml}"

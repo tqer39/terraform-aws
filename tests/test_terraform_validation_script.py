@@ -29,7 +29,7 @@ class TerraformValidationScriptTest(unittest.TestCase):
         for legacy in ('.node-version', '.terraform-version'):
             self.assertFalse((REPO / legacy).exists())
 
-    def run_validation(self, fail=False):
+    def run_validation(self, fail=False, directories=()):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             log = root / 'commands'
@@ -42,11 +42,12 @@ class TerraformValidationScriptTest(unittest.TestCase):
                 'fi\n')
             terraform.chmod(0o755)
             env = dict(os.environ, PATH=f'{root}:{os.environ["PATH"]}',
-                       COMMAND_LOG=str(log), FAIL_VALIDATE=str(fail).lower())
+                       COMMAND_LOG=str(log), FAIL_VALIDATE=str(fail).lower(),
+                       TF_PLUGIN_CACHE_DIR=str(root / 'plugins'))
             result = subprocess.run(
-                ['bash', str(REPO / 'scripts/validate-terraform.sh')],
+                ['bash', str(REPO / 'scripts/validate-terraform.sh'), *directories],
                 cwd=root, env=env, capture_output=True, text=True, check=False)
-            return result, log.read_text().splitlines()
+            return result, log.read_text().splitlines() if log.exists() else []
 
     def test_all_roots_are_validated_without_backend_or_lockfile_writes(self):
         result, commands = self.run_validation()
@@ -60,6 +61,30 @@ class TerraformValidationScriptTest(unittest.TestCase):
                 f'-chdir={directory} init -backend=false -input=false -lockfile=readonly',
                 f'-chdir={directory} validate -no-color',
             ])
+
+    def test_single_environment_can_be_checked_quickly(self):
+        directory = 'terraform/envs/sandbox/test-statement'
+        result, commands = self.run_validation(directories=(directory,))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(len(commands), 3)
+        self.assertTrue(all(line.startswith(f'-chdir={directory} ') for line in commands))
+
+    def test_invalid_targets_fail_before_any_terraform_command(self):
+        for directory in ('/tmp', 'terraform/envs/../../tests',
+                          'terraform/envs/missing/environment', '-upgrade'):
+            with self.subTest(directory=directory):
+                result, commands = self.run_validation(directories=(
+                    'terraform/envs/sandbox/test-statement', directory))
+                self.assertEqual(result.returncode, 2, result.stderr)
+                self.assertEqual(commands, [])
+
+    def test_mise_forwards_target_before_terraform_is_started(self):
+        result = subprocess.run(
+            ['mise', 'run', 'terraform-validate', 'terraform/envs/missing/environment'],
+            cwd=REPO, capture_output=True, text=True, timeout=30)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('検証対象の環境ディレクトリが不正です:', result.stderr)
+        self.assertNotIn('Failed to render', result.stderr)
 
     def test_validation_failure_is_propagated_immediately(self):
         result, commands = self.run_validation(fail=True)
