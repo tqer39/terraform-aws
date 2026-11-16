@@ -31,10 +31,10 @@ run = 'PATH="$(mise where terraform):$PATH" bash scripts/validate-terraform.sh'
 run = ['GOBIN="{{config_root}}/.standards/cache/bin" go install github.com/tqer39/dev-standards/cmd/dev-standards@f71b273f3ce9a64fe13381db3d7dfb9ebd0815f2', "mise run setup"]
 
 [tasks."repo:format"]
-run = ["terraform fmt -recursive terraform tests/terraform", "npx --no-install prettier --write '.github/**/*.yml' lefthook.yml", "npm run rules:generate"]
+run = ["terraform fmt -recursive terraform tests/terraform tests/aws-emulator", "npx --no-install prettier --write '.github/**/*.yml' lefthook.yml", "npm run rules:generate"]
 
 [tasks."repo:format:check"]
-run = ["terraform fmt -check -recursive terraform tests/terraform", "npx --no-install prettier --check '.github/**/*.yml' lefthook.yml", "npm run rules:check"]
+run = ["terraform fmt -check -recursive terraform tests/terraform tests/aws-emulator", "npx --no-install prettier --check '.github/**/*.yml' lefthook.yml", "npm run rules:check"]
 
 [tasks."repo:build"]
 run = "mise run terraform-validate"
@@ -42,3 +42,7 @@ run = "mise run terraform-validate"
 [tasks.terraform-test]
 description = "AWS 認証なしでモック provider の回帰テストを実行"
 run = ["terraform -chdir=tests/terraform init -backend=false -input=false -lockfile=readonly", "terraform -chdir=tests/terraform test -no-color"]
+
+[tasks.aws-emulator-test]
+description = "Docker の AWS Emulator で DynamoDB・SQS の作成・読み戻し・削除を検証"
+run = "python3 scripts/test-aws-emulator.py"

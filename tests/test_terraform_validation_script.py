@@ -15,6 +15,7 @@ class TerraformValidationScriptTest(unittest.TestCase):
         version = re.search(r'^terraform = "([^"]+)"', (REPO / 'mise.toml').read_text(), re.M)[1]
         configs = list((REPO / 'terraform/envs').glob('*/*/terraform.tf'))
         configs.append(REPO / 'tests/terraform/main.tf')
+        configs.append(REPO / 'tests/aws-emulator/main.tf')
         for path in configs:
             required = re.search(r'required_version\s*=\s*"([^"]+)"', path.read_text())[1]
             self.assertEqual(required, version, str(path))

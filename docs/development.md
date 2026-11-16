@@ -46,6 +46,49 @@ mise run terraform-validate
 - `mise run terraform-validate` は backend 接続と AWS 認証なしで fmt・init・validate を実行します。
   provider のダウンロードにはネットワーク接続が必要です。詳細は [Terraform の運用](terraform-operations.md)を参照してください。
 
+## AWS Emulator で API の往復を検証
+
+Docker Engine と Docker CLI を用意し、次を実行します。
+既存の `bootstrap` は Docker のインストールや起動を行いません。
+
+```bash
+mise run aws-emulator-test
+```
+
+公式の [AWS Emulator](https://github.com/aws/aws-emulator) 1.0.385 を Docker で起動し、
+DynamoDB テーブルと SQS キューを作成して API から読み戻します。
+Terraform の `test` が削除まで実行し、成功・失敗のどちらでも専用コンテナを終了します。
+通常の `check` は Docker を要求しません。
+CI では専用の AWS Emulator ワークフローを手動実行でき、検証環境の関連ファイルを変更した PR・main への push でも起動します。
+これは Emulator と provider の API 互換性を確かめる調査用の検証です。既存モジュールの回帰テストとは区別します。
+
+macOS・Linux の Docker の ARM64・x86_64 に対応するパッケージを選択します。
+Windows はリポジトリの検証対象外です。初回はイメージと provider の取得に通信が必要です。
+再実行では Docker のイメージと provider のキャッシュを使います。並行実行時の init は直列化します。
+Emulator は 2 GiB のメモリ上限、ループバックだけの公開、署名認証と証明書検証を有効にし、telemetry を無効にします。
+
+検証用の Terraform 構成は [tests/aws-emulator](../tests/aws-emulator) にあります。
+本番ルートは実行せず、既存の AWS・Terraform 環境変数を除いた子プロセスで、
+Emulator が生成した認証情報と一時的なローカル state を使用します。
+provider は DynamoDB・SQS・STS の endpoint を明示し、アカウント ID `000000000000` に制限します。
+既存シェルの設定や `~/.aws` は書き換えません。
+
+調査対象を増やす場合は、この検証用構成にサービスの endpoint とテストを追加してください。
+現在確認するのは STS と DynamoDB・SQS のライフサイクルです。全14環境を Emulator へ適用するタスクではありません。
+Emulator は IAM ポリシー評価やアカウント間・リージョン間の動作を再現しないため、
+既存の AWS 実環境の認証・権限問題の解消を確認する用途には使用できません。
+
+既存の S3 バケットモジュールも調査しましたが、AWS provider 6.72 の S3 Control API は
+endpoint のホストにアカウント ID を付けるため、`000000000000.127.0.0.1` の名前解決で失敗しました。
+これは [公式 SDK 接続手順の S3 Control 制約](https://docs.aws.amazon.com/emulator/latest/userguide/point-sdk-to-emulator.html)と一致します。
+TLS 検証を無効化する回避は採用せず、S3 モジュールの検証は既存のモックテストで継続します。
+
+パッケージの版と SHA-256 は `tests/aws-emulator/packages.json`、ベースイメージは Dockerfile の digest で固定します。
+更新時は [公式の版一覧と配布先](https://docs.aws.amazon.com/emulator/latest/userguide/versioning.html)から
+両アーキテクチャの RPM と署名を取得し、[署名の検証手順](https://docs.aws.amazon.com/emulator/latest/userguide/getting-started-linux.html)
+で公開鍵の fingerprint と署名を検証してから SHA-256 を記録します。
+初回採用の両 RPM はこの手順で検証済みです。更新 PR では Linux CI とローカルの再検証結果を確認します。
+
 ## エディタとツールの更新
 
 [.editorconfig](../.editorconfig) に従って編集します。
