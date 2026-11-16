@@ -7,7 +7,7 @@
     "test:renovate": "node --test tests/renovate_config.test.cjs"
   },
   "engines": {
-    "node": "^24.22.2"
+    "node": "^26.0.0"
   },
   "overrides": {
     "markdownlint-cli": {
