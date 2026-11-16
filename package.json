@@ -22,7 +22,7 @@
     }
   },
   "devDependencies": {
-    "cspell": "10.3.6",
+    "cspell": "10.4.1",
     "markdownlint-cli": "0.49.1",
     "prettier": "3.9.10",
     "renovate": "44.149.3",
