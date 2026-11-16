@@ -85,3 +85,5 @@ smol
 katex
 
 kazokubi
+GOBIN
+zizmor

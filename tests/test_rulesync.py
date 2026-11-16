@@ -28,7 +28,7 @@ class RulesyncTest(unittest.TestCase):
         self.root = Path(self.temp.name).resolve()
         shutil.copyfile(REPO / 'rulesync.jsonc', self.root / 'rulesync.jsonc')
         shutil.copytree(REPO / 'docs/rules', self.root / 'docs/rules')
-        shutil.copytree(REPO / '.rulesync/skills', self.root / '.rulesync/skills')
+        shutil.copytree(REPO / '.rulesync', self.root / '.rulesync')
 
     def generate(self, check=False):
         command = [shutil.which('node'), str(CLI), 'generate']
@@ -70,16 +70,6 @@ class RulesyncTest(unittest.TestCase):
         for relative in RULE_OUTPUTS:
             self.assertNotIn('https://www.toptal.com/',
                              (self.root / relative).read_text())
-
-    def test_claude_uses_shared_rules_without_regenerating_claude_md(self):
-        for _ in range(2):
-            self.assert_success(self.generate())
-            self.assertTrue((self.root / 'AGENTS.md').is_file())
-            self.assertFalse((self.root / 'CLAUDE.md').exists())
-            self.assertTrue(
-                (self.root / '.claude/skills/update-gitignore/SKILL.md').is_file()
-            )
-        self.assert_success(self.generate(check=True))
 
     def test_claude_uses_shared_rules_without_regenerating_claude_md(self):
         for _ in range(2):

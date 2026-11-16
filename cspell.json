@@ -1,5 +1,7 @@
 {
-  "dictionaries": ["custom-words"],
+  "dictionaries": [
+    "custom-words"
+  ],
   "files": [
     "**",
     ".*/**"
@@ -9,7 +11,10 @@
     ".gitignore",
     "*.svg",
     "**/.terraform.lock.hcl",
-    "**/*.py.lock"
+    "**/*.py.lock",
+    ".standards/state.json",
+    ".standards/gitignore.local",
+    ".standards/vendor/gitignore"
   ],
   "dictionaryDefinitions": [
     {
