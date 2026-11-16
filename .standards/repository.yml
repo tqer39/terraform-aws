@@ -1,7 +1,7 @@
 schemaVersion: 1
 standard:
   repository: tqer39/dev-standards
-  version: 0.4.16
+  version: 0.4.19
 platforms:
   - macos
   - linux

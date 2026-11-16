@@ -14,7 +14,7 @@ mise run bootstrap
 
 ツールと固有タスクの正本は [.standards/mise.project.toml](../.standards/mise.project.toml) です。
 [mise.toml](../mise.toml) は生成物です。
-`mise run bootstrap` は mise 経由で Go 1.27.4 を取得し、dev-standards 0.4.16 を
+`mise run bootstrap` は mise 経由で Go 1.27.4 を取得し、dev-standards 0.4.19 を
 `.standards/cache/bin` に配置してから既存の `setup` タスクを実行します。
 `mise run setup` は lockfile に従って `npm ci --ignore-scripts` を実行し、
 Lefthook の Git フックを設定します。既存の pre-commit フックは置き換えます。
@@ -53,9 +53,10 @@ mise run terraform-validate
 
 ツールやタスクを変更するときは `.standards/mise.project.toml` を更新し、
 次の手順で生成物を更新して検証してください。
+`--upgrade` はツール一覧のロック更新を明示します。plan と apply は同じ更新先の CLI を使います。
 
 ```bash
-mise exec -- dev-standards plan --output .standards/plans/update.json
+mise exec -- dev-standards plan --upgrade --output .standards/plans/update.json
 mise exec -- dev-standards apply --plan .standards/plans/update.json
 mise run bootstrap
 mise run check
@@ -63,8 +64,12 @@ mise run check
 
 計画に差分がある場合、plan は終了コード1になります。同じ計画の保存先は再利用しません。
 ローカルと GitHub Actions の両方で mise を使用します。
-Terraform 各環境の `required_version` は互換性の制約として維持し、Renovate で mise と一緒に更新します。
+Terraform 各環境の `required_version` は互換性の制約として維持し、Renovate で mise の正本とモック用の構成も一緒に更新します。
 対象ルートの provider 制約と `.terraform.lock.hcl` も確認し、無関係な更新を避けてください。
+
+Renovate は生成物の `mise.toml` を直接変更しません。
+ツールの正本を更新した PR は、担当者が上記の計画と適用を実行し、生成物とロックを同じ PR に含めます。
+同期前の CI は `standards:check` で失敗します。古い実行系のまま検証を通すことはありません。
 
 ## GitHub Actions の SHA 固定
 

@@ -13,7 +13,9 @@ REPO = Path(__file__).resolve().parents[1]
 class TerraformValidationScriptTest(unittest.TestCase):
     def test_local_and_ci_use_the_required_terraform_version(self):
         version = re.search(r'^terraform = "([^"]+)"', (REPO / 'mise.toml').read_text(), re.M)[1]
-        for path in (REPO / 'terraform/envs').glob('*/*/terraform.tf'):
+        configs = list((REPO / 'terraform/envs').glob('*/*/terraform.tf'))
+        configs.append(REPO / 'tests/terraform/main.tf')
+        for path in configs:
             required = re.search(r'required_version\s*=\s*"([^"]+)"', path.read_text())[1]
             self.assertEqual(required, version, str(path))
         for name in ('.github/actions/setup-terraform/action.yml',
