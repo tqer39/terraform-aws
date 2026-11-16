@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD025 -->
+
 # terraform-aws の開発ルール
 
 このファイルは rulesync で生成されます。変更は `docs/rules/overview.md` に加え、

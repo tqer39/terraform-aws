@@ -19,7 +19,12 @@ class MiseTasksTest(unittest.TestCase):
         self.root = Path(self.temp.name)
         # Exercise task dispatch independently of installed tool versions.
         config = (REPO / 'mise.toml').read_text()
-        (self.root / 'mise.toml').write_text(config[config.index('[tasks.setup]'):])
+        standards = self.root / '.standards'
+        standards.mkdir()
+        shutil.copyfile(REPO / '.standards/tasks.standards.toml',
+                        standards / 'tasks.standards.toml')
+        (self.root / 'mise.toml').write_text(
+            config[config.index('[tasks.setup]'):])
         # Keep all mise state isolated, including trust and global configuration.
         self.env = dict(os.environ)
         for key in list(self.env):

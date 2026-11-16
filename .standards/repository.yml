@@ -1,0 +1,29 @@
+schemaVersion: 1
+standard:
+  repository: tqer39/dev-standards
+  version: 0.4.16
+platforms:
+  - macos
+  - linux
+components:
+  - name: main
+    path: .
+    profile: mise-project
+ai:
+  targets: []
+  instructions: rulesync
+gitignore:
+  templates:
+    - node
+    - linux
+    - macos
+    - windows
+  local: .standards/gitignore.local
+update:
+  channel: stable
+  allowMajor: false
+  rollout: manual
+ci:
+  prBudgetSeconds: 600
+  minimumSamples: 20
+  breachWindows: 2

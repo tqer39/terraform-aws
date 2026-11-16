@@ -40,7 +40,9 @@ jobs:
           sha256: ${{ matrix.mise-sha256 }}
 
       - name: Set up repository
-        run: mise run setup
+        run: |
+          mise run bootstrap
+          mise run bootstrap
 
       - name: Verify repository setup
         run: |

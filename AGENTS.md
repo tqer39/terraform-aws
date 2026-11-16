@@ -1,3 +1,5 @@
+<!-- markdownlint-disable MD025 -->
+
 # terraform-aws の開発ルール
 
 このファイルは rulesync で生成されます。変更は `docs/rules/overview.md` に加え、
@@ -42,3 +44,9 @@
 - Python の回帰テストは `python3 -m unittest discover -s tests -p 'test_*.py'` で実行してください。
 - lint は `lefthook.yml` に従い、`mise run lint` で検証してください。
 - 共通ルールの変更後は生成元と生成ファイルを一緒にコミットし、`npm run rules:check` で同期状態を検証してください。
+
+# 共通開発ルール
+
+作業開始時に `.standards/rules.md` と言語選定記録を読む。
+生成物は直接編集せず、正本から再適用する。
+作業終了前に `mise run standards:verify` を実行し、未実行の検査を成功と報告しない。
