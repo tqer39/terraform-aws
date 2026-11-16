@@ -88,8 +88,8 @@ mise exec -- pinact run --fix=false --no-api --exclude '^docker://'
 コンテナのダイジェスト固定などの詳細は [GitHub Actions のサプライチェーン対策](github-actions-security.md)を参照してください。
 
 mise-action の `version` は GitHub release のタグと同じ `v2026.11.5` 形式にします。
-Renovate のチェックサム検索はこの値で release API を呼ぶため、`v` を省略すると検索に失敗します。
-OS ごとの `version` と `sha256` は同じ step の入力に直接記述し、片方だけの更新を防ぎます。
+Renovate が release API を正確なタグで検索できるよう、接頭辞の `v` は省略しません。
+OS ごとの `version` と `sha256` は同じ step の入力に直接記述し、Renovate が組として抽出できるようにします。
 CI の準備処理は Linux x64 と macOS ARM64 を検証対象とし、対応するチェックサムがない runner は先に拒否します。
 共通の setup-node と setup-terraform action は Linux x64 向けです。
 
