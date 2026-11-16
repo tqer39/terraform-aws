@@ -1,10 +1,10 @@
 {
-  "projectToolsSha256": "8d6a983eeccf4a844e141026bbc13884422c6e8e61029b8a25bc83802b34f746",
+  "projectToolsSha256": "d41981ed69b1ba89035bbca2a7da4b99d95a32c0d009f18c25f4b14d802b3c55",
   "schemaVersion": 1,
   "repository": "tqer39/dev-standards",
   "version": "0.4.16",
   "bundleSha256": "cd96d7db2b4d1ed710c076317d5bb1bd24f237bac953a393ed28f7c9be7abb0f",
   "gitignoreSha256": "6615fd712894a7c41049576bebaf0663e228013ad0e08a0239438a88df6f4b08",
   "gitignoreUrl": "https://www.toptal.com/developers/gitignore/api/node,linux,macos,windows",
-  "goVersion": ""
+  "goVersion": "1.27.4"
 }

@@ -1,11 +1,12 @@
 [tools]
 node = "24.21.0"
-lefthook = "2.2.1"
-uv = "0.12.23"
+lefthook = "2.2.2"
+uv = "0.13.7"
 actionlint = "1.7.12"
-pinact = "5.0.0"
+pinact = "5.0.2"
 shellcheck = "0.11.0"
 terraform = "1.16.5"
+go = "1.27.4"
 
 [env]
 _.path = ["{{config_root}}/.standards/cache/bin"]
@@ -27,7 +28,7 @@ description = "Validate all Terraform environments without AWS authentication"
 run = 'PATH="$(mise where terraform):$PATH" bash scripts/validate-terraform.sh'
 
 [tasks."repo:bootstrap"]
-run = ['GOBIN="{{config_root}}/.standards/cache/bin" mise exec go@1.27.4 -- go install github.com/tqer39/dev-standards/cmd/dev-standards@v0.4.16', "mise run setup"]
+run = ['GOBIN="{{config_root}}/.standards/cache/bin" go install github.com/tqer39/dev-standards/cmd/dev-standards@v0.4.16', "mise run setup"]
 
 [tasks."repo:format"]
 run = ["terraform fmt -recursive terraform tests/terraform", "npx --no-install prettier --write '.github/**/*.yml' lefthook.yml", "npm run rules:generate"]
