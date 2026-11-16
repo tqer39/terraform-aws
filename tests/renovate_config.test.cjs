@@ -3,9 +3,10 @@
 // Renovate本体で設定を解決し、独自のルール評価や日付判定を再実装しない。
 // cspell:ignore datasource Behaviour
 const assert = require('node:assert/strict');
-const { readFileSync } = require('node:fs');
+const { readFileSync, readdirSync } = require('node:fs');
+const { spawnSync } = require('node:child_process');
 const { createRequire } = require('node:module');
-const { dirname, join, resolve } = require('node:path');
+const { dirname, join, resolve, sep } = require('node:path');
 const { pathToFileURL } = require('node:url');
 const { test } = require('node:test');
 
@@ -147,6 +148,44 @@ test('rulesync の major 更新を1候補へまとめても待機期間と手動
     depName: 'textlint', packageName: 'textlint',
   });
   assert.equal(other.separateMultipleMajor, true);
+});
+
+test('全ワークフローの mise の版とチェックサムを同じ依存として抽出する', async () => {
+  const { extractPackageFile } = await load('modules/manager/github-actions/extract.js');
+  const files = readdirSync(join(__dirname, '..', '.github'), { recursive: true })
+    .filter((file) => /\.ya?ml$/.test(file))
+    .map((file) => `.github/${file.split(sep).join('/')}`);
+  let count = 0;
+  for (const file of files) {
+    const extracted = await extractPackageFile(readFileSync(join(__dirname, '..', file), 'utf8'), file, {});
+    const deps = extracted?.deps || [];
+    if (!deps.some((dep) => dep.depName === 'jdx/mise-action')) continue;
+    const runtimes = deps.filter((dep) => dep.depType === 'uses-with' && dep.packageName === 'jdx/mise');
+    assert.ok(runtimes.length > 0, file);
+    for (const runtime of runtimes) {
+      assert.match(runtime.currentValue, /^v\d+\.\d+\.\d+$/, file);
+      assert.match(runtime.currentDigest, /^[a-f0-9]{64}$/, file);
+      assert.equal(runtime.datasource, 'github-release-attachments', file);
+      count++;
+    }
+  }
+  assert.ok(count >= 7);
+});
+
+test('mise のチェックサムがない runner は導入より前に拒否する', () => {
+  const yaml = renovateRequire('js-yaml');
+  const workflow = yaml.load(readFileSync(join(__dirname, '..', '.github/workflows/repository-setup.yml'), 'utf8'));
+  const guard = workflow.jobs.setup.steps.find((step) => step.id === 'verify-runner');
+  assert.ok(guard?.run);
+  for (const [os, arch, status] of [
+    ['Linux', 'X64', 0], ['macOS', 'ARM64', 0],
+    ['Linux', 'ARM64', 1], ['macOS', 'X64', 1], ['Windows', 'X64', 1],
+  ]) {
+    const result = spawnSync('bash', ['-c', guard.run], {
+      encoding: 'utf8', env: { ...process.env, RUNNER_OS: os, RUNNER_ARCH: arch },
+    });
+    assert.equal(result.status, status, `${os}/${arch}: ${result.stderr}`);
+  }
 });
 
 test('最新候補が新しすぎるときは待機を終えた版を選ぶ', async () => {

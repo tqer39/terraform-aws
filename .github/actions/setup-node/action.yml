@@ -1,7 +1,7 @@
 ---
 name: Setup Node.js
 
-description: Setup Node.js
+description: Linux x64 向けの Node.js を準備
 
 runs:
   using: composite
@@ -9,8 +9,8 @@ runs:
     - name: Set up Node.js with mise
       uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
       with:
-        version: 2026.9.9
-        sha256: bd481434a65ede6b2ec6162b88f129e5c6b94cf9de808b8ee7c6f027b13b4589
+        version: v2026.11.5
+        sha256: 7a5b051d6f17d335c502f8047a5175cf3103f347d91942771c60da4e302ebcb0
         install_args: node
 
     - name: Install dependencies
