@@ -23,9 +23,9 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            mise-sha256: 31e6859cf639ed4594906da3fcd0fe2055e9daddae75e9786dbe50b3fb3c0f4a
+            mise-sha256: 7a5b051d6f17d335c502f8047a5175cf3103f347d91942771c60da4e302ebcb0
           - os: macos-latest
-            mise-sha256: d225d1c8ef2934a86be93692a19365fb1df1cd6958a0af7b85909514e0c608a7
+            mise-sha256: 4f9faebcfac7f8bb1321e697ba7a5ba26f645233aa269741a16482f757bd482e
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     steps:
