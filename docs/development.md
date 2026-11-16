@@ -9,11 +9,13 @@ Git と [mise](https://mise.jdx.dev/installing-mise.html) を事前にインス�
 
 ```bash
 mise trust
-mise install
-mise run setup
+mise run bootstrap
 ```
 
-ツールとタスクは [mise.toml](../mise.toml) で管理します。
+ツールと固有タスクの正本は [.standards/mise.project.toml](../.standards/mise.project.toml) です。
+[mise.toml](../mise.toml) は生成物です。
+`mise run bootstrap` は mise 経由で Go 1.27.4 を取得し、dev-standards 0.4.16 を
+`.standards/cache/bin` に配置してから既存の `setup` タスクを実行します。
 `mise run setup` は lockfile に従って `npm ci --ignore-scripts` を実行し、
 Lefthook の Git フックを設定します。既存の pre-commit フックは置き換えます。
 Homebrew の導入やシェル設定は個人の環境で管理してください。anyenv と tfenv は不要です。
@@ -24,8 +26,13 @@ CI の [Repository Setup](../.github/workflows/repository-setup.yml) は macOS�
 リポジトリのルートで実行します。回帰テストには Python 3 と Git も必要です。
 
 ```bash
-mise run lint
-mise run test
+mise run check
+
+# AWS に接続しないモックテストだけを実行
+mise run terraform-test
+
+# 変更した環境だけをすぐ検証
+mise run terraform-validate terraform/envs/sandbox/test-statement
 
 # Terraform の変更時に全環境を検証
 mise run terraform-validate
@@ -44,7 +51,17 @@ mise run terraform-validate
 [.editorconfig](../.editorconfig) に従って編集します。
 必要に応じて [EditorConfig の対応プラグイン](https://editorconfig.org/#download)を導入してください。
 
-ツールのバージョンを変更するときは `mise.toml` を更新し、`mise install` と検証を実行してください。
+ツールやタスクを変更するときは `.standards/mise.project.toml` を更新し、
+次の手順で生成物を更新して検証してください。
+
+```bash
+mise exec -- dev-standards plan --output .standards/plans/update.json
+mise exec -- dev-standards apply --plan .standards/plans/update.json
+mise run bootstrap
+mise run check
+```
+
+計画に差分がある場合、plan は終了コード1になります。同じ計画の保存先は再利用しません。
 ローカルと GitHub Actions の両方で mise を使用します。
 Terraform 各環境の `required_version` は互換性の制約として維持し、Renovate で mise と一緒に更新します。
 対象ルートの provider 制約と `.terraform.lock.hcl` も確認し、無関係な更新を避けてください。
@@ -98,3 +115,19 @@ GitHub Copilot の `.github/skills/`、Cursor の `.cursor/skills/` です。
 生成元・設定・生成ファイルを一緒にコミットします。生成ファイルは直接編集しません。
 CI の `rulesync` ジョブで同期漏れを検出します。
 個人用の上書き設定 `rulesync.local.jsonc` は Git の管理対象外です。
+
+## 技術調査をすぐ検証する
+
+`tests/terraform` は backend を持たず、モック AWS provider と `command = plan` を使います。
+S3 の公開アクセス遮断など、クラウドにリソースを作らず確認できる仕様をここで検証します。
+新しい調査を追加するときも実 provider へ接続せず、モックを明示してください。
+provider のスキーマ検証は行いますが、実 AWS API の挙動や権限は確認できません。
+
+初回の `init` は provider を取得します。以後は lockfile の固定版を再利用します。
+全体の `check` は lint、整形確認、Python・Node.js の回帰テスト、モックテスト、
+全14環境の backend 無効化 init・validate を実行します。
+macOS と Linux を対象とし、Windows は未検証です。
+
+`.standards` の設定整合性は `standards:check`、実際の検査は `standards:verify` で確認できます。
+`.gitignore` の独自設定は `.standards/gitignore.local` が正本です。
+採用元テンプレートの改行と空白はハッシュ照合のため維持し、通常の空白修正から除外します。

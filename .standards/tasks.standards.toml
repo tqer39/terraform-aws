@@ -1,0 +1,33 @@
+[bootstrap]
+run = "mise run repo:bootstrap"
+
+[lint]
+run = "mise run repo:lint"
+
+[format]
+run = "mise run repo:format"
+
+["format:check"]
+run = "mise run repo:format:check"
+
+[test]
+run = "mise run repo:test"
+
+[build]
+run = "mise run repo:build"
+
+[check]
+depends = ["standards:check", "lint", "format:check", "test", "build"]
+
+["standards:check"]
+run = "dev-standards check"
+
+["standards:plan"]
+run = "dev-standards plan"
+
+["standards:verify"]
+run = "dev-standards verify"
+
+["standards:version"]
+description = "ロックに記録した dev-standards の適用版を表示"
+run = """{% set lock = read_json(path='.standards/lock.json') %}{% if lock.version is matching(pat="^[0-9]+[.][0-9]+[.][0-9]+$") %}echo "dev-standards 適用版: {{ lock.version }}"{% else %}exit 2{% endif %}"""

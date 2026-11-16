@@ -42,11 +42,27 @@ jobs:
           version: 2026.9.9
           sha256: bd481434a65ede6b2ec6162b88f129e5c6b94cf9de808b8ee7c6f027b13b4589
 
+      # 全環境の検証は変更対象外の回帰も検出する。取得・ビルドのキャッシュで重複を抑える。
+      - name: Cache Go build and Terraform providers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+            .standards/cache/terraform-plugins
+          key: ${{ runner.os }}-standards-0.4.16-go-1.27.4-${{ hashFiles('mise.toml', '**/.terraform.lock.hcl') }}
+
       - name: Install dependencies
-        run: npm ci --ignore-scripts
+        run: mise run bootstrap
 
       - name: Test repository tasks and Terraform workflow change detection
         run: mise run test
+
+      - name: Check shared standards and formatting
+        run: |
+          mise run standards:check
+          mise run format:check
+          mise run build
 
       - name: Run Lefthook checks
         run: mise run lint
