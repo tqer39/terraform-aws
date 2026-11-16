@@ -78,6 +78,14 @@ class TerraformValidationScriptTest(unittest.TestCase):
                 self.assertEqual(result.returncode, 2, result.stderr)
                 self.assertEqual(commands, [])
 
+    def test_mise_forwards_target_before_terraform_is_started(self):
+        result = subprocess.run(
+            ['mise', 'run', 'terraform-validate', 'terraform/envs/missing/environment'],
+            cwd=REPO, capture_output=True, text=True, timeout=30)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('検証対象の環境ディレクトリが不正です:', result.stderr)
+        self.assertNotIn('Failed to render', result.stderr)
+
     def test_validation_failure_is_propagated_immediately(self):
         result, commands = self.run_validation(fail=True)
         self.assertEqual(result.returncode, 17)
