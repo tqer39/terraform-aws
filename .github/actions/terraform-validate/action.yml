@@ -19,7 +19,7 @@ runs:
     - name: Setup TFLint
       uses: terraform-linters/setup-tflint@6ffdbaa3be476b3431f7275c26966ef32ff60337 # v6.3.2
       with:
-        tflint_version: v0.64.0
+        tflint_version: v0.66.0
         checksums: |
           cca9d13e2e1d7a2c627af60ff899a3c9b74212899416aeb96ec764d2ef954537
           560da89aacf59389d4eb029730dd5b109b7288096c32f2726a0d9e783a5ea8eb
