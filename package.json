@@ -22,7 +22,7 @@
     "cspell": "10.4.1",
     "markdownlint-cli": "0.50.0",
     "prettier": "3.9.10",
-    "renovate": "44.222.6",
+    "renovate": "44.223.0",
     "rulesync": "43.8.0",
     "textlint": "15.8.0",
     "textlint-filter-rule-allowlist": "4.0.0",
