@@ -1,0 +1,46 @@
+name: AWS Emulator
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/aws-emulator.yml"
+      - ".standards/mise.project.toml"
+      - "mise.toml"
+      - "scripts/test-aws-emulator.py"
+      - "tests/aws-emulator/**"
+      - "tests/test_aws_emulator.py"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/aws-emulator.yml"
+      - ".standards/mise.project.toml"
+      - "mise.toml"
+      - "scripts/test-aws-emulator.py"
+      - "tests/aws-emulator/**"
+      - "tests/test_aws_emulator.py"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+        with:
+          version: v2026.11.5
+          sha256: 7a5b051d6f17d335c502f8047a5175cf3103f347d91942771c60da4e302ebcb0
+          install_args: terraform
+
+      - name: DynamoDB・SQS の API 互換性を検証
+        run: mise run aws-emulator-test

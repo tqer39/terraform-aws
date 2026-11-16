@@ -87,3 +87,9 @@ katex
 kazokubi
 GOBIN
 zizmor
+amazonlinux
+cafile
+getgid
+getuid
+readback
+tftest

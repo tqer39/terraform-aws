@@ -89,6 +89,7 @@ test('Terraform本体のmiseと環境の制約をまとめ、AWS providerは別�
     ['mise', '.standards/mise.project.toml'],
     ['terraform', 'terraform/envs/management/base/terraform.tf'],
     ['terraform', 'tests/terraform/main.tf'],
+    ['terraform', 'tests/aws-emulator/main.tf'],
   ];
   for (const [manager, file] of refs) {
     const extraction = await load(`modules/manager/${manager}/extract.js`);
