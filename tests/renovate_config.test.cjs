@@ -85,8 +85,9 @@ test('Terraform本体のmiseと環境の制約をまとめ、AWS providerは別�
   const { GlobalConfig } = await load('config/global.js');
   GlobalConfig.set({ localDir: join(__dirname, '..') });
   const refs = [
-    ['mise', 'mise.toml'],
+    ['mise', '.standards/mise.project.toml'],
     ['terraform', 'terraform/envs/management/base/terraform.tf'],
+    ['terraform', 'tests/terraform/main.tf'],
   ];
   for (const [manager, file] of refs) {
     const extraction = await load(`modules/manager/${manager}/extract.js`);
@@ -106,6 +107,46 @@ test('Terraform本体のmiseと環境の制約をまとめ、AWS providerは別�
         'Terraform runtime');
     }
   }
+});
+
+test('モックの Terraform も抽出し、mise の生成物と入力データだけを除外する', async () => {
+  const { filterIgnoredFiles, getMatchingFiles } = await load('workers/repository/extract/file-match.js');
+  const [defaults, utils] = await modules;
+  const policy = utils.mergeChildConfig(defaults.getConfig(), await resolvedConfig);
+  const files = [
+    'mise.toml', '.standards/mise.project.toml',
+    'tests/terraform/main.tf', 'terraform/envs/management/base/terraform.tf',
+    'tests/fixtures/renovate-config/default.json',
+    'node_modules/fixture/package.json',
+  ];
+  const retained = filterIgnoredFiles(files, policy.ignorePaths);
+  assert.deepEqual(retained, [
+    '.standards/mise.project.toml',
+    'tests/terraform/main.tf', 'terraform/envs/management/base/terraform.tf',
+  ]);
+  const mise = await load('modules/manager/mise/index.js');
+  const terraform = await load('modules/manager/terraform/index.js');
+  for (const [manager, implementation, expected] of [
+    ['mise', mise, ['.standards/mise.project.toml']],
+    ['terraform', terraform, ['terraform/envs/management/base/terraform.tf', 'tests/terraform/main.tf']],
+  ]) {
+    assert.deepEqual(getMatchingFiles({
+      ...policy, ...implementation.defaultConfig, manager,
+    }, files), expected);
+  }
+});
+
+test('rulesync の major 更新を1候補へまとめても待機期間と手動マージを維持する', async () => {
+  const policy = await dependency('npm', 'major', false, {
+    depName: 'rulesync', packageName: 'rulesync',
+  });
+  assert.equal(policy.separateMultipleMajor, false);
+  assert.equal(policy.minimumReleaseAge, '7 days');
+  assert.equal(policy.automerge, false);
+  const other = await dependency('npm', 'major', false, {
+    depName: 'textlint', packageName: 'textlint',
+  });
+  assert.equal(other.separateMultipleMajor, true);
 });
 
 test('最新候補が新しすぎるときは待機を終えた版を選ぶ', async () => {

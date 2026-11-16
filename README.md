@@ -18,7 +18,7 @@ mise run bootstrap
 mise run check
 ```
 
-共通開発ルールは dev-standards 0.4.16 を採用しています。
+共通開発ルールは dev-standards 0.4.19 を採用しています。
 ツールと固有タスクの正本は [.standards/mise.project.toml](.standards/mise.project.toml) です。
 セットアップは npm 依存をインストールし、既存の pre-commit フックを Lefthook に置き換えます。
 回帰テストには Python 3 と Git も必要です。詳しくは [開発手順](docs/development.md)を参照してください。

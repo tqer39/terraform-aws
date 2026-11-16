@@ -50,7 +50,7 @@ jobs:
             ~/.cache/go-build
             ~/go/pkg/mod
             .standards/cache/terraform-plugins
-          key: ${{ runner.os }}-standards-0.4.16-go-1.27.4-${{ hashFiles('mise.toml', '**/.terraform.lock.hcl') }}
+          key: ${{ runner.os }}-${{ runner.arch }}-development-${{ hashFiles('mise.toml', '.standards/lock.json', '**/.terraform.lock.hcl') }}
 
       - name: Install dependencies
         run: mise run bootstrap

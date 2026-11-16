@@ -9,6 +9,8 @@
   ],
   // 共通プリセットの週末制限を上書きし、従来どおり随時更新する。
   "schedule": ["at any time"],
+  // モック検証の固定版も更新し、生成物 mise.toml とテスト用の入力データは直接更新しない。
+  "ignorePaths": ["**/node_modules/**", "**/bower_components/**", "**/vendor/**", "**/examples/**", "tests/fixtures/**", "mise.toml"],
   "automerge": false,
   "platformAutomerge": false,
   "minimumReleaseAge": "7 days",
@@ -19,6 +21,12 @@
     "prCreation": "immediate"
   },
   "packageRules": [
+    {
+      "description": "rulesync の複数 major 向け PR を同時に作らず、待機期間を満たす最新候補をまとめて検証する。",
+      "matchManagers": ["npm"],
+      "matchDepNames": ["rulesync"],
+      "separateMultipleMajor": false
+    },
     {
       "description": "Terraform本体のmise・全環境の制約を同じPRで更新する。",
       "matchManagers": ["mise", "terraform"],
