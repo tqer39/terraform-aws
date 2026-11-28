@@ -25,10 +25,10 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Terraform with mise
-        uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+        uses: jdx/mise-action@90f833d396d0cc3674b631d2d225e306476c303a # v5.2.10
         with:
-          version: v2026.11.5
-          sha256: 7a5b051d6f17d335c502f8047a5175cf3103f347d91942771c60da4e302ebcb0
+          version: v2026.11.12
+          sha256: 9c12c24f5eac6b6357e5265e2629166cc3005459037f5d747680a99e375ff2ab
           install_args: terraform
 
       - name: Check platform checksums without pushing PR code
